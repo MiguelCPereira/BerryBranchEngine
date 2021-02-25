@@ -11,11 +11,11 @@
 #include "GameObject.h"
 #include "Scene.h"
 #include "FPSComponent.h"
+#include "HPTextComponent.h"
+#include "LifeComponent.h"
 
 using namespace std;
 using namespace std::chrono;
-
-dae::FPSComponent g_FPSComponent;
 
 void dae::Minigin::Initialize()
 {
@@ -62,9 +62,25 @@ void dae::Minigin::LoadGame() const
 	to->SetPosition(80, 20);
 	scene.Add(to);
 
+	auto* FPSComp = new dae::FPSComponent;
 	font = ResourceManager::GetInstance().LoadFont("Lingua.otf", 19);
-	to = std::make_shared<TextObject>("00 FPS", font, &g_FPSComponent);
+	to = std::make_shared<TextObject>("00 FPS", font, FPSComp);
 	to->SetPosition(5, 5);
+	scene.Add(to);
+	
+	go = std::make_shared<GameObject>();
+	go->SetTexture("qBert.png");
+	go->SetPosition(250, 270);
+	//auto* qBertComp = new QBertLifeComponent(); // I don't understand why this leads to errors
+	//go->AddComponent(qBertComp);
+	auto dieKeyboard = std::make_unique<DieCommand>();
+	dieKeyboard->SetButtonPressType(ButtonPress::PressedDown);
+	InputManager::GetInstance().AddCommand(SDLK_SPACE, std::move(dieKeyboard));
+	scene.Add(go);
+
+	auto* HPTextComp = new dae::HPTextComponent;
+	to = std::make_shared<TextObject>("Remaining Lives: 0", font, HPTextComp);
+	to->SetPosition(238, 140);
 	scene.Add(to);
 }
 

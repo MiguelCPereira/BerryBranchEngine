@@ -6,24 +6,49 @@
 #include "Renderer.h"
 #include "Font.h"
 #include "Texture2D.h"
+//#include "BaseComponent.h"
 #include "FPSComponent.h"
+#include "HPTextComponent.h"
 
 dae::TextObject::TextObject(const std::string& text, const std::shared_ptr<Font>& font)
-	: m_NeedsUpdate(true), m_Text(text), m_Font(font), m_Texture(nullptr), m_FPSComponent(nullptr)
+	: m_NeedsUpdate(true), m_Text(text), m_Font(font), m_Texture(nullptr), /*m_TextComponent(nullptr),*/ m_FPSComponent(nullptr), m_HPTextComponent(nullptr) 
 { }
 
+//dae::TextObject::TextObject(const std::string& text, const std::shared_ptr<Font>& font,  BaseComponent* component)
+//	: m_NeedsUpdate(true), m_Text(text), m_Font(font), m_Texture(nullptr), m_TextComponent(component)
+//{ }
+
 dae::TextObject::TextObject(const std::string& text, const std::shared_ptr<Font>& font, FPSComponent* component)
-	: m_NeedsUpdate(true), m_Text(text), m_Font(font), m_Texture(nullptr), m_FPSComponent(component)
+	: m_NeedsUpdate(true), m_Text(text), m_Font(font), m_Texture(nullptr), /*m_TextComponent(nullptr),*/ m_FPSComponent(component), m_HPTextComponent(nullptr)
 { }
+
+dae::TextObject::TextObject(const std::string& text, const std::shared_ptr<Font>& font, HPTextComponent* component)
+	: m_NeedsUpdate(true), m_Text(text), m_Font(font), m_Texture(nullptr), /*m_TextComponent(nullptr),*/ m_FPSComponent(nullptr), m_HPTextComponent(component)
+{ }
+
+dae::TextObject::~TextObject()
+{
+	//delete m_TextComponent;
+	//m_TextComponent = nullptr;
+
+	delete m_FPSComponent;
+	m_FPSComponent = nullptr;
+	delete m_HPTextComponent;
+	m_HPTextComponent = nullptr;
+}
 
 void dae::TextObject::Update(const float deltaTime)
 {
 	SDL_Color color;
-	
+
+	//if (m_TextComponent != nullptr)
+	//	m_TextComponent->Update(*this, deltaTime);
+
 	if (m_FPSComponent != nullptr)
-	{
 		m_FPSComponent->Update(*this, deltaTime);
-	}
+
+	if (m_HPTextComponent != nullptr)
+		m_HPTextComponent->Update(*this, deltaTime);
 	
 	if (m_NeedsUpdate)
 	{

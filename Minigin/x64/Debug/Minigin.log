@@ -1,14 +1,3 @@
-﻿  Renderer.cpp
-  Minigin.vcxproj -> D:\Trabalho\DAE\2nd Year\2nd Semester\Programming 4\W02\Engine\x64\Debug\Minigin.exe
-  D:\Trabalho\DAE\2nd Year\2nd Semester\Programming 4\W02\Engine\3rdParty\SDL2\lib\x64\SDL2.dll
-  1 File(s) copied
-  D:\Trabalho\DAE\2nd Year\2nd Semester\Programming 4\W02\Engine\3rdParty\SDL2_image\lib\x64\libjpeg-9.dll
-  D:\Trabalho\DAE\2nd Year\2nd Semester\Programming 4\W02\Engine\3rdParty\SDL2_image\lib\x64\libpng16-16.dll
-  D:\Trabalho\DAE\2nd Year\2nd Semester\Programming 4\W02\Engine\3rdParty\SDL2_image\lib\x64\libtiff-5.dll
-  D:\Trabalho\DAE\2nd Year\2nd Semester\Programming 4\W02\Engine\3rdParty\SDL2_image\lib\x64\libwebp-7.dll
-  D:\Trabalho\DAE\2nd Year\2nd Semester\Programming 4\W02\Engine\3rdParty\SDL2_image\lib\x64\SDL2_image.dll
-  D:\Trabalho\DAE\2nd Year\2nd Semester\Programming 4\W02\Engine\3rdParty\SDL2_image\lib\x64\zlib1.dll
-  6 File(s) copied
-  D:\Trabalho\DAE\2nd Year\2nd Semester\Programming 4\W02\Engine\3rdParty\SDL2_ttf\lib\x64\libfreetype-6.dll
-  D:\Trabalho\DAE\2nd Year\2nd Semester\Programming 4\W02\Engine\3rdParty\SDL2_ttf\lib\x64\SDL2_ttf.dll
-  2 File(s) copied
+﻿  Minigin.cpp
+D:\Trabalho\DAE\2nd Year\2nd Semester\Programming 4\QBertGameEngine\Minigin\Minigin.cpp(74,8): error C2220: the following warning is treated as an error
+D:\Trabalho\DAE\2nd Year\2nd Semester\Programming 4\QBertGameEngine\Minigin\Minigin.cpp(74,8): warning C4189: 'qBertComp': local variable is initialized but not referenced

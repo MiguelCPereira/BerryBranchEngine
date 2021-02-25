@@ -1,5 +1,8 @@
 #pragma once
 #include <iostream>
+#include <memory>
+#include "GameObject.h"
+//#include "LifeComponent.h"
 
 enum class ButtonPress
 {
@@ -12,10 +15,15 @@ enum class ButtonPress
 
 class Command
 {
-	//protected:
-		//GameActor* GetActor() const { return m_Actor; }
+protected:
+	std::shared_ptr<dae::GameObject> GetActor() const { return m_Actor; }
 public:
-	Command(/*GameActor* actor*/)/* : m_Actor(actor)*/ = default;
+	Command() = default;
+	Command(std::shared_ptr<dae::GameObject> actor)
+		: m_PressType(ButtonPress::PressedDown),
+		m_CommandExecuted(false),
+		m_Actor(actor)
+	{}
 	virtual ~Command() = default;
 	virtual void Execute() = 0;
 	void SetButtonPressType(ButtonPress pressType) { m_PressType = pressType; }
@@ -31,30 +39,36 @@ public:
 
 private:
 	ButtonPress m_PressType;
-	bool m_CommandExecuted; // In case we only want to execute one each buttonpress
-	//GameActor* m_Actor;
+	bool m_CommandExecuted; // In case we only want to execute one each button press
+	std::shared_ptr<dae::GameObject> m_Actor;
 };
 
 class FireCommand : public Command
 {
 public:
-	void Execute() override { /*m_Actor->Fire();*/ std::cout << "Firing\n"; }
+	void Execute() override { /*GetActor()->Fire();*/ std::cout << "Firing\n"; }
 };
 
 class DuckCommand : public Command
 {
 public:
-	void Execute() override { /*m_Actor->Duck();*/std::cout << "Ducking\n"; }
+	void Execute() override { /*GetActor()->Duck();*/std::cout << "Ducking\n"; }
 };
 
 class JumpCommand : public Command
 {
 public:
-	void Execute() override { /*m_Actor->Jump();*/std::cout << "Jumping\n"; }
+	void Execute() override { /*GetActor()->Jump();*/std::cout << "Jumping\n"; }
 };
 
 class FartCommand : public Command
 {
 public:
-	void Execute() override { /*m_Actor->Fart();*/std::cout << "Farting\n"; }
+	void Execute() override { /*GetActor()->Fart();*/std::cout << "Farting\n"; }
+};
+
+class DieCommand : public Command
+{
+public:
+	void Execute() override { /*GetActor()->getComponent<dae::QBertLifeComponent>()->GetDamaged(3);*/ std::cout << "Player Died\n"; }
 };

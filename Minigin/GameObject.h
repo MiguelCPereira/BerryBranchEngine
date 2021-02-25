@@ -5,12 +5,6 @@
 
 namespace dae
 {
-	class InputComponent;
-	class PhysicsComponent;
-	class GraphicsComponent;
-	class AudioComponent;
-	class Texture2D;
-	
 	class GameObject final : public SceneObject
 	{
 	public:
@@ -21,7 +15,7 @@ namespace dae
 		void SetPosition(float x, float y);
 
 		GameObject() = default;
-		virtual ~GameObject();
+		~GameObject();
 		
 		GameObject(const GameObject& other)
 			: m_Transform(other.m_Transform),
@@ -83,7 +77,7 @@ namespace dae
 		}
 
 	private:
-		std::vector<BaseComponent*> m_Components;
+		std::vector<BaseComponent*> m_Components{};
 		Transform m_Transform;
 		std::shared_ptr<Texture2D> m_Texture{};
 	};

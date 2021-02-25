@@ -2,6 +2,7 @@
 
 namespace dae
 {
+	class TextObject;
 	class Texture2D;
 	class Transform;
 	class GameObject;
@@ -10,13 +11,8 @@ namespace dae
 	{
 	public:
 		virtual void Update(GameObject& gameObject, Transform& transform, std::shared_ptr<Texture2D> pTexture, const float deltaTime) = 0;
-		BaseComponent() = default;
+		//virtual void Update(TextObject& textObject, const float deltaTime) = 0;
 		virtual ~BaseComponent() = default;
-
-		BaseComponent(const BaseComponent& other) = delete;
-		BaseComponent(BaseComponent&& other) = delete;
-		BaseComponent& operator=(const BaseComponent& other) = delete;
-		BaseComponent& operator=(BaseComponent&& other) = delete;
 	};
 }
 

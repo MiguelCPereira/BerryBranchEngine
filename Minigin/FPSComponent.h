@@ -3,18 +3,18 @@
 
 namespace dae
 {
-	class FPSComponent
+	class FPSComponent /*: public BaseComponent*/
 	{
 	public:
 		FPSComponent() = default;
-		virtual ~FPSComponent() = default;
-		virtual void Update(TextObject& text, const float deltaTime)
+		~FPSComponent() = default;
+		void Update(TextObject& text, const float deltaTime) /*override*/
 		{
 			m_SecCounter += deltaTime;
-			
+
 			m_FpsSumOverSec += int(1.f / deltaTime);
 			m_Frames++;
-			
+
 			if (m_SecCounter >= m_RenderInterval)
 			{
 				const int averageFps = int(m_FpsSumOverSec / m_Frames);

@@ -4,6 +4,8 @@
 
 namespace dae
 {
+	//class BaseComponent;
+	class HPTextComponent;
 	class FPSComponent;
 	class Font;
 	class Texture2D;
@@ -17,8 +19,10 @@ namespace dae
 		void SetPosition(float x, float y);
 
 		explicit TextObject(const std::string& text, const std::shared_ptr<Font>& font);
+		//explicit TextObject(const std::string& text, const std::shared_ptr<Font>& font, BaseComponent* component);
 		explicit TextObject(const std::string& text, const std::shared_ptr<Font>& font, FPSComponent* component);
-		virtual ~TextObject() = default;
+		explicit TextObject(const std::string& text, const std::shared_ptr<Font>& font, HPTextComponent* component);
+		virtual ~TextObject();
 		TextObject(const TextObject& other) = delete;
 		TextObject(TextObject&& other) = delete;
 		TextObject& operator=(const TextObject& other) = delete;
@@ -29,6 +33,9 @@ namespace dae
 		Transform m_Transform;
 		std::shared_ptr<Font> m_Font;
 		std::shared_ptr<Texture2D> m_Texture;
+		//BaseComponent* m_TextComponent;
 		FPSComponent* m_FPSComponent;
+		HPTextComponent* m_HPTextComponent;
+
 	};
 }

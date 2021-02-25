@@ -14,10 +14,5 @@ namespace dae
 			const auto pos = transform.GetPosition();
 			dae::Renderer::GetInstance().RenderTexture(*pTexture, pos.x, pos.y);
 		}
-
-		GraphicsComponent(const GraphicsComponent& other) = delete;
-		GraphicsComponent(GraphicsComponent&& other) = delete;
-		GraphicsComponent& operator=(const GraphicsComponent& other) = delete;
-		GraphicsComponent& operator=(GraphicsComponent&& other) = delete;
 	};
 }

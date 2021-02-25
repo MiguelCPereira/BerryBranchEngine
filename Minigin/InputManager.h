@@ -28,6 +28,23 @@ namespace dae
 		RightShoulder = 0x0200
 	};
 
+	static const ControllerButton AllButtons[] = {
+		ControllerButton::ButtonA,
+		ControllerButton::ButtonB,
+		ControllerButton::ButtonX,
+		ControllerButton::ButtonY,
+		ControllerButton::DPadUp,
+		ControllerButton::DPadDown,
+		ControllerButton::DPadLeft,
+		ControllerButton::DPadRight,
+		ControllerButton::Start,
+		ControllerButton::Select,
+		ControllerButton::LeftThumb,
+		ControllerButton::RightThumb,
+		ControllerButton::LeftShoulder,
+		ControllerButton::RightShoulder
+	};
+
 	using ControllerKey = std::pair <unsigned, ControllerButton>;
 	using ControllerCommandsMap = std::map<ControllerKey, std::unique_ptr<Command>>;
 	using KeyboardCommandsMap = std::map<SDL_Keycode, std::unique_ptr<Command>>;
@@ -39,7 +56,8 @@ namespace dae
 		void AddCommand(SDL_Keycode key, std::unique_ptr<Command> command);
 		bool ProcessInput();
 		bool IsPressed(ControllerButton button) const;
-		bool IsPressed(SDL_Keycode key, bool keyUp) const;
+		void ExecuteButton(ControllerButton button) const;
+		void ExecuteKey(SDL_Keycode key, bool keyUp) const;
 
 	private:
 		XINPUT_STATE m_CurrentControllerState{};

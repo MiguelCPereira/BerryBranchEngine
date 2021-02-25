@@ -1,5 +1,6 @@
 #include "MiniginPCH.h"
 #include "InputManager.h"
+#include <algorithm>
 
 
 bool dae::InputManager::ProcessInput()
@@ -7,20 +8,8 @@ bool dae::InputManager::ProcessInput()
 	ZeroMemory(&m_CurrentControllerState, sizeof(XINPUT_STATE));
 	XInputGetState(m_ControllerNum, &m_CurrentControllerState);
 
-	IsPressed(ControllerButton::ButtonA);
-	IsPressed(ControllerButton::ButtonB);
-	IsPressed(ControllerButton::ButtonY);
-	IsPressed(ControllerButton::ButtonX);
-	IsPressed(ControllerButton::DPadUp);
-	IsPressed(ControllerButton::DPadDown);
-	IsPressed(ControllerButton::DPadLeft);
-	IsPressed(ControllerButton::DPadRight);
-	IsPressed(ControllerButton::LeftThumb);
-	IsPressed(ControllerButton::RightThumb);
-	IsPressed(ControllerButton::LeftShoulder);
-	IsPressed(ControllerButton::RightShoulder);
-	IsPressed(ControllerButton::Start);
-	IsPressed(ControllerButton::Select);
+	for (const auto button : AllButtons)
+		ExecuteButton(button);
 
 	SDL_Event e;
 	while (SDL_PollEvent(&e))
@@ -28,13 +17,13 @@ bool dae::InputManager::ProcessInput()
 		if (e.type == SDL_QUIT)
 			return false;
 		if (e.type == SDL_KEYDOWN)
-			IsPressed(e.key.keysym.sym, false);
+			ExecuteKey(e.key.keysym.sym, false);
 		if (e.type == SDL_KEYUP)
-			IsPressed(e.key.keysym.sym, true);
+			ExecuteKey(e.key.keysym.sym, true);
 		if (e.type == SDL_MOUSEBUTTONDOWN)
-			IsPressed(e.key.keysym.sym, false);
+			ExecuteKey(e.key.keysym.sym, false);
 		if (e.type == SDL_MOUSEBUTTONUP)
-			IsPressed(e.key.keysym.sym, true);
+			ExecuteKey(e.key.keysym.sym, true);
 		if (e.type == SDL_MOUSEMOTION) {
 			// Process Mouse Movement
 		}
@@ -46,11 +35,16 @@ bool dae::InputManager::ProcessInput()
 bool dae::InputManager::IsPressed(ControllerButton button) const
 {
 	const int xInputButton = static_cast<int>(button);
-	auto itr = m_ControllerCommands.find(ControllerKey(m_ControllerNum, button));
+	return m_CurrentControllerState.Gamepad.wButtons & xInputButton;
+}
 
-	if (m_CurrentControllerState.Gamepad.wButtons & xInputButton)
+void dae::InputManager::ExecuteButton(ControllerButton button) const
+{
+	auto itr = m_ControllerCommands.find(ControllerKey(m_ControllerNum, button));
+	
+	if (itr != m_ControllerCommands.end())
 	{
-		if (itr != m_ControllerCommands.end())
+		if (IsPressed(button))
 		{
 			if (itr->second->GetPressType() == ButtonPress::PressedDown && itr->second->GetCommandExecuted() == false)
 			{
@@ -71,37 +65,32 @@ bool dae::InputManager::IsPressed(ControllerButton button) const
 				itr->second->SetCommandExecuted(true); // The "CommandExecuted" bool works inverted on Released, so even though the execution will only happen in the next if statement, we already switch the bool
 			}
 		}
-		return true;
-	}
-
-	if (itr != m_ControllerCommands.end())
-	{
-		if (itr->second->GetPressType() == ButtonPress::Released)
-		{
-			if (itr->second->GetCommandExecuted() == true)
-			{
-				itr->second->Execute();
-				itr->second->SetCommandExecuted(false);
-			}
-		}
 		else
 		{
-			if (itr->second->GetCommandExecuted() == true)
+			if (itr->second->GetPressType() == ButtonPress::Released)
 			{
-				if (itr->second->GetPressType() == ButtonPress::PressedAndReleased)
+				if (itr->second->GetCommandExecuted() == true)
 				{
 					itr->second->Execute();
+					itr->second->SetCommandExecuted(false);
 				}
-
-				itr->second->SetCommandExecuted(false);
+			}
+			else
+			{
+				if (itr->second->GetCommandExecuted() == true)
+				{
+					if (itr->second->GetPressType() == ButtonPress::PressedAndReleased)
+					{
+						itr->second->Execute();
+					}
+					itr->second->SetCommandExecuted(false);
+				}
 			}
 		}
 	}
-
-	return false;
 }
 
-bool dae::InputManager::IsPressed(SDL_Keycode key, bool keyUp) const
+void dae::InputManager::ExecuteKey(SDL_Keycode key, bool keyUp) const
 {
 	auto itr = m_KeyboardCommands.find(key);
 
@@ -152,8 +141,6 @@ bool dae::InputManager::IsPressed(SDL_Keycode key, bool keyUp) const
 			}
 		}
 	}
-
-	return false;
 }
 
 void dae::InputManager::AddCommand(ControllerKey button, std::unique_ptr<Command> command)
