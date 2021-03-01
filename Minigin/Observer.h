@@ -2,14 +2,22 @@
 
 namespace dae
 {
-	class GameObject;
-	class SDL_Event;
+	class BaseComponent;
+
+	enum class Event
+	{
+		ActorDied,
+		PointsIncreased,
+		ColorChange,
+		CoilyDeath,
+		SlickSamCaught
+	};
 
 	class Observer
 	{
 	public:
 		virtual ~Observer() = default;
-		virtual void OnNotify(const GameObject& entity, SDL_Event event) = 0;
+		virtual void OnNotify(BaseComponent& entity, Event event) = 0;
 	};
 }
 

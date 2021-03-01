@@ -12,6 +12,7 @@ namespace dae
 	class TextObject final : public SceneObject
 	{
 	public:
+		void Initialize() override;
 		void Update(const float deltaTime) override;
 		void Render() const override;
 

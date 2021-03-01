@@ -4,7 +4,7 @@
 
 namespace dae
 {
-	class HPTextComponent /*: public BaseComponent*/
+	class HPTextComponent /*: public BaseComponent --- Don't know how to make it a sub-class, as BaseComponent can only handle GameObjects, not TextObjects*/
 	{
 	public:
 		HPTextComponent() = default;

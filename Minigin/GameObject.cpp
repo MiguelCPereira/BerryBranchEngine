@@ -13,6 +13,14 @@ dae::GameObject::~GameObject()
 	}
 }
 
+void dae::GameObject::Initialize()
+{
+	for (BaseComponent* baseComp : m_Components)
+	{
+		baseComp->Initialize();
+	}
+}
+
 void dae::GameObject::Update(const float deltaTime)
 {
 	for (BaseComponent* baseComp : m_Components)

@@ -37,6 +37,8 @@ dae::TextObject::~TextObject()
 	m_HPTextComponent = nullptr;
 }
 
+void dae::TextObject::Initialize() {}
+
 void dae::TextObject::Update(const float deltaTime)
 {
 	SDL_Color color;

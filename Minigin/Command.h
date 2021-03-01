@@ -19,13 +19,9 @@ protected:
 	std::shared_ptr<dae::GameObject> GetActor() const { return m_Actor; }
 public:
 	Command() = default;
-	Command(std::shared_ptr<dae::GameObject> actor)
-		: m_PressType(ButtonPress::PressedDown),
-		m_CommandExecuted(false),
-		m_Actor(actor)
-	{}
 	virtual ~Command() = default;
 	virtual void Execute() = 0;
+	void SetActor(std::shared_ptr<dae::GameObject> actor) { m_Actor = actor; }
 	void SetButtonPressType(ButtonPress pressType) { m_PressType = pressType; }
 	void SetCommandExecuted(bool executed) { m_CommandExecuted = executed; }
 	ButtonPress GetPressType() const { return m_PressType; }

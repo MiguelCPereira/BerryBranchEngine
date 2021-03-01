@@ -3,7 +3,7 @@
 
 namespace dae
 {
-	class FPSComponent /*: public BaseComponent*/
+	class FPSComponent /*: public BaseComponent --- Don't know how to make it a sub-class, as BaseComponent can only handle GameObjects, not TextObjects*/
 	{
 	public:
 		FPSComponent() = default;

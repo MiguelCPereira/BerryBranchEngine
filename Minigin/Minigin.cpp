@@ -74,6 +74,7 @@ void dae::Minigin::LoadGame() const
 	//auto* qBertComp = new QBertLifeComponent(); // I don't understand why this leads to errors
 	//go->AddComponent(qBertComp);
 	auto dieKeyboard = std::make_unique<DieCommand>();
+	dieKeyboard->SetActor(go);
 	dieKeyboard->SetButtonPressType(ButtonPress::PressedDown);
 	InputManager::GetInstance().AddCommand(SDLK_SPACE, std::move(dieKeyboard));
 	scene.Add(go);
@@ -82,6 +83,8 @@ void dae::Minigin::LoadGame() const
 	to = std::make_shared<TextObject>("Remaining Lives: 0", font, HPTextComp);
 	to->SetPosition(238, 140);
 	scene.Add(to);
+
+	scene.Initialize();
 }
 
 void dae::Minigin::Cleanup()
