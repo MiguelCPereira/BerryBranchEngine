@@ -2,10 +2,12 @@
 
 namespace dae
 {
-	class BaseComponent;
+	class TextComponent;
+	class GameObject;
 
 	enum class Event
 	{
+		ActorHPChanged,
 		ActorDied,
 		PointsIncreased,
 		ColorChange,
@@ -17,7 +19,7 @@ namespace dae
 	{
 	public:
 		virtual ~Observer() = default;
-		virtual void OnNotify(BaseComponent& entity, Event event) = 0;
+		virtual void OnNotify(const Event& event) = 0;
 	};
 }
 

@@ -1,15 +1,20 @@
 #pragma once
 #include "BaseComponent.h"
-#include "GameObject.h"
-#include "Transform.h"
 
 namespace dae
 {
 	class PhysicsComponent : public BaseComponent
 	{
 	public:
+		explicit PhysicsComponent() = default;
 		virtual ~PhysicsComponent() = 0;
-		virtual void Update(GameObject& gameObject, Transform& transform, std::shared_ptr<Texture2D> pTexture, const float deltaTime, TextObject textObject) = 0;
+
+		PhysicsComponent(const PhysicsComponent& other) = delete;
+		PhysicsComponent(PhysicsComponent&& other) = delete;
+		PhysicsComponent& operator=(const PhysicsComponent& other) = delete;
+		PhysicsComponent& operator=(PhysicsComponent&& other) = delete;
+		
+		virtual void Update(const float deltaTime) = 0;
 	};
 }
 

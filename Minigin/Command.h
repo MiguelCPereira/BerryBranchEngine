@@ -2,69 +2,70 @@
 #include <iostream>
 #include <memory>
 #include "GameObject.h"
-//#include "LifeComponent.h"
+#include "LifeComponent.h"
 
-enum class ButtonPress
+namespace dae
 {
-	PressedDown,
-	Released,
-	PressedAndReleased,
-	WhilePressed
-};
+	//class GameObject;
+
+	enum class ButtonPress
+	{
+		PressedDown,
+		Released,
+		PressedAndReleased,
+		WhilePressed
+	};
 
 
-class Command
-{
-protected:
-	std::shared_ptr<dae::GameObject> GetActor() const { return m_Actor; }
-public:
-	Command() = default;
-	virtual ~Command() = default;
-	virtual void Execute() = 0;
-	void SetActor(std::shared_ptr<dae::GameObject> actor) { m_Actor = actor; }
-	void SetButtonPressType(ButtonPress pressType) { m_PressType = pressType; }
-	void SetCommandExecuted(bool executed) { m_CommandExecuted = executed; }
-	ButtonPress GetPressType() const { return m_PressType; }
-	bool GetCommandExecuted() const { return m_CommandExecuted; }
-	//virtual void Undo() = 0;
+	class Command
+	{
+	protected:
+		std::shared_ptr<GameObject> GetActor() const { return m_Actor; }
+	public:
+		Command() = default;
+		virtual ~Command() = default;
+		virtual void Execute() = 0;
+		void SetActor(std::shared_ptr<GameObject> actor) { m_Actor = actor; }
+		void SetButtonPressType(ButtonPress pressType) { m_PressType = pressType; }
+		void SetCommandExecuted(bool executed) { m_CommandExecuted = executed; }
+		ButtonPress GetPressType() const { return m_PressType; }
+		bool GetCommandExecuted() const { return m_CommandExecuted; }
 
-	Command(const Command& other) = delete;
-	Command(Command&& other) = delete;
-	Command& operator=(const Command& other) = delete;
-	Command& operator=(Command&& other) = delete;
+		Command(const Command& other) = delete;
+		Command(Command&& other) = delete;
+		Command& operator=(const Command& other) = delete;
+		Command& operator=(Command&& other) = delete;
 
-private:
-	ButtonPress m_PressType;
-	bool m_CommandExecuted; // In case we only want to execute one each button press
-	std::shared_ptr<dae::GameObject> m_Actor;
-};
+	private:
+		ButtonPress m_PressType;
+		bool m_CommandExecuted; // In case we only want to execute one each button press
+		std::shared_ptr<dae::GameObject> m_Actor;
+	};
 
-class FireCommand : public Command
-{
-public:
-	void Execute() override { /*GetActor()->Fire();*/ std::cout << "Firing\n"; }
-};
 
-class DuckCommand : public Command
-{
-public:
-	void Execute() override { /*GetActor()->Duck();*/std::cout << "Ducking\n"; }
-};
 
-class JumpCommand : public Command
-{
-public:
-	void Execute() override { /*GetActor()->Jump();*/std::cout << "Jumping\n"; }
-};
+	
+	class DieCommand final : public Command
+	{
+	public:
+		void Execute() override { GetActor()->GetComponent<LifeComponent>()->GetDamaged(3); }
+	};
+	
+	class FireCommand final : public Command
+	{
+	public:
+		void Execute() override { std::cout << "Firing\n"; }
+	};
 
-class FartCommand : public Command
-{
-public:
-	void Execute() override { /*GetActor()->Fart();*/std::cout << "Farting\n"; }
-};
+	class DuckCommand final : public Command
+	{
+	public:
+		void Execute() override { std::cout << "Ducking\n"; }
+	};
 
-class DieCommand : public Command
-{
-public:
-	void Execute() override { /*GetActor()->getComponent<dae::QBertLifeComponent>()->GetDamaged(3);*/ std::cout << "Player Died\n"; }
-};
+	class JumpCommand final : public Command
+	{
+	public:
+		void Execute() override { std::cout << "Jumping\n"; }
+	};
+}

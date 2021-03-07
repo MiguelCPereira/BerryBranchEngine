@@ -1,7 +1,6 @@
 #include "MiniginPCH.h"
 #include "GameObject.h"
-#include "ResourceManager.h"
-#include "Renderer.h"
+#include "BaseComponent.h"
 
 
 dae::GameObject::~GameObject()
@@ -25,22 +24,24 @@ void dae::GameObject::Update(const float deltaTime)
 {
 	for (BaseComponent* baseComp : m_Components)
 	{
-		baseComp->Update(*this, m_Transform, m_Texture, deltaTime);
+		baseComp->Update(deltaTime);
 	}
 }
 
 void dae::GameObject::Render() const
 {
-	const auto pos = m_Transform.GetPosition();
-	Renderer::GetInstance().RenderTexture(*m_Texture, pos.x, pos.y);
-}
-
-void dae::GameObject::SetTexture(const std::string& filename)
-{
-	m_Texture = ResourceManager::GetInstance().LoadTexture(filename);
+	for (BaseComponent* baseComp : m_Components)
+	{
+		baseComp->Render();
+	}
 }
 
 void dae::GameObject::SetPosition(float x, float y)
 {
 	m_Transform.SetPosition(x, y, 0.0f);
+}
+
+void dae::GameObject::AddComponent(BaseComponent* newComponent)
+{
+	m_Components.push_back(newComponent);
 }

@@ -7,12 +7,15 @@
 #include "Renderer.h"
 #include "ResourceManager.h"
 #include <SDL.h>
-#include "TextObject.h"
 #include "GameObject.h"
 #include "Scene.h"
+
 #include "FPSComponent.h"
-#include "HPTextComponent.h"
+#include "GraphicsComponent.h"
+#include "HPDisplay.h"
 #include "LifeComponent.h"
+#include "TextComponent.h"
+
 
 using namespace std;
 using namespace std::chrono;
@@ -48,41 +51,53 @@ void dae::Minigin::LoadGame() const
 
 	auto& scene = SceneManager::GetInstance().CreateScene("Demo");
 
-	auto go = std::make_shared<GameObject>();
-	go->SetTexture("background.jpg");
-	scene.Add(go);
+	// DAE Background
+	auto gameObject = std::make_shared<GameObject>();
+	gameObject->AddComponent(new GraphicsComponent("background.jpg"));
+	scene.Add(gameObject);
 
-	go = std::make_shared<GameObject>();
-	go->SetTexture("logo.png");
-	go->SetPosition(216, 180);
-	scene.Add(go);
+	// DAE Logo
+	gameObject = std::make_shared<GameObject>();
+	gameObject->AddComponent(new GraphicsComponent("logo.png", 216, 180));
+	scene.Add(gameObject);
 
+	// Engine Title
 	auto font = ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
-	auto to = std::make_shared<TextObject>("Programming 4 Assignment", font);
-	to->SetPosition(80, 20);
-	scene.Add(to);
+	gameObject = std::make_shared<GameObject>();
+	gameObject->AddComponent(new TextComponent("Programming 4 Assignment", font));
+	gameObject->GetComponent<TextComponent>()->SetPosition(80, 20);
+	scene.Add(gameObject);
 
-	auto* FPSComp = new dae::FPSComponent;
+	// FPS Counter
 	font = ResourceManager::GetInstance().LoadFont("Lingua.otf", 19);
-	to = std::make_shared<TextObject>("00 FPS", font, FPSComp);
-	to->SetPosition(5, 5);
-	scene.Add(to);
-	
-	go = std::make_shared<GameObject>();
-	go->SetTexture("qBert.png");
-	go->SetPosition(250, 270);
-	//auto* qBertComp = new QBertLifeComponent(); // I don't understand why this leads to errors
-	//go->AddComponent(qBertComp);
+	gameObject = std::make_shared<GameObject>();
+	gameObject->AddComponent(new FPSComponent(gameObject));
+	gameObject->AddComponent(new TextComponent("00 FPS", font, 255,255,0));
+	gameObject->GetComponent<TextComponent>()->SetPosition(5, 5);
+	scene.Add(gameObject);
+
+	// QBert
+	gameObject = std::make_shared<GameObject>();
+	gameObject->AddComponent(new GraphicsComponent("qBert.png", 250, 270));
+	gameObject->AddComponent(new LifeComponent(3));
+	scene.Add(gameObject);
+
+	// HP Display
+	gameObject->GetComponent<LifeComponent>()->GetSubject()->AddObserver(make_shared<HPDisplay>(gameObject->GetComponent<TextComponent>()));
+	int startingHP = gameObject->GetComponent<LifeComponent>()->GetHP();
+	std::string string = "Remaining Lives: ";
+	string.append(std::to_string(startingHP));
+	gameObject = std::make_shared<GameObject>();
+	font = ResourceManager::GetInstance().LoadFont("Lingua.otf", 25);
+	gameObject->AddComponent(new TextComponent(string, font));
+	gameObject->GetComponent<TextComponent>()->SetPosition(215, 140);
+	scene.Add(gameObject);
+
+	// Input
 	auto dieKeyboard = std::make_unique<DieCommand>();
-	dieKeyboard->SetActor(go);
+	dieKeyboard->SetActor(gameObject);
 	dieKeyboard->SetButtonPressType(ButtonPress::PressedDown);
 	InputManager::GetInstance().AddCommand(SDLK_SPACE, std::move(dieKeyboard));
-	scene.Add(go);
-
-	auto* HPTextComp = new dae::HPTextComponent;
-	to = std::make_shared<TextObject>("Remaining Lives: 0", font, HPTextComp);
-	to->SetPosition(238, 140);
-	scene.Add(to);
 
 	scene.Initialize();
 }

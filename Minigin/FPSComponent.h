@@ -1,32 +1,18 @@
 #pragma once
-#include "TextObject.h"
+#include "BaseComponent.h"
 
 namespace dae
 {
-	class FPSComponent /*: public BaseComponent --- Don't know how to make it a sub-class, as BaseComponent can only handle GameObjects, not TextObjects*/
+	class TextComponent;
+	
+	class FPSComponent final : public BaseComponent
 	{
 	public:
-		FPSComponent() = default;
+		FPSComponent(std::shared_ptr<GameObject> ownerObject);
 		~FPSComponent() = default;
-		void Update(TextObject& text, const float deltaTime) /*override*/
-		{
-			m_SecCounter += deltaTime;
-
-			m_FpsSumOverSec += int(1.f / deltaTime);
-			m_Frames++;
-
-			if (m_SecCounter >= m_RenderInterval)
-			{
-				const int averageFps = int(m_FpsSumOverSec / m_Frames);
-				m_FpsSumOverSec = 0.f;
-				m_Frames = 0;
-				std::string string = std::to_string(averageFps);
-				string.append(" FPS");
-				text.SetText(string);
-
-				m_SecCounter -= m_RenderInterval;
-			}
-		}
+		
+		void Initialize() override;
+		void Update(const float deltaTime) override;
 
 		FPSComponent(const FPSComponent& other) = delete;
 		FPSComponent(FPSComponent&& other) = delete;
@@ -34,6 +20,8 @@ namespace dae
 		FPSComponent& operator=(FPSComponent&& other) = delete;
 
 	private:
+		std::shared_ptr<GameObject> m_GameObject;
+		TextComponent* m_Text = nullptr;
 		float m_SecCounter = 1.0f;
 		float m_RenderInterval = 1.0f;
 		float m_FpsSumOverSec = 0.f;
