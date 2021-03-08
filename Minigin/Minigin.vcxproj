@@ -212,10 +212,13 @@ xcopy "$(SolutionDir)3rdParty\SDL2_ttf\lib\x64\*.dll" "$(OutputPath)" /R /Y</Com
     <ClInclude Include="InputComponent.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="LifeComponent.h" />
+    <ClInclude Include="LivesDisplayComponent.h" />
     <ClInclude Include="Minigin.h" />
     <ClInclude Include="MiniginPCH.h" />
     <ClInclude Include="Observer.h" />
     <ClInclude Include="PhysicsComponent.h" />
+    <ClInclude Include="PointsDisplayComponent.h" />
+    <ClInclude Include="QBertComponent.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="Scene.h" />
@@ -280,6 +283,7 @@ xcopy "$(SolutionDir)3rdParty\SDL2_ttf\lib\x64\*.dll" "$(OutputPath)" /R /Y</Com
     <ClCompile Include="InputComponent.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="LifeComponent.cpp" />
+    <ClCompile Include="LivesDisplayComponent.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Minigin.cpp" />
     <ClCompile Include="MiniginPCH.cpp">
@@ -291,6 +295,8 @@ xcopy "$(SolutionDir)3rdParty\SDL2_ttf\lib\x64\*.dll" "$(OutputPath)" /R /Y</Com
     </ClCompile>
     <ClCompile Include="Observer.cpp" />
     <ClCompile Include="PhysicsComponent.cpp" />
+    <ClCompile Include="PointsDisplayComponent.cpp" />
+    <ClCompile Include="QBertComponent.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="Scene.cpp" />

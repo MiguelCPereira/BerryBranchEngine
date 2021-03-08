@@ -14,15 +14,15 @@ void dae::HPDisplay::OnNotify(const Event& event)
 	
 	switch (event)
 	{
-	case Event::ActorHPChanged:
+	case Event::ActorHPChange:
 		actorHP = 8; // Need to change this for the actor real HP
 		string.append(std::to_string(actorHP));
 		//m_TextComponent->SetText(string);
 		break;
-	case Event::ActorDied:
+	case Event::ActorDeath:
 		//m_TextComponent->SetText("Actor Died");
 		break;
-	case Event::PointsIncreased:
+	case Event::PointsIncrease:
 		std::cout << "Points increased by 1\n";
 	}
 }

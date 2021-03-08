@@ -2,7 +2,7 @@
 #include <iostream>
 #include <memory>
 #include "GameObject.h"
-#include "LifeComponent.h"
+#include "QBertComponent.h"
 
 namespace dae
 {
@@ -48,7 +48,19 @@ namespace dae
 	class DieCommand final : public Command
 	{
 	public:
-		void Execute() override { GetActor()->GetComponent<LifeComponent>()->GetDamaged(3); }
+		void Execute() override { GetActor()->GetComponent<QBertComponent>()->Die(); }
+	};
+
+	class ColorChangeCommand final : public Command
+	{
+	public:
+		void Execute() override { GetActor()->GetComponent<QBertComponent>()->ChangeColor(); }
+	};
+
+	class TileChangeCommand final : public Command
+	{
+	public:
+		void Execute() override { GetActor()->GetComponent<QBertComponent>()->ChangeTile(); }
 	};
 	
 	class FireCommand final : public Command

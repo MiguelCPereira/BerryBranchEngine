@@ -22,6 +22,12 @@
     <Filter Include="Imgui">
       <UniqueIdentifier>{e0d6efc1-2f6e-4527-81db-ee8fa7389662}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Observers">
+      <UniqueIdentifier>{7920d688-fce3-4201-b67d-4ccd73c25417}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Observers">
+      <UniqueIdentifier>{47242578-e57e-4cb3-b9e1-920fe39acd28}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MiniginPCH.h">
@@ -102,23 +108,32 @@
     <ClInclude Include="Command.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Observer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="FPSComponent.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
     <ClInclude Include="LifeComponent.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
-    <ClInclude Include="Subject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="TextComponent.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
+    <ClInclude Include="QBertComponent.h">
+      <Filter>Header Files\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Observer.h">
+      <Filter>Header Files\Observers</Filter>
+    </ClInclude>
     <ClInclude Include="HPDisplay.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Observers</Filter>
+    </ClInclude>
+    <ClInclude Include="PointsDisplayComponent.h">
+      <Filter>Header Files\Observers</Filter>
+    </ClInclude>
+    <ClInclude Include="LivesDisplayComponent.h">
+      <Filter>Header Files\Observers</Filter>
+    </ClInclude>
+    <ClInclude Include="Subject.h">
+      <Filter>Header Files\Observers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -197,23 +212,32 @@
     <ClCompile Include="Command.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Observer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="FPSComponent.cpp">
       <Filter>Source Files\Components</Filter>
     </ClCompile>
     <ClCompile Include="LifeComponent.cpp">
       <Filter>Source Files\Components</Filter>
     </ClCompile>
-    <ClCompile Include="Subject.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="TextComponent.cpp">
       <Filter>Source Files\Components</Filter>
     </ClCompile>
+    <ClCompile Include="QBertComponent.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Observer.cpp">
+      <Filter>Source Files\Observers</Filter>
+    </ClCompile>
+    <ClCompile Include="LivesDisplayComponent.cpp">
+      <Filter>Source Files\Observers</Filter>
+    </ClCompile>
+    <ClCompile Include="PointsDisplayComponent.cpp">
+      <Filter>Source Files\Observers</Filter>
+    </ClCompile>
     <ClCompile Include="HPDisplay.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Observers</Filter>
+    </ClCompile>
+    <ClCompile Include="Subject.cpp">
+      <Filter>Source Files\Observers</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

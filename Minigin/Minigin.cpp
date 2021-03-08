@@ -14,6 +14,9 @@
 #include "GraphicsComponent.h"
 #include "HPDisplay.h"
 #include "LifeComponent.h"
+#include "LivesDisplayComponent.h"
+#include "PointsDisplayComponent.h"
+#include "QBertComponent.h"
 #include "TextComponent.h"
 
 
@@ -56,11 +59,13 @@ void dae::Minigin::LoadGame() const
 	gameObject->AddComponent(new GraphicsComponent("background.jpg"));
 	scene.Add(gameObject);
 
+	
 	// DAE Logo
 	gameObject = std::make_shared<GameObject>();
 	gameObject->AddComponent(new GraphicsComponent("logo.png", 216, 180));
 	scene.Add(gameObject);
 
+	
 	// Engine Title
 	auto font = ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
 	gameObject = std::make_shared<GameObject>();
@@ -68,37 +73,95 @@ void dae::Minigin::LoadGame() const
 	gameObject->GetComponent<TextComponent>()->SetPosition(80, 20);
 	scene.Add(gameObject);
 
+	
 	// FPS Counter
 	font = ResourceManager::GetInstance().LoadFont("Lingua.otf", 19);
 	gameObject = std::make_shared<GameObject>();
 	gameObject->AddComponent(new FPSComponent(gameObject));
-	gameObject->AddComponent(new TextComponent("00 FPS", font, 255,255,0));
+	gameObject->AddComponent(new TextComponent("FAIL FPS", font, 255,255,0));
 	gameObject->GetComponent<TextComponent>()->SetPosition(5, 5);
 	scene.Add(gameObject);
 
+
 	// QBert
-	gameObject = std::make_shared<GameObject>();
-	gameObject->AddComponent(new GraphicsComponent("qBert.png", 250, 270));
-	gameObject->AddComponent(new LifeComponent(3));
-	scene.Add(gameObject);
+	auto qBertGameObject = std::make_shared<GameObject>();
+	qBertGameObject->AddComponent(new QBertComponent(qBertGameObject));
+	qBertGameObject->AddComponent(new GraphicsComponent("qBert.png", 50, 270));
+	scene.Add(qBertGameObject);
 
-	// HP Display
-	gameObject->GetComponent<LifeComponent>()->GetSubject()->AddObserver(make_shared<HPDisplay>(gameObject->GetComponent<TextComponent>()));
-	int startingHP = gameObject->GetComponent<LifeComponent>()->GetHP();
-	std::string string = "Remaining Lives: ";
-	string.append(std::to_string(startingHP));
-	gameObject = std::make_shared<GameObject>();
-	font = ResourceManager::GetInstance().LoadFont("Lingua.otf", 25);
-	gameObject->AddComponent(new TextComponent(string, font));
-	gameObject->GetComponent<TextComponent>()->SetPosition(215, 140);
-	scene.Add(gameObject);
-
+	
 	// Input
 	auto dieKeyboard = std::make_unique<DieCommand>();
-	dieKeyboard->SetActor(gameObject);
+	dieKeyboard->SetActor(qBertGameObject);
 	dieKeyboard->SetButtonPressType(ButtonPress::PressedDown);
-	InputManager::GetInstance().AddCommand(SDLK_SPACE, std::move(dieKeyboard));
+	InputManager::GetInstance().AddCommand(SDLK_q, std::move(dieKeyboard));
 
+	auto colorChangeKeyboard = std::make_unique<ColorChangeCommand>();
+	colorChangeKeyboard->SetActor(qBertGameObject);
+	colorChangeKeyboard->SetButtonPressType(ButtonPress::PressedDown);
+	InputManager::GetInstance().AddCommand(SDLK_w, std::move(colorChangeKeyboard));
+
+	auto tileChangeKeyboard = std::make_unique<TileChangeCommand>();
+	tileChangeKeyboard->SetActor(qBertGameObject);
+	tileChangeKeyboard->SetButtonPressType(ButtonPress::PressedDown);
+	InputManager::GetInstance().AddCommand(SDLK_e, std::move(tileChangeKeyboard));
+
+	
+	// Lives Displays
+	font = ResourceManager::GetInstance().LoadFont("Lingua.otf", 25);
+	gameObject = std::make_shared<GameObject>();
+	gameObject->AddComponent(new TextComponent("Remaining Lives: FAIL", font));
+	gameObject->GetComponent<TextComponent>()->SetPosition(13, 140);
+	gameObject->AddComponent(new LivesDisplayComponent(gameObject, qBertGameObject->GetComponent<QBertComponent>()));
+	scene.Add(gameObject);
+
+	
+	// Points Displays
+	font = ResourceManager::GetInstance().LoadFont("Lingua.otf", 25);
+	gameObject = std::make_shared<GameObject>();
+	gameObject->AddComponent(new TextComponent("Points: FAIL", font));
+	gameObject->GetComponent<TextComponent>()->SetPosition(70, 180);
+	gameObject->AddComponent(new PointsDisplayComponent(gameObject, qBertGameObject->GetComponent<QBertComponent>()));
+	scene.Add(gameObject);
+
+
+
+
+	
+	// 2nd QBert
+	auto qBertGameObject2 = std::make_shared<GameObject>();
+	qBertGameObject2->AddComponent(new QBertComponent(qBertGameObject2));
+	qBertGameObject2->AddComponent(new GraphicsComponent("qBert.png", 445, 270));
+	scene.Add(qBertGameObject2);
+	
+	auto dieKeyboard2 = std::make_unique<DieCommand>();
+	dieKeyboard2->SetActor(qBertGameObject2);
+	dieKeyboard2->SetButtonPressType(ButtonPress::PressedDown);
+	InputManager::GetInstance().AddCommand(SDLK_i, std::move(dieKeyboard2));
+	auto colorChangeKeyboard2 = std::make_unique<ColorChangeCommand>();
+	colorChangeKeyboard2->SetActor(qBertGameObject2);
+	colorChangeKeyboard2->SetButtonPressType(ButtonPress::PressedDown);
+	InputManager::GetInstance().AddCommand(SDLK_o, std::move(colorChangeKeyboard2));
+	auto tileChangeKeyboard2 = std::make_unique<TileChangeCommand>();
+	tileChangeKeyboard2->SetActor(qBertGameObject2);
+	tileChangeKeyboard2->SetButtonPressType(ButtonPress::PressedDown);
+	InputManager::GetInstance().AddCommand(SDLK_p, std::move(tileChangeKeyboard2));
+
+	font = ResourceManager::GetInstance().LoadFont("Lingua.otf", 25);
+	gameObject = std::make_shared<GameObject>();
+	gameObject->AddComponent(new TextComponent("Remaining Lives: FAIL", font));
+	gameObject->GetComponent<TextComponent>()->SetPosition(408, 140);
+	gameObject->AddComponent(new LivesDisplayComponent(gameObject, qBertGameObject2->GetComponent<QBertComponent>()));
+	scene.Add(gameObject);
+
+	font = ResourceManager::GetInstance().LoadFont("Lingua.otf", 25);
+	gameObject = std::make_shared<GameObject>();
+	gameObject->AddComponent(new TextComponent("Points: FAIL", font));
+	gameObject->GetComponent<TextComponent>()->SetPosition(465, 180);
+	gameObject->AddComponent(new PointsDisplayComponent(gameObject, qBertGameObject2->GetComponent<QBertComponent>()));
+	scene.Add(gameObject);
+
+	
 	scene.Initialize();
 }
 

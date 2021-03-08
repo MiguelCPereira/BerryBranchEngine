@@ -7,9 +7,10 @@ namespace dae
 
 	enum class Event
 	{
-		ActorHPChanged,
-		ActorDied,
-		PointsIncreased,
+		ActorHPChange,
+		ActorDeath,
+		PointsIncrease,
+		TileChange,
 		ColorChange,
 		CoilyDeath,
 		SlickSamCaught

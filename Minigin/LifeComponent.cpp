@@ -23,13 +23,13 @@ void dae::LifeComponent::GetDamaged(int damageAmount)
 		if (m_Health - damageAmount > 0)
 		{
 			m_Health -= damageAmount;
-			m_Subject->Notify(Event::ActorHPChanged);
+			m_Subject->Notify(Event::ActorHPChange);
 		}
 		else
 		{
 			m_Health = 0;
 			m_Alive = false;
-			m_Subject->Notify(Event::ActorDied);
+			m_Subject->Notify(Event::ActorDeath);
 		}
 	}
 }
