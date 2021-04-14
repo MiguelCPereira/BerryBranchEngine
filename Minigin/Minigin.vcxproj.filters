@@ -135,6 +135,9 @@
     <ClInclude Include="Subject.h">
       <Filter>Header Files\Observers</Filter>
     </ClInclude>
+    <ClInclude Include="MiniginLibType.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MiniginPCH.cpp">

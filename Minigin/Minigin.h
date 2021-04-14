@@ -1,8 +1,11 @@
 #pragma once
+#include "MiniginLibType.h"
+
+
 struct SDL_Window;
 namespace dae
 {
-	class Minigin
+	class MINIGIN_ENTRY Minigin
 	{
 	public:
 		void Initialize();

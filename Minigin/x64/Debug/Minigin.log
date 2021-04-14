@@ -1,14 +1,35 @@
-﻿  Minigin.cpp
-  Minigin.vcxproj -> D:\Trabalho\DAE\2nd Year\2nd Semester\Programming 4\QBertGameEngine\x64\Debug\Minigin.exe
-  D:\Trabalho\DAE\2nd Year\2nd Semester\Programming 4\QBertGameEngine\3rdParty\SDL2\lib\x64\SDL2.dll
-  1 File(s) copied
-  D:\Trabalho\DAE\2nd Year\2nd Semester\Programming 4\QBertGameEngine\3rdParty\SDL2_image\lib\x64\libjpeg-9.dll
-  D:\Trabalho\DAE\2nd Year\2nd Semester\Programming 4\QBertGameEngine\3rdParty\SDL2_image\lib\x64\libpng16-16.dll
-  D:\Trabalho\DAE\2nd Year\2nd Semester\Programming 4\QBertGameEngine\3rdParty\SDL2_image\lib\x64\libtiff-5.dll
-  D:\Trabalho\DAE\2nd Year\2nd Semester\Programming 4\QBertGameEngine\3rdParty\SDL2_image\lib\x64\libwebp-7.dll
-  D:\Trabalho\DAE\2nd Year\2nd Semester\Programming 4\QBertGameEngine\3rdParty\SDL2_image\lib\x64\SDL2_image.dll
-  D:\Trabalho\DAE\2nd Year\2nd Semester\Programming 4\QBertGameEngine\3rdParty\SDL2_image\lib\x64\zlib1.dll
-  6 File(s) copied
-  D:\Trabalho\DAE\2nd Year\2nd Semester\Programming 4\QBertGameEngine\3rdParty\SDL2_ttf\lib\x64\libfreetype-6.dll
-  D:\Trabalho\DAE\2nd Year\2nd Semester\Programming 4\QBertGameEngine\3rdParty\SDL2_ttf\lib\x64\SDL2_ttf.dll
-  2 File(s) copied
+﻿  MiniginPCH.cpp
+  AudioComponent.cpp
+  BaseComponent.cpp
+  Command.cpp
+  FPSComponent.cpp
+  Font.cpp
+  GameObject.cpp
+  GraphicsComponent.cpp
+  HPDisplay.cpp
+  InputComponent.cpp
+  InputManager.cpp
+  LifeComponent.cpp
+  LivesDisplayComponent.cpp
+  Main.cpp
+  Minigin.cpp
+  Observer.cpp
+  PhysicsComponent.cpp
+  PointsDisplayComponent.cpp
+  QBertComponent.cpp
+  Renderer.cpp
+  ResourceManager.cpp
+  Generating Code...
+  Compiling...
+  Scene.cpp
+  SceneManager.cpp
+  Subject.cpp
+  TextComponent.cpp
+  Texture2D.cpp
+  Transform.cpp
+  Generating Code...
+SDL2.lib(SDL2.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR already defined in opengl32.lib(OPENGL32.dll); second definition ignored
+SDL2_image.lib(SDL2_image.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR already defined in opengl32.lib(OPENGL32.dll); second definition ignored
+SDL2_ttf.lib(SDL2_ttf.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR already defined in opengl32.lib(OPENGL32.dll); second definition ignored
+xinput.lib(XINPUT1_4.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR already defined in opengl32.lib(OPENGL32.dll); second definition ignored
+  Minigin.vcxproj -> D:\Trabalho\DAE\2nd Year\2nd Semester\Programming 4\QBertGameEngine\x64\Debug\Minigin.lib

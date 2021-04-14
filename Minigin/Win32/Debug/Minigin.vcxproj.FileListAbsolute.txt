@@ -1,0 +1,2 @@
+D:\Trabalho\DAE\2nd Year\2nd Semester\Programming 4\QBertGameEngine\Win32\Debug\Minigin.pdb
+D:\Trabalho\DAE\2nd Year\2nd Semester\Programming 4\QBertGameEngine\Minigin\Win32\Debug\Minigin.pdb
