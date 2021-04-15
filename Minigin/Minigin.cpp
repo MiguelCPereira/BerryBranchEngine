@@ -1,23 +1,26 @@
 #include "MiniginPCH.h"
 #include "Minigin.h"
 #include <chrono>
-#include <thread>
 #include "InputManager.h"
 #include "SceneManager.h"
 #include "Renderer.h"
 #include "ResourceManager.h"
 #include <SDL.h>
+
+#include "audio.h"
 #include "GameObject.h"
 #include "Scene.h"
 
 #include "FPSComponent.h"
 #include "GraphicsComponent.h"
-#include "HPDisplay.h"
-#include "LifeComponent.h"
 #include "LivesDisplayComponent.h"
 #include "PointsDisplayComponent.h"
 #include "QBertComponent.h"
+#include "SDLSoundSystem.h"
 #include "TextComponent.h"
+
+#include "SoundServiceLocator.h"
+#include "LoggingSoundSystem.h"
 
 
 using namespace std;
@@ -44,12 +47,17 @@ void dae::Minigin::Initialize()
 	}
 
 	Renderer::GetInstance().Init(m_Window);
+
+	// Initialize SDL
+	_putenv("SDL_AUDIODRIVER=DirectSound");
+	SDL_Init(SDL_INIT_AUDIO);
+	initAudio();
 }
 
 /**
  * Code constructing the scene world starts here
  */
-void dae::Minigin::LoadGame() const
+void dae::Minigin::LoadGame() const 
 {
 
 	auto& scene = SceneManager::GetInstance().CreateScene("Demo");
@@ -88,7 +96,7 @@ void dae::Minigin::LoadGame() const
 	qBertGameObject->AddComponent(new QBertComponent(qBertGameObject));
 	qBertGameObject->AddComponent(new GraphicsComponent("qBert.png", 50, 270));
 	scene.Add(qBertGameObject);
-
+	
 	
 	// Input
 	auto dieKeyboard = std::make_unique<DieCommand>();
@@ -105,6 +113,11 @@ void dae::Minigin::LoadGame() const
 	tileChangeKeyboard->SetActor(qBertGameObject);
 	tileChangeKeyboard->SetButtonPressType(ButtonPress::PressedDown);
 	InputManager::GetInstance().AddCommand(SDLK_e, std::move(tileChangeKeyboard));
+
+	auto playSoundKeyboard = std::make_unique<PlaySoundCommand>(&SoundServiceLocator::GetSoundSystem());
+	playSoundKeyboard->SetActor(qBertGameObject);
+	playSoundKeyboard->SetButtonPressType(ButtonPress::PressedDown);
+	InputManager::GetInstance().AddCommand(SDLK_SPACE, std::move(playSoundKeyboard));
 
 	
 	// Lives Displays
@@ -123,9 +136,6 @@ void dae::Minigin::LoadGame() const
 	gameObject->GetComponent<TextComponent>()->SetPosition(70, 180);
 	gameObject->AddComponent(new PointsDisplayComponent(gameObject, qBertGameObject->GetComponent<QBertComponent>()));
 	scene.Add(gameObject);
-
-
-
 
 	
 	// 2nd QBert
@@ -161,6 +171,17 @@ void dae::Minigin::LoadGame() const
 	gameObject->AddComponent(new PointsDisplayComponent(gameObject, qBertGameObject2->GetComponent<QBertComponent>()));
 	scene.Add(gameObject);
 
+
+	// Instructions
+	std::cout << "Controls:\n";
+	std::cout << "\n";
+	std::cout << "   Q   | Kill 1st QBert\n";
+	std::cout << "   W   | Change Color of 1st QBert (gain 10 points)\n";
+	std::cout << "   E   | Change Tile of 1st QBert (gain 25 points)\n";
+	std::cout << "   I   | Kill 2nd QBert\n";
+	std::cout << "   O   | Change Color of 2nd QBert (gain 10 points)\n";
+	std::cout << "   P   | Change Tile of 2nd QBert (gain 25 points)\n";
+	std::cout << " SPACE | Make a jump sound\n\n";
 	
 	scene.Initialize();
 }
@@ -176,6 +197,11 @@ void dae::Minigin::Cleanup()
 void dae::Minigin::Run()
 {
 	Initialize();
+
+	// Initialize Sound System
+	const auto soundSystem = new SDLSoundSystem();
+	const auto loggingSystem = new LoggingSoundSystem(soundSystem);
+	SoundServiceLocator::RegisterSoundSystem(loggingSystem);
 
 	// tell the resource manager where he can find the game data
 	ResourceManager::GetInstance().Init("../Data/");
@@ -222,5 +248,7 @@ void dae::Minigin::Run()
 		//}
 	}
 
+	delete soundSystem;
+	delete loggingSystem;
 	Cleanup();
 }

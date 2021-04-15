@@ -3,11 +3,10 @@
 #include <memory>
 #include "GameObject.h"
 #include "QBertComponent.h"
+#include "SoundSystem.h"
 
 namespace dae
 {
-	//class GameObject;
-
 	enum class ButtonPress
 	{
 		PressedDown,
@@ -62,6 +61,16 @@ namespace dae
 	public:
 		void Execute() override { GetActor()->GetComponent<QBertComponent>()->ChangeTile(); }
 	};
+
+	class PlaySoundCommand final : public Command
+	{
+	public:
+		PlaySoundCommand(SoundSystem* soundSystem) : m_SoundSystem{ soundSystem } {}
+		void Execute() override { m_SoundSystem->Play("../Data/Sounds/jump-2.wav", 0.5f); }
+	private:
+		SoundSystem* m_SoundSystem;
+	};
+	
 	
 	class FireCommand final : public Command
 	{
