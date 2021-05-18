@@ -52,6 +52,14 @@ void dae::Minigin::Initialize()
 	_putenv("SDL_AUDIODRIVER=DirectSound");
 	SDL_Init(SDL_INIT_AUDIO);
 	initAudio();
+
+	// Initialize Sound System
+	const auto soundSystem = new SDLSoundSystem();
+	const auto loggingSystem = new LoggingSoundSystem(soundSystem);
+	SoundServiceLocator::RegisterSoundSystem(loggingSystem);
+
+	// Tell the resource manager where he can find the game data
+	ResourceManager::GetInstance().Init("../Data/");
 }
 
 /**
@@ -187,7 +195,9 @@ void dae::Minigin::LoadGame() const
 }
 
 void dae::Minigin::Cleanup()
-{	
+{
+	//delete soundSystem;
+	//delete loggingSystem;
 	Renderer::GetInstance().Destroy();
 	SDL_DestroyWindow(m_Window);
 	m_Window = nullptr;
@@ -196,17 +206,8 @@ void dae::Minigin::Cleanup()
 
 void dae::Minigin::Run()
 {
-	Initialize();
-
-	// Initialize Sound System
-	const auto soundSystem = new SDLSoundSystem();
-	const auto loggingSystem = new LoggingSoundSystem(soundSystem);
-	SoundServiceLocator::RegisterSoundSystem(loggingSystem);
-
-	// tell the resource manager where he can find the game data
-	ResourceManager::GetInstance().Init("../Data/");
-
-	LoadGame();
+	//Initialize();
+	//LoadGame(); // AKA, Minigin Demo
 
 	{
 		auto& renderer = Renderer::GetInstance();
@@ -248,7 +249,5 @@ void dae::Minigin::Run()
 		//}
 	}
 
-	delete soundSystem;
-	delete loggingSystem;
 	Cleanup();
 }

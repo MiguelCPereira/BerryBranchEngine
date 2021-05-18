@@ -1,11 +1,5 @@
 #include "MiniginPCH.h"
 #include "QBertComponent.h"
-#include "Observer.h"
-#include "ResourceManager.h"
-#include "LivesDisplayComponent.h"
-#include "PointsDisplayComponent.h"
-#include "TextComponent.h"
-#include "GameObject.h"
 
 dae::QBertComponent::QBertComponent(const std::shared_ptr<GameObject>& gameObject)
 	: m_GameObject(gameObject)

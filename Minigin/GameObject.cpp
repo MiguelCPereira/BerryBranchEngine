@@ -1,6 +1,7 @@
 #include "MiniginPCH.h"
 #include "GameObject.h"
 #include "BaseComponent.h"
+#include "Transform.h"
 
 
 dae::GameObject::~GameObject()
@@ -10,6 +11,9 @@ dae::GameObject::~GameObject()
 		delete baseComp;
 		baseComp = nullptr;
 	}
+	
+	delete m_Transform;
+	m_Transform = nullptr;
 }
 
 void dae::GameObject::Initialize()
@@ -38,7 +42,7 @@ void dae::GameObject::Render() const
 
 void dae::GameObject::SetPosition(float x, float y)
 {
-	m_Transform.SetPosition(x, y, 0.0f);
+	m_Transform->SetPosition(x, y, 0.0f);
 }
 
 void dae::GameObject::AddComponent(BaseComponent* newComponent)

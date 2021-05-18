@@ -1,5 +1,6 @@
 #pragma once
 #include "BaseComponent.h"
+#include <string>
 
 namespace dae
 {
@@ -22,6 +23,11 @@ namespace dae
 		void SetPosition(float x, float y);
 		void SetSize(float width, float height);
 		void SetTexture(const std::string& imageFile);
+
+		float GetPosX() { return m_PosX; }
+		float GetPosY() { return m_PosY; }
+		float GetWidth() { return m_Width; }
+		float GetHeight() { return m_Height; }
 
 	private:
 		std::shared_ptr<Texture2D> m_Texture;

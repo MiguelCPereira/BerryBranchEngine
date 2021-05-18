@@ -1,20 +1,19 @@
 #include "Pyramid.h"
 
+#include "GraphicsComponent.h"
+#include "GameObject.h"
+
 Pyramid::Pyramid(float posX, float posY)
 	: m_PosX{ posX }
 	, m_PosY{ posY }
 	, m_TotalCubes{ 28 }
 
 {
-	CreateCubes();
-}
-
-Pyramid::~Pyramid()
-{
+	FillCubesGOVector();
 }
 
 
-void Pyramid::CreateCubes()
+void Pyramid::FillCubesGOVector()
 {
 	float tempPosX = m_PosX;
 	float tempPosY = m_PosY;
@@ -23,26 +22,25 @@ void Pyramid::CreateCubes()
 
 	for (int i = 0; i < m_TotalCubes; i++)
 	{
-		auto* newCube = new Cube(tempPosX, tempPosY);
-		m_CubeVector.push_back(newCube);
+		auto newCubeGO = std::make_shared<dae::GameObject>();
+		newCubeGO->AddComponent(new Cube(newCubeGO));
+		newCubeGO->AddComponent(new dae::GraphicsComponent("Cube Blue.png", tempPosX, tempPosY, 56, 56));
+		
+		m_CubeGOVector.push_back(newCubeGO);
 		cubesInRow++;
 
-		// If all the cubes in said row have been created, skip to the next one (and set the starting position for the next row's first cube)
+		auto cubeGraphicsComp = newCubeGO->GetComponent<dae::GraphicsComponent>();
+		tempPosX += cubeGraphicsComp->GetWidth();
+
+		// If all the cubes in said row have been created
+		// Skip to the next one (and set the starting position for the next row's first cube)
 		if (cubesInRow >= nrRow)
 		{
-			tempPosY -= newCube->GetSpriteHeight();
-			tempPosX = m_PosX - (newCube->GetSpriteWeight() / 2 * nrRow);
+			tempPosY += cubeGraphicsComp->GetHeight() * 0.75f;
+			tempPosX = m_PosX - (cubeGraphicsComp->GetWidth() / 2 * nrRow);
 			cubesInRow = 0;
 			nrRow++;
 		}
-	}
-}
-
-void Pyramid::Draw()
-{
-	for( auto* cube : m_CubeVector)
-	{
-		cube->Draw();
 	}
 }
 

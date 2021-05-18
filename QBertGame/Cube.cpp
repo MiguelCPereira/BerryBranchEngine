@@ -1,29 +1,20 @@
 #include "Cube.h"
 
-Cube::Cube(float posX, float posY)
-	: m_SpriteHeight{ }
-	, m_SpriteWeight{ }
-	, m_PosX{ posX }
-	, m_PosY{ posY }
+#include "QBertComponent.h"
+
+Cube::Cube(const std::shared_ptr<dae::GameObject>& gameObject)
+	: m_GameObject(gameObject)
+	, m_Turned(false)
 
 {
 }
 
-Cube::~Cube()
+void Cube::InvertTurned()
 {
+	m_Turned = !m_Turned;
+	m_Subject->Notify(dae::Event::ColorChange);
 }
 
-
-void Cube::Draw() const
+void Cube::Update(const float)
 {
-}
-
-float Cube::GetSpriteHeight() const
-{
-	return m_SpriteHeight;
-}
-
-float Cube::GetSpriteWeight() const
-{
-	return m_SpriteWeight;
 }

@@ -6,6 +6,7 @@
 #include "Renderer.h"
 #include "Font.h"
 #include "Texture2D.h"
+#include "Transform.h"
 
 dae::TextComponent::TextComponent(const std::string& text, const std::shared_ptr<Font>& font)
 	: m_NeedsUpdate(true), m_Text(text), m_Font(font), m_Texture(nullptr), m_ColorR(255), m_ColorG(255), m_ColorB(255)
@@ -41,7 +42,7 @@ void dae::TextComponent::Render() const
 {
 	if (m_Texture != nullptr)
 	{
-		const auto pos = m_Transform.GetPosition();
+		const auto pos = m_Transform->GetPosition();
 		Renderer::GetInstance().RenderTexture(*m_Texture, pos.x, pos.y);
 	}
 }
@@ -55,6 +56,6 @@ void dae::TextComponent::SetText(const std::string& text)
 
 void dae::TextComponent::SetPosition(const float x, const float y)
 {
-	m_Transform.SetPosition(x, y, 0.0f);
+	m_Transform->SetPosition(x, y, 0.0f);
 }
 

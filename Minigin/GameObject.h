@@ -1,5 +1,6 @@
 #pragma once
-#include "Transform.h"
+#include <vector>
+//#include "Transform.h"
 
 namespace dae
 {
@@ -41,7 +42,7 @@ namespace dae
 			if(&other != this)
 			{
 				for (BaseComponent* baseComp : other.m_Components) { m_Components.push_back(baseComp); }
-				m_Transform = other.m_Transform;
+				//m_Transform = other.m_Transform;
 			}
 		};
 		GameObject& operator=(GameObject&& other) noexcept
@@ -50,7 +51,7 @@ namespace dae
 			{
 				for (BaseComponent* baseComp : other.m_Components) { m_Components.push_back(baseComp); }
 				other.m_Components.clear();
-				m_Transform = other.m_Transform;
+				//m_Transform = other.m_Transform;
 			}
 		}
 
@@ -70,6 +71,6 @@ namespace dae
 
 	private:
 		std::vector<BaseComponent*> m_Components{};
-		Transform m_Transform;
+		Transform* m_Transform{};
 	};
 }

@@ -6186,9 +6186,9 @@ bool ImGui::ListBoxHeader(const char* label, int items_count, int height_in_item
 
 void ImGui::EndListBox()
 {
-    ImGuiContext& g = *GImGui;
-    ImGuiWindow* window = g.CurrentWindow;
-    IM_ASSERT((window->Flags & ImGuiWindowFlags_ChildWindow) && "Mismatched BeginListBox/EndListBox calls. Did you test the return value of BeginListBox?");
+    //ImGuiContext& g = *GImGui;
+    //ImGuiWindow* window = g.CurrentWindow;
+    IM_ASSERT(((*GImGui).CurrentWindow->Flags & ImGuiWindowFlags_ChildWindow) && "Mismatched BeginListBox/EndListBox calls. Did you test the return value of BeginListBox?");
 
     EndChildFrame();
     EndGroup(); // This is only required to be able to do IsItemXXX query on the whole ListBox including label

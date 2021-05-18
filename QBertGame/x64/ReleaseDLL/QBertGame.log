@@ -1,2 +1,5 @@
-﻿  QBertGame.cpp
+﻿  Cube.cpp
+  Pyramid.cpp
+  QBert.cpp
+  QBertGame.cpp
 LINK : fatal error LNK1181: cannot open input file 'Minigin.lib'

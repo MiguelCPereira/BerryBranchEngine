@@ -10,20 +10,19 @@ class Pyramid
 {
 public:
 	Pyramid(float posX, float posY);
-	~Pyramid();
+	~Pyramid() = default;
 
 	Pyramid(const Pyramid& other) = delete;
 	Pyramid(Pyramid&& other) noexcept = delete;
 	Pyramid& operator=(const Pyramid& other) = delete;
 	Pyramid& operator=(Pyramid&& other) noexcept = delete;
 
-	void Draw();
+	std::vector<std::shared_ptr<dae::GameObject>> m_CubeGOVector;
 
 private:
 	const float m_PosX, m_PosY;
 	const int m_TotalCubes;
-	std::vector<Cube*> m_CubeVector;
 
-	void CreateCubes();
+	void FillCubesGOVector();
 };
 

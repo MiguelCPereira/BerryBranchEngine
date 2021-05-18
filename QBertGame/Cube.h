@@ -1,24 +1,25 @@
 #pragma once
+#include <memory>
+#include "BaseComponent.h"
 
-class Cube
+
+class Cube final : public dae::BaseComponent
 {
 public:
-	Cube(float posX, float posY);
-	~Cube();
+	explicit Cube(const std::shared_ptr<dae::GameObject>& gameObject);
+	~Cube() = default;
 
 	Cube(const Cube& other) = delete;
 	Cube(Cube&& other) noexcept = delete;
 	Cube& operator=(const Cube& other) = delete;
 	Cube& operator=(Cube&& other) noexcept = delete;
-	
-	void Draw() const;
 
-	float GetSpriteHeight() const;
-	float GetSpriteWeight() const;
+	void InvertTurned();
+
+	void Update(const float deltaTime) override;
 
 private:
-	const float m_SpriteHeight, m_SpriteWeight;
-	const float m_PosX, m_PosY;
+	std::shared_ptr<dae::GameObject> m_GameObject{};
 	bool m_Turned;
 };
 

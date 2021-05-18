@@ -1,3 +1,39 @@
 ﻿  imgui_widgets.cpp
-D:\Trabalho\DAE\2nd Year\2nd Semester\Programming 4\QBertGameEngine\3rdParty\imgui-1.81\imgui_widgets.cpp(6190,18): error C2220: the following warning is treated as an error
-D:\Trabalho\DAE\2nd Year\2nd Semester\Programming 4\QBertGameEngine\3rdParty\imgui-1.81\imgui_widgets.cpp(6190,18): warning C4189: 'window': local variable is initialized but not referenced
+  audio.cpp
+  AudioComponent.cpp
+  BaseComponent.cpp
+  Command.cpp
+  Font.cpp
+  FPSComponent.cpp
+  HPDisplay.cpp
+  GameObject.cpp
+  GraphicsComponent.cpp
+  InputComponent.cpp
+  InputManager.cpp
+  LifeComponent.cpp
+  LivesDisplayComponent.cpp
+  LoggingSoundSystem.cpp
+  Main.cpp
+  Minigin.cpp
+  Observer.cpp
+  PhysicsComponent.cpp
+  PointsDisplayComponent.cpp
+  QBertComponent.cpp
+  Compiling...
+  Renderer.cpp
+  ResourceManager.cpp
+  Scene.cpp
+  SceneManager.cpp
+  SDLSoundSystem.cpp
+  SoundServiceLocator.cpp
+  SoundSystem.cpp
+  Subject.cpp
+  TextComponent.cpp
+  Texture2D.cpp
+  Transform.cpp
+  WrappedAudio.cpp
+SDL2.lib(SDL2.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR already defined in opengl32.lib(OPENGL32.dll); second definition ignored
+SDL2_image.lib(SDL2_image.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR already defined in opengl32.lib(OPENGL32.dll); second definition ignored
+SDL2_ttf.lib(SDL2_ttf.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR already defined in opengl32.lib(OPENGL32.dll); second definition ignored
+xinput.lib(XINPUT1_4.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR already defined in opengl32.lib(OPENGL32.dll); second definition ignored
+  Minigin.vcxproj -> D:\Trabalho\DAE\2nd Year\2nd Semester\Programming 4\QBertGameEngine\Win32\Release\Minigin.lib

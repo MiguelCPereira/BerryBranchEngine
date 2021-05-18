@@ -1,33 +1,4 @@
-﻿  MiniginPCH.cpp
-  AudioComponent.cpp
-  BaseComponent.cpp
-  Command.cpp
-  FPSComponent.cpp
-  Font.cpp
-  GameObject.cpp
-  GraphicsComponent.cpp
-  HPDisplay.cpp
-  InputComponent.cpp
-  InputManager.cpp
-  LifeComponent.cpp
-  LivesDisplayComponent.cpp
-  Main.cpp
-  Minigin.cpp
-  Observer.cpp
-  PhysicsComponent.cpp
-  PointsDisplayComponent.cpp
-  QBertComponent.cpp
-  Renderer.cpp
-  ResourceManager.cpp
-  Generating Code...
-  Compiling...
-  Scene.cpp
-  SceneManager.cpp
-  Subject.cpp
-  TextComponent.cpp
-  Texture2D.cpp
-  Transform.cpp
-  Generating Code...
+﻿  imgui_widgets.cpp
 SDL2.lib(SDL2.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR already defined in opengl32.lib(OPENGL32.dll); second definition ignored
 SDL2_image.lib(SDL2_image.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR already defined in opengl32.lib(OPENGL32.dll); second definition ignored
 SDL2_ttf.lib(SDL2_ttf.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR already defined in opengl32.lib(OPENGL32.dll); second definition ignored

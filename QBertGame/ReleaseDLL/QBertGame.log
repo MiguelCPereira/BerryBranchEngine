@@ -1,1 +1,11 @@
-﻿LINK : fatal error LNK1181: cannot open input file 'Minigin.lib'
+﻿Cube.obj : error LNK2001: unresolved external symbol "public: virtual __thiscall dae::BaseComponent::~BaseComponent(void)" (??1BaseComponent@dae@@UAE@XZ)
+Cube.obj : error LNK2001: unresolved external symbol "public: __thiscall dae::BaseComponent::BaseComponent(void)" (??0BaseComponent@dae@@QAE@XZ)
+Pyramid.obj : error LNK2001: unresolved external symbol "public: __thiscall dae::GraphicsComponent::GraphicsComponent(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,float,float,float,float)" (??0GraphicsComponent@dae@@QAE@ABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@MMMM@Z)
+Pyramid.obj : error LNK2001: unresolved external symbol "public: void __thiscall dae::GameObject::AddComponent(class dae::BaseComponent *)" (?AddComponent@GameObject@dae@@QAEXPAVBaseComponent@2@@Z)
+Pyramid.obj : error LNK2001: unresolved external symbol "public: __thiscall dae::GameObject::~GameObject(void)" (??1GameObject@dae@@QAE@XZ)
+QBertGame.obj : error LNK2001: unresolved external symbol "public: __thiscall dae::QBertComponent::QBertComponent(class std::shared_ptr<class dae::GameObject> const &)" (??0QBertComponent@dae@@QAE@ABV?$shared_ptr@VGameObject@dae@@@std@@@Z)
+QBertGame.obj : error LNK2001: unresolved external symbol "public: __thiscall dae::GraphicsComponent::GraphicsComponent(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &)" (??0GraphicsComponent@dae@@QAE@ABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z)
+QBertGame.obj : error LNK2001: unresolved external symbol "public: class dae::Scene & __thiscall dae::SceneManager::CreateScene(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &)" (?CreateScene@SceneManager@dae@@QAEAAVScene@2@ABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z)
+QBertGame.obj : error LNK2001: unresolved external symbol "public: void __thiscall dae::Scene::Initialize(void)" (?Initialize@Scene@dae@@QAEXXZ)
+QBertGame.obj : error LNK2001: unresolved external symbol "public: void __thiscall dae::Scene::Add(class std::shared_ptr<class dae::GameObject> const &)" (?Add@Scene@dae@@QAEXABV?$shared_ptr@VGameObject@dae@@@std@@@Z)
+D:\Trabalho\DAE\2nd Year\2nd Semester\Programming 4\QBertGameEngine\ReleaseDLL\QBertGame.exe : fatal error LNK1120: 10 unresolved externals
