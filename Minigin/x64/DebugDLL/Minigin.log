@@ -1,24 +1,4 @@
-﻿  audio.cpp
-  Command.cpp
-  FPSComponent.cpp
-  HPDisplay.cpp
-  GameObject.cpp
-  GraphicsComponent.cpp
-  InputManager.cpp
-  LivesDisplayComponent.cpp
-  LoggingSoundSystem.cpp
+﻿  Main.cpp
   Minigin.cpp
-  PointsDisplayComponent.cpp
-  QBertComponent.cpp
-  Renderer.cpp
-  Scene.cpp
-  SceneManager.cpp
-  SDLSoundSystem.cpp
-  SoundServiceLocator.cpp
-  SoundSystem.cpp
-  TextComponent.cpp
-  WrappedAudio.cpp
   Generating Code...
-  LINK : D:\Trabalho\DAE\2nd Year\2nd Semester\Programming 4\QBertGameEngine\x64\DebugDLL\Minigin.dll not found or not built by the last incremental link; performing full link
-     Creating library D:\Trabalho\DAE\2nd Year\2nd Semester\Programming 4\QBertGameEngine\x64\DebugDLL\Minigin.lib and object D:\Trabalho\DAE\2nd Year\2nd Semester\Programming 4\QBertGameEngine\x64\DebugDLL\Minigin.exp
   Minigin.vcxproj -> D:\Trabalho\DAE\2nd Year\2nd Semester\Programming 4\QBertGameEngine\x64\DebugDLL\Minigin.dll

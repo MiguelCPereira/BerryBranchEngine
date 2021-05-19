@@ -18,8 +18,8 @@
 #include "TextComponent.h"
 #include "Command.h"
 
-//#include "InputManager.h" // This fails when it tries to include SDL, but why?
-//#include <SDL.h> // Once again, SDL files fail to be found
+//#include "InputManager.h" // This crashes when SDL is included, more specifically an ImGui crash - but why?
+//#include <SDL.h> // Once again, SDL crashes
 
 
 void LoadDemo();

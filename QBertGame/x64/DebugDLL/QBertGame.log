@@ -1,4 +1,5 @@
-﻿Cube.obj : error LNK2019: unresolved external symbol "public: __cdecl dae::BaseComponent::BaseComponent(void)" (??0BaseComponent@dae@@QEAA@XZ) referenced in function "public: __cdecl Cube::Cube(class std::shared_ptr<class dae::GameObject> const &)" (??0Cube@@QEAA@AEBV?$shared_ptr@VGameObject@dae@@@std@@@Z)
+﻿  QBertGame.cpp
+Cube.obj : error LNK2019: unresolved external symbol "public: __cdecl dae::BaseComponent::BaseComponent(void)" (??0BaseComponent@dae@@QEAA@XZ) referenced in function "public: __cdecl Cube::Cube(class std::shared_ptr<class dae::GameObject> const &)" (??0Cube@@QEAA@AEBV?$shared_ptr@VGameObject@dae@@@std@@@Z)
 QBert.obj : error LNK2001: unresolved external symbol "public: __cdecl dae::BaseComponent::BaseComponent(void)" (??0BaseComponent@dae@@QEAA@XZ)
 Cube.obj : error LNK2019: unresolved external symbol "public: virtual __cdecl dae::BaseComponent::~BaseComponent(void)" (??1BaseComponent@dae@@UEAA@XZ) referenced in function "public: virtual __cdecl Cube::~Cube(void)" (??1Cube@@UEAA@XZ)
 QBert.obj : error LNK2001: unresolved external symbol "public: virtual __cdecl dae::BaseComponent::~BaseComponent(void)" (??1BaseComponent@dae@@UEAA@XZ)
