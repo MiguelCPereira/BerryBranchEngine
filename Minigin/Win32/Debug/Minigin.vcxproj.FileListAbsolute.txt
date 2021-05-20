@@ -1,4 +1,0 @@
-C:\Users\caric\Desktop\QBertGameEngine-main\Win32\Debug\Minigin.pdb
-C:\Users\caric\Desktop\QBertGameEngine-main\Minigin\Win32\Debug\Minigin.pdb
-D:\Trabalho\DAE\2nd Year\2nd Semester\Programming 4\QBertGameEngine\Win32\Debug\Minigin.pdb
-D:\Trabalho\DAE\2nd Year\2nd Semester\Programming 4\QBertGameEngine\Minigin\Win32\Debug\Minigin.pdb
