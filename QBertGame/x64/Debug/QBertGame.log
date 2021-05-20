@@ -1,8 +1,5 @@
-﻿  Cube.cpp
-  Pyramid.cpp
-  QBert.cpp
-  QBertGame.cpp
-  Generating Code...
+﻿  QBertGame.cpp
+     Creating library D:\Trabalho\DAE\2nd Year\2nd Semester\Programming 4\QBertGameEngine\x64\Debug\QBertGame.lib and object D:\Trabalho\DAE\2nd Year\2nd Semester\Programming 4\QBertGameEngine\x64\Debug\QBertGame.exp
   QBertGame.vcxproj -> D:\Trabalho\DAE\2nd Year\2nd Semester\Programming 4\QBertGameEngine\x64\Debug\QBertGame.exe
   D:\Trabalho\DAE\2nd Year\2nd Semester\Programming 4\QBertGameEngine\3rdParty\SDL2\lib\x64\SDL2.dll
   1 File(s) copied
