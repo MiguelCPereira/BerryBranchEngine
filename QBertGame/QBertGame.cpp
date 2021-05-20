@@ -19,7 +19,7 @@
 #include "Command.h"
 
 //#include "InputManager.h" // This crashes when SDL is included, more specifically an ImGui crash - but why?
-//#include <SDL.h> // Once again, SDL crashes
+#include <SDL.h> // Once again, SDL crashes
 
 
 void LoadDemo();
