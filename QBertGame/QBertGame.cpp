@@ -37,20 +37,54 @@ int main()
 
 void LoadGame()
 {
+	const int nrRows = 7;
+	const float cubesWidth = 56.f;
+	const float cubesHeight = 56.f;
+	
 	auto& scene = dae::SceneManager::GetInstance().CreateScene("Game");
 
 	// Level Map
-	Pyramid pyramid(300, 80);
-	for( auto cube : pyramid.m_CubeGOVector)
+	Pyramid pyramid(300.f, 80.f, nrRows, cubesWidth, cubesHeight);
+	for (auto cube : pyramid.m_CubeGOVector)
 		scene.Add(cube);
-
+	
 	// QBert
 	auto qBertGO = std::make_shared<dae::GameObject>();
-	qBertGO->AddComponent(new dae::QBert(qBertGO));
+	qBertGO->AddComponent(new dae::QBert(qBertGO, nrRows, cubesWidth, cubesHeight));
 	qBertGO->AddComponent(new dae::GraphicsComponent("qBert.png", 312, 50, 40, 49));
 	scene.Add(qBertGO);
 
+	// Input
+	//auto moveUpKeyboard = std::make_unique<QBertMoveUpCommand>();
+	//moveUpKeyboard->SetActor(qBertGO);
+	//moveUpKeyboard->SetButtonPressType(dae::ButtonPress::PressedDown);
+	//dae::InputManager::GetInstance().AddCommand(SDLK_w, std::move(moveUpKeyboard));
+
+	//auto moveDownKeyboard = std::make_unique<QBertMoveDownCommand>();
+	//moveDownKeyboard->SetActor(qBertGO);
+	//moveDownKeyboard->SetButtonPressType(dae::ButtonPress::PressedDown);
+	//dae::InputManager::GetInstance().AddCommand(SDLK_s, std::move(moveDownKeyboard));
+
+	//auto moveLeftKeyboard = std::make_unique<QBertMoveLeftCommand>();
+	//moveLeftKeyboard->SetActor(qBertGO);
+	//moveLeftKeyboard->SetButtonPressType(dae::ButtonPress::PressedDown);
+	//dae::InputManager::GetInstance().AddCommand(SDLK_a, std::move(moveLeftKeyboard));
+
+	//auto moveRightKeyboard = std::make_unique<QBertMoveRightCommand>();
+	//moveRightKeyboard->SetActor(qBertGO);
+	//moveRightKeyboard->SetButtonPressType(dae::ButtonPress::PressedDown);
+	//dae::InputManager::GetInstance().AddCommand(SDLK_d, std::move(moveRightKeyboard));
+	
 	scene.Initialize();
+
+	// Instructions
+	std::cout << "Controls:\n";
+	std::cout << "\n";
+	std::cout << "   W   | Move Up/Right\n";
+	std::cout << "   S   | Move Down/Left\n";
+	std::cout << "   A   | Move Up/Left\n";
+	std::cout << "   D   | Move Down/Right\n\n";
+	std::cout << "The player input is still not implemented\n\n";
 }
 
 void LoadDemo()

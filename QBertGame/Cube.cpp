@@ -1,5 +1,4 @@
 #include "Cube.h"
-
 #include "QBertComponent.h"
 
 Cube::Cube(const std::shared_ptr<dae::GameObject>& gameObject)

@@ -33,6 +33,9 @@
     <ClCompile Include="Cube.cpp">
       <Filter>Components</Filter>
     </ClCompile>
+    <ClCompile Include="GameCommands.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Pyramid.h">
@@ -42,6 +45,9 @@
       <Filter>Components\Characters</Filter>
     </ClInclude>
     <ClInclude Include="Cube.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GameCommands.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

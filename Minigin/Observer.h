@@ -5,6 +5,7 @@ namespace dae
 	class TextComponent;
 	class GameObject;
 
+	// Need to make this editable outside of the engine
 	enum class Event
 	{
 		ActorHPChange,
@@ -13,7 +14,12 @@ namespace dae
 		TileChange,
 		ColorChange,
 		CoilyDeath,
-		SlickSamCaught
+		SlickSamCaught,
+		
+		QBertMoveUp,
+		QBertMoveDown,
+		QBertMoveLeft,
+		QBertMoveRight
 	};
 
 	class Observer
