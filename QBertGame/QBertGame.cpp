@@ -13,19 +13,20 @@
 #include "ResourceManager.h"
 #include "SoundServiceLocator.h"
 #include "FPSComponent.h"
-#include "LivesDisplayComponent.h"
-#include "PointsDisplayComponent.h"
+//#include "LivesDisplayComponent.h"
+//#include "PointsDisplayComponent.h"
 #include "TextComponent.h"
 #include "Command.h"
 
-//#include "InputManager.h" // This crashes when SDL is included, more specifically an ImGui crash - but why?
-#include <SDL.h> // Once again, SDL crashes
+#include "InputManager.h"
+#include <SDL.h>
 
+#include "GameCommands.h"
 
 void LoadDemo();
 void LoadGame();
 
-int main()
+int main(int, char* [])
 {
     dae::Minigin engine;
     engine.Initialize();
@@ -55,25 +56,25 @@ void LoadGame()
 	scene.Add(qBertGO);
 
 	// Input
-	//auto moveUpKeyboard = std::make_unique<QBertMoveUpCommand>();
-	//moveUpKeyboard->SetActor(qBertGO);
-	//moveUpKeyboard->SetButtonPressType(dae::ButtonPress::PressedDown);
-	//dae::InputManager::GetInstance().AddCommand(SDLK_w, std::move(moveUpKeyboard));
+	auto moveUpKeyboard = std::make_unique<QBertMoveUpCommand>();
+	moveUpKeyboard->SetActor(qBertGO);
+	moveUpKeyboard->SetButtonPressType(dae::ButtonPress::PressedDown);
+	dae::InputManager::GetInstance().AddCommand(SDLK_w, std::move(moveUpKeyboard));
 
-	//auto moveDownKeyboard = std::make_unique<QBertMoveDownCommand>();
-	//moveDownKeyboard->SetActor(qBertGO);
-	//moveDownKeyboard->SetButtonPressType(dae::ButtonPress::PressedDown);
-	//dae::InputManager::GetInstance().AddCommand(SDLK_s, std::move(moveDownKeyboard));
+	auto moveDownKeyboard = std::make_unique<QBertMoveDownCommand>();
+	moveDownKeyboard->SetActor(qBertGO);
+	moveDownKeyboard->SetButtonPressType(dae::ButtonPress::PressedDown);
+	dae::InputManager::GetInstance().AddCommand(SDLK_s, std::move(moveDownKeyboard));
 
-	//auto moveLeftKeyboard = std::make_unique<QBertMoveLeftCommand>();
-	//moveLeftKeyboard->SetActor(qBertGO);
-	//moveLeftKeyboard->SetButtonPressType(dae::ButtonPress::PressedDown);
-	//dae::InputManager::GetInstance().AddCommand(SDLK_a, std::move(moveLeftKeyboard));
+	auto moveLeftKeyboard = std::make_unique<QBertMoveLeftCommand>();
+	moveLeftKeyboard->SetActor(qBertGO);
+	moveLeftKeyboard->SetButtonPressType(dae::ButtonPress::PressedDown);
+	dae::InputManager::GetInstance().AddCommand(SDLK_a, std::move(moveLeftKeyboard));
 
-	//auto moveRightKeyboard = std::make_unique<QBertMoveRightCommand>();
-	//moveRightKeyboard->SetActor(qBertGO);
-	//moveRightKeyboard->SetButtonPressType(dae::ButtonPress::PressedDown);
-	//dae::InputManager::GetInstance().AddCommand(SDLK_d, std::move(moveRightKeyboard));
+	auto moveRightKeyboard = std::make_unique<QBertMoveRightCommand>();
+	moveRightKeyboard->SetActor(qBertGO);
+	moveRightKeyboard->SetButtonPressType(dae::ButtonPress::PressedDown);
+	dae::InputManager::GetInstance().AddCommand(SDLK_d, std::move(moveRightKeyboard));
 	
 	scene.Initialize();
 
@@ -103,11 +104,17 @@ void LoadDemo()
 	scene.Add(gameObject);
 
 	// Engine Title
-	//auto font = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
-	//gameObject = std::make_shared<dae::GameObject>();
+	auto font = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
+	gameObject = std::make_shared<dae::GameObject>();
+	
+	// Any action that involves Transform leads to a crash right now
+	// Because transform pointers are all messed up for some reason and return null
+	// So the creation of a TextComponent will always crash,
+	// as well as trying to change the position of a GameObject
+	
 	//gameObject->AddComponent(new dae::TextComponent("Programming 4 Assignment", font));
 	//gameObject->GetComponent<dae::TextComponent>()->SetPosition(80, 20);
-	//scene.Add(gameObject);
+	scene.Add(gameObject);
 
 
 	// FPS Counter
@@ -126,25 +133,25 @@ void LoadDemo()
 
 
 	// Input
-	//auto dieKeyboard = std::make_unique<dae::DieCommand>();
-	//dieKeyboard->SetActor(qBertGameObject);
-	//dieKeyboard->SetButtonPressType(dae::ButtonPress::PressedDown);
-	//dae::InputManager::GetInstance().AddCommand(SDLK_q, std::move(dieKeyboard));
+	auto dieKeyboard = std::make_unique<dae::DieCommand>();
+	dieKeyboard->SetActor(qBertGameObject);
+	dieKeyboard->SetButtonPressType(dae::ButtonPress::PressedDown);
+	dae::InputManager::GetInstance().AddCommand(SDLK_q, std::move(dieKeyboard));
 
-	//auto colorChangeKeyboard = std::make_unique<dae::ColorChangeCommand>();
-	//colorChangeKeyboard->SetActor(qBertGameObject);
-	//colorChangeKeyboard->SetButtonPressType(dae::ButtonPress::PressedDown);
-	//dae::InputManager::GetInstance().AddCommand(SDLK_w, std::move(colorChangeKeyboard));
+	auto colorChangeKeyboard = std::make_unique<dae::ColorChangeCommand>();
+	colorChangeKeyboard->SetActor(qBertGameObject);
+	colorChangeKeyboard->SetButtonPressType(dae::ButtonPress::PressedDown);
+	dae::InputManager::GetInstance().AddCommand(SDLK_w, std::move(colorChangeKeyboard));
 
-	//auto tileChangeKeyboard = std::make_unique<dae::TileChangeCommand>();
-	//tileChangeKeyboard->SetActor(qBertGameObject);
-	//tileChangeKeyboard->SetButtonPressType(dae::ButtonPress::PressedDown);
-	//dae::InputManager::GetInstance().AddCommand(SDLK_e, std::move(tileChangeKeyboard));
+	auto tileChangeKeyboard = std::make_unique<dae::TileChangeCommand>();
+	tileChangeKeyboard->SetActor(qBertGameObject);
+	tileChangeKeyboard->SetButtonPressType(dae::ButtonPress::PressedDown);
+	dae::InputManager::GetInstance().AddCommand(SDLK_e, std::move(tileChangeKeyboard));
 
-	//auto playSoundKeyboard = std::make_unique<dae::PlaySoundCommand>(&SoundServiceLocator::GetSoundSystem());
-	//playSoundKeyboard->SetActor(qBertGameObject);
-	//playSoundKeyboard->SetButtonPressType(dae::ButtonPress::PressedDown);
-	//dae::InputManager::GetInstance().AddCommand(SDLK_SPACE, std::move(playSoundKeyboard));
+	auto playSoundKeyboard = std::make_unique<dae::PlaySoundCommand>(&SoundServiceLocator::GetSoundSystem());
+	playSoundKeyboard->SetActor(qBertGameObject);
+	playSoundKeyboard->SetButtonPressType(dae::ButtonPress::PressedDown);
+	dae::InputManager::GetInstance().AddCommand(SDLK_SPACE, std::move(playSoundKeyboard));
 
 
 	// Lives Displays
@@ -172,18 +179,18 @@ void LoadDemo()
 	qBertGameObject2->AddComponent(new dae::GraphicsComponent("qBert.png", 445, 270));
 	scene.Add(qBertGameObject2);
 
-	//auto dieKeyboard2 = std::make_unique<dae::DieCommand>();
-	//dieKeyboard2->SetActor(qBertGameObject2);
-	//dieKeyboard2->SetButtonPressType(dae::ButtonPress::PressedDown);
-	//dae::InputManager::GetInstance().AddCommand(SDLK_i, std::move(dieKeyboard2));
-	//auto colorChangeKeyboard2 = std::make_unique<dae::ColorChangeCommand>();
-	//colorChangeKeyboard2->SetActor(qBertGameObject2);
-	//colorChangeKeyboard2->SetButtonPressType(dae::ButtonPress::PressedDown);
-	//dae::InputManager::GetInstance().AddCommand(SDLK_o, std::move(colorChangeKeyboard2));
-	//auto tileChangeKeyboard2 = std::make_unique<dae::TileChangeCommand>();
-	//tileChangeKeyboard2->SetActor(qBertGameObject2);
-	//tileChangeKeyboard2->SetButtonPressType(dae::ButtonPress::PressedDown);
-	//dae::InputManager::GetInstance().AddCommand(SDLK_p, std::move(tileChangeKeyboard2));
+	auto dieKeyboard2 = std::make_unique<dae::DieCommand>();
+	dieKeyboard2->SetActor(qBertGameObject2);
+	dieKeyboard2->SetButtonPressType(dae::ButtonPress::PressedDown);
+	dae::InputManager::GetInstance().AddCommand(SDLK_i, std::move(dieKeyboard2));
+	auto colorChangeKeyboard2 = std::make_unique<dae::ColorChangeCommand>();
+	colorChangeKeyboard2->SetActor(qBertGameObject2);
+	colorChangeKeyboard2->SetButtonPressType(dae::ButtonPress::PressedDown);
+	dae::InputManager::GetInstance().AddCommand(SDLK_o, std::move(colorChangeKeyboard2));
+	auto tileChangeKeyboard2 = std::make_unique<dae::TileChangeCommand>();
+	tileChangeKeyboard2->SetActor(qBertGameObject2);
+	tileChangeKeyboard2->SetButtonPressType(dae::ButtonPress::PressedDown);
+	dae::InputManager::GetInstance().AddCommand(SDLK_p, std::move(tileChangeKeyboard2));
 
 	//font = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 25);
 	//gameObject = std::make_shared<dae::GameObject>();
@@ -197,7 +204,8 @@ void LoadDemo()
 	//gameObject->AddComponent(new dae::TextComponent("Points: FAIL", font));
 	//gameObject->GetComponent<dae::TextComponent>()->SetPosition(465, 180);
 	//gameObject->AddComponent(new dae::PointsDisplayComponent(gameObject, qBertGameObject2->GetComponent<dae::QBertComponent>()));
-	//scene.Add(gameObject);
+
+	scene.Add(gameObject);
 
 
 	

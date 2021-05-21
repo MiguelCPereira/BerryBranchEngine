@@ -46,7 +46,7 @@ bool dae::QBert::MoveUp()
 		m_CurrentRow--;
 		m_Subject->Notify(Event::QBertMoveUp);
 		auto* graphics = m_GameObject->GetComponent<GraphicsComponent>();
-		graphics->SetPosition(graphics->GetPosX() + m_CubesWidth / 2.f, graphics->GetPosY() - m_CubesHeight);
+		graphics->SetPosition(graphics->GetPosX() + m_CubesWidth / 2.f, graphics->GetPosY() - m_CubesHeight * 0.75f);
 		return true;
 	}
 	
@@ -62,7 +62,7 @@ bool dae::QBert::MoveDown()
 		m_CurrentRow++;
 		m_Subject->Notify(Event::QBertMoveDown);
 		auto* graphics = m_GameObject->GetComponent<GraphicsComponent>();
-		graphics->SetPosition(graphics->GetPosX() - m_CubesWidth / 2.f, graphics->GetPosY() + m_CubesHeight);
+		graphics->SetPosition(graphics->GetPosX() - m_CubesWidth / 2.f, graphics->GetPosY() + m_CubesHeight * 0.75f);
 		return true;
 	}
 
@@ -72,12 +72,12 @@ bool dae::QBert::MoveDown()
 bool dae::QBert::MoveLeft()
 {
 	// If QBert isn't in the beginning of any of the pyramid rows
-	if (m_CurrentCubeIdx != m_CurrentRow * (m_CurrentRow + 1) / 2 + 1 && m_CurrentCubeIdx != 1)
+	if (m_CurrentCubeIdx != m_CurrentRow * (m_CurrentRow + 1) / 2 - m_CurrentRow + 1 && m_CurrentCubeIdx != 1)
 	{
 		m_CurrentCubeIdx = m_CurrentCubeIdx - m_CurrentRow;
-		m_CurrentRow++;
+		m_CurrentRow--;
 		auto* graphics = m_GameObject->GetComponent<GraphicsComponent>();
-		graphics->SetPosition(graphics->GetPosX() - m_CubesWidth / 2.f, graphics->GetPosY() - m_CubesHeight);
+		graphics->SetPosition(graphics->GetPosX() - m_CubesWidth / 2.f, graphics->GetPosY() - m_CubesHeight * 0.75f);
 		return true;
 	}
 
@@ -92,7 +92,7 @@ bool dae::QBert::MoveRight()
 		m_CurrentCubeIdx = m_CurrentCubeIdx + m_CurrentRow + 1;
 		m_CurrentRow++;
 		auto* graphics = m_GameObject->GetComponent<GraphicsComponent>();
-		graphics->SetPosition(graphics->GetPosX() + m_CubesWidth / 2.f, graphics->GetPosY() + m_CubesHeight);
+		graphics->SetPosition(graphics->GetPosX() + m_CubesWidth / 2.f, graphics->GetPosY() + m_CubesHeight * 0.75f);
 		return true;
 	}
 
