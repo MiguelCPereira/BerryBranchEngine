@@ -1,5 +1,6 @@
 #include "Cube.h"
-#include "QBertComponent.h"
+#include "GameObject.h"
+#include "GraphicsComponent.h"
 
 Cube::Cube(const std::shared_ptr<dae::GameObject>& gameObject)
 	: m_GameObject(gameObject)
@@ -8,10 +9,11 @@ Cube::Cube(const std::shared_ptr<dae::GameObject>& gameObject)
 {
 }
 
-void Cube::InvertTurned()
+void Cube::TurnCube()
 {
-	m_Turned = !m_Turned;
-	m_Subject->Notify(dae::Event::ColorChange);
+	if(m_Turned == false)
+		m_GameObject->GetComponent<dae::GraphicsComponent>()->SetTexture("Cube Yellow.png");
+	m_Turned = true;
 }
 
 void Cube::Update(const float)

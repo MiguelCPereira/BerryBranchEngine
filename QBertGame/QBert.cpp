@@ -1,14 +1,16 @@
 #include "QBert.h"
-
+#include <iostream>
 #include "GameObject.h"
 #include "GraphicsComponent.h"
 
 
-dae::QBert::QBert(const std::shared_ptr<GameObject>& gameObject, int nrRows, float cubesWidth, float cubesHeight)
+dae::QBert::QBert(const std::shared_ptr<GameObject>& gameObject, int nrRows, float cubesWidth, float cubesHeight, float qBertSpriteWidth, float qBertSpriteHeight)
 	: m_GameObject(gameObject)
 	, m_LastRow(nrRows)
 	, m_CubesWidth(cubesWidth)
 	, m_CubesHeight(cubesHeight)
+	, m_QBertSpriteWidth(qBertSpriteWidth)
+	, m_QBertSpriteHeight(qBertSpriteHeight)
 {}
 
 void dae::QBert::ChangeTile() const
@@ -44,9 +46,10 @@ bool dae::QBert::MoveUp()
 	{
 		m_CurrentCubeIdx = m_CurrentCubeIdx - m_CurrentRow + 1;
 		m_CurrentRow--;
-		m_Subject->Notify(Event::QBertMoveUp);
+		m_Subject->Notify(Event::QBertMove);
 		auto* graphics = m_GameObject->GetComponent<GraphicsComponent>();
 		graphics->SetPosition(graphics->GetPosX() + m_CubesWidth / 2.f, graphics->GetPosY() - m_CubesHeight * 0.75f);
+		graphics->SetSrcRectangle(0, 0, m_QBertSpriteWidth, m_QBertSpriteHeight);
 		return true;
 	}
 	
@@ -60,9 +63,10 @@ bool dae::QBert::MoveDown()
 	{
 		m_CurrentCubeIdx = m_CurrentCubeIdx + m_CurrentRow;
 		m_CurrentRow++;
-		m_Subject->Notify(Event::QBertMoveDown);
+		m_Subject->Notify(Event::QBertMove);
 		auto* graphics = m_GameObject->GetComponent<GraphicsComponent>();
 		graphics->SetPosition(graphics->GetPosX() - m_CubesWidth / 2.f, graphics->GetPosY() + m_CubesHeight * 0.75f);
+		graphics->SetSrcRectangle(m_QBertSpriteWidth * 3, 0, m_QBertSpriteWidth, m_QBertSpriteHeight);
 		return true;
 	}
 
@@ -76,8 +80,10 @@ bool dae::QBert::MoveLeft()
 	{
 		m_CurrentCubeIdx = m_CurrentCubeIdx - m_CurrentRow;
 		m_CurrentRow--;
+		m_Subject->Notify(Event::QBertMove);
 		auto* graphics = m_GameObject->GetComponent<GraphicsComponent>();
 		graphics->SetPosition(graphics->GetPosX() - m_CubesWidth / 2.f, graphics->GetPosY() - m_CubesHeight * 0.75f);
+		graphics->SetSrcRectangle(m_QBertSpriteWidth, 0, m_QBertSpriteWidth, m_QBertSpriteHeight);
 		return true;
 	}
 
@@ -91,8 +97,10 @@ bool dae::QBert::MoveRight()
 	{
 		m_CurrentCubeIdx = m_CurrentCubeIdx + m_CurrentRow + 1;
 		m_CurrentRow++;
+		m_Subject->Notify(Event::QBertMove);
 		auto* graphics = m_GameObject->GetComponent<GraphicsComponent>();
 		graphics->SetPosition(graphics->GetPosX() + m_CubesWidth / 2.f, graphics->GetPosY() + m_CubesHeight * 0.75f);
+		graphics->SetSrcRectangle(m_QBertSpriteWidth * 2, 0, m_QBertSpriteWidth, m_QBertSpriteHeight);
 		return true;
 	}
 

@@ -19,6 +19,9 @@
     <Filter Include="Components\Characters">
       <UniqueIdentifier>{9689d2a6-3034-4fcf-a60d-24c6da9b85f8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Components\Observers">
+      <UniqueIdentifier>{07939d27-f063-4f2b-b6a2-3cb27dff5035}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="QBertGame.cpp">
@@ -36,6 +39,9 @@
     <ClCompile Include="GameCommands.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="MainObserver.cpp">
+      <Filter>Components\Observers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Pyramid.h">
@@ -44,11 +50,14 @@
     <ClInclude Include="QBert.h">
       <Filter>Components\Characters</Filter>
     </ClInclude>
-    <ClInclude Include="Cube.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="GameCommands.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MainObserver.h">
+      <Filter>Components\Observers</Filter>
+    </ClInclude>
+    <ClInclude Include="Cube.h">
+      <Filter>Components</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

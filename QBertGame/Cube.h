@@ -14,7 +14,8 @@ public:
 	Cube& operator=(const Cube& other) = delete;
 	Cube& operator=(Cube&& other) noexcept = delete;
 
-	void InvertTurned();
+	void TurnCube();
+	bool GetIsTurned() const { return m_Turned; }
 
 	void Update(const float deltaTime) override;
 

@@ -22,6 +22,7 @@
 #include <SDL.h>
 
 #include "GameCommands.h"
+#include "MainObserver.h"
 
 void LoadDemo();
 void LoadGame();
@@ -45,15 +46,22 @@ void LoadGame()
 	auto& scene = dae::SceneManager::GetInstance().CreateScene("Game");
 
 	// Level Map
-	Pyramid pyramid(300.f, 80.f, nrRows, cubesWidth, cubesHeight);
-	for (auto cube : pyramid.m_CubeGOVector)
+	auto* pyramid = new Pyramid(300.f, 80.f, nrRows, cubesWidth, cubesHeight);
+	for (const std::shared_ptr<dae::GameObject>& cube : pyramid->m_CubeGOVector)
 		scene.Add(cube);
 	
 	// QBert
+	auto qBertSpriteWidth = 17.f;
+	auto qBertSpriteHeight = 16.f;
 	auto qBertGO = std::make_shared<dae::GameObject>();
-	qBertGO->AddComponent(new dae::QBert(qBertGO, nrRows, cubesWidth, cubesHeight));
-	qBertGO->AddComponent(new dae::GraphicsComponent("qBert.png", 312, 50, 40, 49));
+	qBertGO->AddComponent(new dae::QBert(qBertGO, nrRows, cubesWidth, cubesHeight, qBertSpriteWidth, qBertSpriteHeight));
+	qBertGO->AddComponent(new dae::GraphicsComponent("QBert Sprites.png", 304, 50, 49, 48, qBertSpriteWidth*2, 0, qBertSpriteWidth, qBertSpriteHeight));
 	scene.Add(qBertGO);
+
+	// Main Observer
+	auto mainObserverGO = std::make_shared<dae::GameObject>();
+	mainObserverGO->AddComponent(new MainObserver(mainObserverGO, qBertGO->GetComponent<dae::QBert>(), pyramid));
+	scene.Add(mainObserverGO);
 
 	// Input
 	auto moveUpKeyboard = std::make_unique<QBertMoveUpCommand>();
