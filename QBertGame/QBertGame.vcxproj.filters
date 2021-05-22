@@ -39,7 +39,10 @@
     <ClCompile Include="GameCommands.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MainObserver.cpp">
+    <ClCompile Include="LevelSectionObserver.cpp">
+      <Filter>Components\Observers</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObserver.cpp">
       <Filter>Components\Observers</Filter>
     </ClCompile>
   </ItemGroup>
@@ -53,11 +56,14 @@
     <ClInclude Include="GameCommands.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MainObserver.h">
-      <Filter>Components\Observers</Filter>
-    </ClInclude>
     <ClInclude Include="Cube.h">
       <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="LevelSectionObserver.h">
+      <Filter>Components\Observers</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObserver.h">
+      <Filter>Components\Observers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

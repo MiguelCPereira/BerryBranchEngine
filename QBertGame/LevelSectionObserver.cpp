@@ -1,21 +1,20 @@
-#include "MainObserver.h"
+#include "LevelSectionObserver.h"
 
 #include <iostream>
-
-
 #include "Cube.h"
 #include "QBert.h"
 #include "GameObject.h"
 #include "Pyramid.h"
+#include "SceneManager.h"
 
-MainObserver::MainObserver(const std::shared_ptr<dae::GameObject>& gameObject, dae::QBert* qBertComp, Pyramid* pyramid)
+LevelSectionObserver::LevelSectionObserver(const std::shared_ptr<dae::GameObject>& gameObject, dae::QBert* qBertComp, Pyramid* pyramid)
 	: m_QBertComp(qBertComp)
 	, m_Pyramid(pyramid)
 	, m_GameObject(gameObject)
-	, m_LevelComplete(false)
+	, m_SectionComplete(false)
 {}
 
-MainObserver::~MainObserver()
+LevelSectionObserver::~LevelSectionObserver()
 {
 	if (m_QBertComp != nullptr)
 		m_QBertComp->GetSubject()->RemoveObserver(this);
@@ -24,13 +23,13 @@ MainObserver::~MainObserver()
 	m_Pyramid = nullptr;
 }
 
-void MainObserver::Initialize()
+void LevelSectionObserver::Initialize()
 {
 	if (m_QBertComp != nullptr)
 		m_QBertComp->GetSubject()->AddObserver(this);
 }
 
-void MainObserver::SetQBert(dae::QBert* qBertComp)
+void LevelSectionObserver::SetQBert(dae::QBert* qBertComp)
 {
 	if (m_QBertComp != nullptr)
 		m_QBertComp->GetSubject()->RemoveObserver(this);
@@ -41,14 +40,14 @@ void MainObserver::SetQBert(dae::QBert* qBertComp)
 		m_QBertComp->GetSubject()->AddObserver(this);
 }
 
-void MainObserver::SetPyramid(Pyramid* pyramid)
+void LevelSectionObserver::SetPyramid(Pyramid* pyramid)
 {
 	delete m_Pyramid;
 	m_Pyramid = nullptr;
 	m_Pyramid = pyramid;
 }
 
-void MainObserver::OnNotify(const dae::Event& event)
+void LevelSectionObserver::OnNotify(const dae::Event& event)
 {
 	switch (event)
 	{
@@ -58,12 +57,12 @@ void MainObserver::OnNotify(const dae::Event& event)
 		// But they're stored counting from 0 in the vector
 		m_Pyramid->m_CubeGOVector[qBertIdx - 1]->GetComponent<Cube>()->TurnCube();
 		if (CheckAllCubesTurned())
-			WinLevel();
+			WinSection();
 		break;
 	}
 }
 
-bool MainObserver::CheckAllCubesTurned() const
+bool LevelSectionObserver::CheckAllCubesTurned() const
 {
 	for(const std::shared_ptr<dae::GameObject>& cube : m_Pyramid->m_CubeGOVector)
 	{
@@ -74,11 +73,16 @@ bool MainObserver::CheckAllCubesTurned() const
 	return true;
 }
 
-void MainObserver::WinLevel()
+void LevelSectionObserver::WinSection()
 {
-	if (m_LevelComplete == false)
+	if (m_SectionComplete == false)
 	{
-		m_LevelComplete = true;
-		std::cout << "Level complete!\n";
+		m_SectionComplete = true;
+		std::cout << "Color Switch!\n";
+		m_Subject->Notify(dae::Event::ColorChange);
+		auto& scene = dae::SceneManager::GetInstance();
+		scene.ChangeScene(scene.GetCurrentSceneIdx() + 1);
 	}
+
+	
 }

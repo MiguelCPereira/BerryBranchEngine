@@ -11,11 +11,11 @@ namespace dae
 	class QBert;
 }
 
-class MainObserver final : public dae::BaseComponent, public dae::Observer
+class LevelSectionObserver final : public dae::BaseComponent, public dae::Observer
 {
 public:
-	explicit MainObserver(const std::shared_ptr<dae::GameObject>& gameObject, dae::QBert* qBertComp, Pyramid* pyramid);
-	~MainObserver() override;
+	explicit LevelSectionObserver(const std::shared_ptr<dae::GameObject>& gameObject, dae::QBert* qBertComp, Pyramid* pyramid);
+	~LevelSectionObserver() override;
 
 	void SetQBert(dae::QBert* qBertComp);
 	void SetPyramid(Pyramid* pyramid);
@@ -25,12 +25,12 @@ public:
 	void OnNotify(const dae::Event& event) override;
 
 	bool CheckAllCubesTurned() const;
-	void WinLevel();
+	void WinSection();
 
 private:
 	dae::QBert* m_QBertComp{};
 	Pyramid* m_Pyramid;
 	std::shared_ptr<dae::GameObject> m_GameObject{};
-	bool m_LevelComplete;
+	bool m_SectionComplete;
 };
 

@@ -6,7 +6,7 @@
 class Cube final : public dae::BaseComponent
 {
 public:
-	explicit Cube(const std::shared_ptr<dae::GameObject>& gameObject);
+	explicit Cube(const std::shared_ptr<dae::GameObject>& gameObject, int colorIdx, int level, float cubeSpriteWidth, float cubeSpriteHeight);
 	~Cube() = default;
 
 	Cube(const Cube& other) = delete;
@@ -21,6 +21,8 @@ public:
 
 private:
 	std::shared_ptr<dae::GameObject> m_GameObject{};
-	bool m_Turned;
+	bool m_Turned, m_HalfTurned;
+	int m_ColorIdx, m_Level;
+	float m_CubeSpriteWidth, m_CubeSpriteHeight;
 };
 
