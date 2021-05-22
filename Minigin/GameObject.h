@@ -14,6 +14,7 @@ namespace dae
 		void Render() const;
 
 		void SetPosition(float x, float y);
+		void RemoveAllComponents();
 
 		GameObject() = default;
 		~GameObject();
@@ -71,5 +72,6 @@ namespace dae
 	private:
 		std::vector<BaseComponent*> m_Components{};
 		Transform* m_Transform{};
+		bool m_ComponentsRemoved{ false };
 	};
 }

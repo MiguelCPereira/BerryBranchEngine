@@ -16,7 +16,8 @@ namespace dae
 		CoilyDeath,
 		SlickSamCaught,
 		
-		QBertMove
+		QBertMove,
+		SlickSamMove
 	};
 
 	class Observer

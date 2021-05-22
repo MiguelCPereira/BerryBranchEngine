@@ -23,16 +23,23 @@
 #include "GameCommands.h"
 //#include "GameObserver.h"
 #include "LevelSectionObserver.h"
+#include <cstdlib>
+#include <ctime>
 
-
+#include "SlickSam.h"
 
 
 // Global Variables
 const int g_NrRows = 7;
-const float g_CubesActualWidth = 56.f;
-const float g_CubesActualHeight = 56.f;
+const float g_CubesActualWidth = 64.f;
+const float g_CubesActualHeight = 64.f;
 const int g_CubesSpriteWidth = 32;
 const int g_CubesSpriteHeight = 32;
+const float g_QBertInitialPosX = 304;
+const float g_QBertInitialPosY = 50;
+const int g_EnemiesLeftSpawnPosX = 284;
+const float g_EnemiesRightSpawnPosX = 349;
+const float g_EnemiesSpawnPosY = 110;
 std::shared_ptr<dae::GameObject> g_QBertGO;
 //std::shared_ptr<dae::GameObject> g_GameObserverGO;
 
@@ -51,6 +58,9 @@ void PrintInstructions();
 
 int main(int, char* [])
 {
+	// Get a Random Seed
+	srand((unsigned)time(NULL));
+
     dae::Minigin engine;
     engine.Initialize();
 
@@ -98,8 +108,24 @@ void LoadLevel01()
 	// Transfer QBert
 	scene1.Add(g_QBertGO);
 
+	// Slick
+	auto slickGO = std::make_shared<dae::GameObject>();
+	slickGO->AddComponent(new SlickSam(slickGO, g_NrRows, g_CubesActualWidth, g_CubesActualHeight, 12, 16, 2, 2, true));
+	slickGO->AddComponent(new dae::GraphicsComponent("Slick Sam Spritesheet.png", g_EnemiesLeftSpawnPosX, g_EnemiesSpawnPosY, 28, 33, 0, 0, 12, 16));
+	scene1.Add(slickGO);
+
+	// Sam
+	auto samGO = std::make_shared<dae::GameObject>();
+	samGO->AddComponent(new SlickSam(samGO, g_NrRows, g_CubesActualWidth, g_CubesActualHeight, 12, 16, 3, 2, false));
+	samGO->AddComponent(new dae::GraphicsComponent("Slick Sam Spritesheet.png", g_EnemiesRightSpawnPosX, g_EnemiesSpawnPosY, 28, 33, 12, 16, 12, 16));
+	scene1.Add(samGO);
+	
 	// Level Section Observer
-	sectionObserverGO1->AddComponent(new LevelSectionObserver(sectionObserverGO1, g_QBertGO->GetComponent<dae::QBert>(), pyramid));
+	auto* slickSamVector = new std::vector<SlickSam*>;
+	slickSamVector->push_back(slickGO->GetComponent<SlickSam>());
+	slickSamVector->push_back(samGO->GetComponent<SlickSam>());
+	sectionObserverGO1->AddComponent(new LevelSectionObserver(sectionObserverGO1, g_QBertGO->GetComponent<dae::QBert>(),
+		pyramid, slickSamVector));
 	scene1.Add(sectionObserverGO1);
 
 	// Transfer Game Observer
@@ -535,7 +561,7 @@ void SetUpGlobalGOs()
 	const auto qBertSpriteHeight = 16.f;
 	auto qBertGO = std::make_shared<dae::GameObject>();
 	qBertGO->AddComponent(new dae::QBert(qBertGO, g_NrRows, g_CubesActualWidth, g_CubesActualHeight, qBertSpriteWidth, qBertSpriteHeight));
-	qBertGO->AddComponent(new dae::GraphicsComponent("QBert Sprites.png", 304, 50, 49, 48, qBertSpriteWidth * 2, 0, qBertSpriteWidth, qBertSpriteHeight));
+	qBertGO->AddComponent(new dae::GraphicsComponent("QBert Spritesheet.png", g_QBertInitialPosX, g_QBertInitialPosY, 49, 48, qBertSpriteWidth * 2, 0, qBertSpriteWidth, qBertSpriteHeight));
 	
 	 
 	// Player Input

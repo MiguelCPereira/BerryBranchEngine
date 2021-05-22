@@ -19,7 +19,7 @@ void Cube::TurnCube()
 	{
 		if (m_Level == 1)
 		{
-			// Turn cube yellow (or blue for 2nd color, dark grey for 3rd, grey-yellow for 4th, etc)
+			// Turn cube into the 2nd row color (yellow, blue, dark grey, grey-yellow, no-base blue or dark blue)
 			m_GameObject->GetComponent<dae::GraphicsComponent>()->SetSrcRectangle(float(m_ColorIdx) * m_CubeSpriteWidth, m_CubeSpriteHeight, m_CubeSpriteWidth, m_CubeSpriteHeight);
 			m_Turned = true;
 		}
@@ -27,20 +27,20 @@ void Cube::TurnCube()
 		{
 			if (m_HalfTurned)
 			{
-				// Turn cube yellow (or blue for 2nd color, dark grey for 3rd, grey-yellow for 4th, etc)
-				m_GameObject->GetComponent<dae::GraphicsComponent>()->SetSrcRectangle(float(m_ColorIdx) * m_CubeSpriteWidth, m_CubeSpriteHeight, m_CubeSpriteWidth, m_CubeSpriteHeight);
+				// Turn cube into the 3rd row color (red, green, blue, purple, pink or dark purple)
+				m_GameObject->GetComponent<dae::GraphicsComponent>()->SetSrcRectangle(float(m_ColorIdx) * m_CubeSpriteWidth, m_CubeSpriteHeight * 2, m_CubeSpriteWidth, m_CubeSpriteHeight);
 				m_Turned = true;
 			}
 			else
 			{
-				// Turn cube red (or green for 2nd color, blue for 3rd, purple for 4th, etc)
-				m_GameObject->GetComponent<dae::GraphicsComponent>()->SetSrcRectangle(float(m_ColorIdx) * m_CubeSpriteWidth, m_CubeSpriteHeight * 2, m_CubeSpriteWidth, m_CubeSpriteHeight);
+				// Turn cube into the 2nd row color (yellow, blue, dark grey, grey-yellow, no-base blue or dark blue)
+				m_GameObject->GetComponent<dae::GraphicsComponent>()->SetSrcRectangle(float(m_ColorIdx) * m_CubeSpriteWidth, m_CubeSpriteHeight, m_CubeSpriteWidth, m_CubeSpriteHeight);
 				m_HalfTurned = true;
 			}
 		}
 		else
 		{
-			// Turn cube yellow (or blue for 2nd color, dark grey for 3rd, grey-yellow for 4th, etc)
+			// Turn cube into the 2nd row color (yellow, blue, dark grey, grey-yellow, no-base blue or dark blue)
 			m_GameObject->GetComponent<dae::GraphicsComponent>()->SetSrcRectangle(float(m_ColorIdx) * m_CubeSpriteWidth, m_CubeSpriteHeight, m_CubeSpriteWidth, m_CubeSpriteHeight);
 			m_Turned = true;
 		}
@@ -49,9 +49,46 @@ void Cube::TurnCube()
 	{
 		if (m_Level == 3)
 		{
-			// Turn cube blue (or yellow for 2nd color, white for 3rd, light-blue for 4th, etc)
+			// Turn cube into the 1st row color (blue, yellow, white, light-blue, no-base yellow or baby-blue)
 			m_GameObject->GetComponent<dae::GraphicsComponent>()->SetSrcRectangle(float(m_ColorIdx) * m_CubeSpriteWidth, 0, m_CubeSpriteWidth, m_CubeSpriteHeight);
 			m_Turned = false;
+		}
+	}
+}
+
+void Cube::SlickSamTurnCube()
+{
+	if (m_Turned)
+	{
+		if (m_Level == 1)
+		{
+			// Turn cube into the 1st row color (blue, yellow, white, light-blue, no-base yellow or baby-blue)
+			m_GameObject->GetComponent<dae::GraphicsComponent>()->SetSrcRectangle(float(m_ColorIdx) * m_CubeSpriteWidth, 0, m_CubeSpriteWidth, m_CubeSpriteHeight);
+		}
+		else if (m_Level == 2)
+		{
+			// Turn cube into the 2nd row color (yellow, blue, dark grey, grey-yellow, no-base blue or dark blue)
+			m_GameObject->GetComponent<dae::GraphicsComponent>()->SetSrcRectangle(float(m_ColorIdx) * m_CubeSpriteWidth, m_CubeSpriteHeight, m_CubeSpriteWidth, m_CubeSpriteHeight);
+			m_HalfTurned = true;
+		}
+		else
+		{
+			// Turn cube into the 1st row color (blue, yellow, white, light-blue, no-base yellow or baby-blue)
+			m_GameObject->GetComponent<dae::GraphicsComponent>()->SetSrcRectangle(float(m_ColorIdx) * m_CubeSpriteWidth, 0, m_CubeSpriteWidth, m_CubeSpriteHeight);
+		}
+
+		m_Turned = false;
+	}
+	else
+	{
+		if (m_Level == 2)
+		{
+			if (m_HalfTurned)
+			{
+				// Turn cube into the 1st row color (blue, yellow, white, light-blue, no-base yellow or baby-blue)
+				m_GameObject->GetComponent<dae::GraphicsComponent>()->SetSrcRectangle(float(m_ColorIdx) * m_CubeSpriteWidth, 0, m_CubeSpriteWidth, m_CubeSpriteHeight);
+				m_HalfTurned = false;
+			}
 		}
 	}
 }
