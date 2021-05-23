@@ -17,10 +17,10 @@ namespace dae
 		void Die();
 		void ResetPosition();
 
-		bool MoveUp();
-		bool MoveDown();
-		bool MoveLeft();
-		bool MoveRight();
+		bool MoveUpRight();
+		bool MoveUpLeft();
+		bool MoveDownLeft();
+		bool MoveDownRight();
 
 		void Initialize() override;
 		void Update(const float deltaTime) override;

@@ -9,14 +9,13 @@ public:
 		float spriteWidth, float spriteHeight, int startingCube, float jumpInterval, bool isSlick);
 
 	int GetPositionIndex() const { return m_CurrentCubeIdx; }
+	bool GetIsAlive() const { return m_Alive; }
 
 	void ChangeTile() const;
 	void Die();
 
-	bool GetIsAlive() const { return m_Alive; }
-
-	bool MoveDown();
-	bool MoveRight();
+	bool MoveDownLeft();
+	bool MoveDownRight();
 
 	void Update(const float deltaTime) override;
 

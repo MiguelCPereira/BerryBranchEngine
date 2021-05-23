@@ -51,6 +51,9 @@
     <ClCompile Include="Factory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="UggWrongway.cpp">
+      <Filter>Components\Characters</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Pyramid.h">
@@ -76,6 +79,9 @@
     </ClInclude>
     <ClInclude Include="Factory.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UggWrongway.h">
+      <Filter>Components\Characters</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

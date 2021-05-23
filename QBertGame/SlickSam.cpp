@@ -1,9 +1,7 @@
 #include "SlickSam.h"
-
-#include <iostream>
-
 #include "GameObject.h"
 #include "GraphicsComponent.h"
+#include <iostream>
 
 
 SlickSam::SlickSam(const std::shared_ptr<dae::GameObject>& gameObject, int nrRows, float cubesWidth, float cubesHeight,
@@ -31,7 +29,7 @@ void SlickSam::Die()
 	m_GameObject->RemoveAllComponents();
 }
 
-bool SlickSam::MoveDown()
+bool SlickSam::MoveDownLeft()
 {
 	// If Slick/Sam isn't in the last pyramid row
 	if (m_CurrentRow != m_LastRow)
@@ -58,7 +56,7 @@ bool SlickSam::MoveDown()
 	}
 }
 
-bool SlickSam::MoveRight()
+bool SlickSam::MoveDownRight()
 {
 	// If Slick/Sam isn't in the last pyramid row
 	if (m_CurrentRow != m_LastRow)
@@ -93,13 +91,12 @@ void SlickSam::Update(const float deltaTime)
 
 		if (m_JumpTimer >= m_JumpInterval)
 		{
-			// A random 50/50 chance of Slick/Sam falling to the right or down
-			// (aka, diagonally to the right or diagonally to the left)
+			// A random 50/50 chance of Slick/Sam falling to the right or left
 
 			if ((rand() % 2) + 1 == 1)
-				MoveRight();
+				MoveDownRight();
 			else
-				MoveDown();
+				MoveDownLeft();
 
 			m_JumpTimer -= m_JumpInterval;
 		}

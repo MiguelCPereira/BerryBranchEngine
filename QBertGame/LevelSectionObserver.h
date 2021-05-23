@@ -4,6 +4,7 @@
 #include "BaseComponent.h"
 
 
+class UggWrongway;
 class SlickSam;
 class Pyramid;
 
@@ -17,12 +18,13 @@ class LevelSectionObserver final : public dae::BaseComponent, public dae::Observ
 {
 public:
 	explicit LevelSectionObserver(const std::shared_ptr<dae::GameObject>& gameObject, dae::QBert* qBertComp, Pyramid* pyramid,
-		bool spawnSlickSams = false, float slickSamSpawnInterval = 0, float slickSamMoveInterval = 0);
+		bool spawnSlickSams, bool spawnUggWrongs,
+		float slickSamSpawnInterval = 0, float slickSamMoveInterval = 0,
+		float uggWrongSpawnInterval = 0, float uggWrongMoveInterval = 0);
 	~LevelSectionObserver() override;
 
 	void SetQBert(dae::QBert* qBertComp);
 	void SetPyramid(Pyramid* pyramid);
-	void SetSlickSamVector(std::vector<SlickSam*>* slickSamCompVector);
 
 	void Initialize() override;
 	void Update(const float deltaTime) override;
@@ -30,17 +32,28 @@ public:
 
 	bool CheckAllCubesTurned() const;
 	void WinSection();
+	void ClearEverything();
+	bool CheckCollidingUggWrong() const;
+	void KillCollidingSlickSam() const;
+	void KillFallenSlickSam() const;
+	void KillFallenUggWrong() const;
 
 	void AddSlickSam(bool isSlick, bool isLeft);
+	void AddUggWrongway(bool isUgg, bool isLeft);
 
 private:
+	std::shared_ptr<dae::GameObject> m_GameObject{};
 	dae::QBert* m_QBertComp{};
 	Pyramid* m_Pyramid;
-	std::shared_ptr<dae::GameObject> m_GameObject{};
-	bool m_SectionComplete;
+	
 	const bool m_SpawnSlickSams;
 	std::vector<SlickSam*>* m_SlickSamCompVector;
 	float m_SlickSamSpawnTimer, m_SlickSamSpawnInterval, m_SlickSamMoveInterval;
-	bool m_SlickSamVectorModified = false;
+
+	const bool m_SpawnUggWrongs;
+	std::vector<UggWrongway*>* m_UggWrongCompVector;
+	float m_UggWrongSpawnTimer1, m_UggWrongSpawnTimer2, m_UggWrongSpawnInterval, m_UggWrongMoveInterval;
+
+	bool m_SectionComplete;
 };
 

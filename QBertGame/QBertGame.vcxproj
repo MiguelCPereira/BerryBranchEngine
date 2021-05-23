@@ -366,6 +366,7 @@ xcopy "$(SolutionDir)$(Platform)\$(Configuration)\*.dll" "$(OutputPath)" /R /Y</
     <ClCompile Include="QBert.cpp" />
     <ClCompile Include="QBertGame.cpp" />
     <ClCompile Include="SlickSam.cpp" />
+    <ClCompile Include="UggWrongway.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Cube.h" />
@@ -376,6 +377,7 @@ xcopy "$(SolutionDir)$(Platform)\$(Configuration)\*.dll" "$(OutputPath)" /R /Y</
     <ClInclude Include="Pyramid.h" />
     <ClInclude Include="QBert.h" />
     <ClInclude Include="SlickSam.h" />
+    <ClInclude Include="UggWrongway.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

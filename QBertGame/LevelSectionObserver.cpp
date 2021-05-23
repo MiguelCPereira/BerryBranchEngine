@@ -10,19 +10,36 @@
 #include "SceneManager.h"
 #include "SlickSam.h"
 #include "Factory.h"
+#include "UggWrongway.h"
 
 LevelSectionObserver::LevelSectionObserver(const std::shared_ptr<dae::GameObject>& gameObject, dae::QBert* qBertComp, Pyramid* pyramid,
-	bool spawnSlickSams, float slickSamSpawnInterval, float slickSamMoveInterval)
-	: m_QBertComp(qBertComp)
+	bool spawnSlickSams, bool spawnUggWrongs, float slickSamSpawnInterval, float slickSamMoveInterval, float uggWrongSpawnInterval, float uggWrongMoveInterval)
+	: m_GameObject(gameObject)
+	, m_QBertComp(qBertComp)
 	, m_Pyramid(pyramid)
-	, m_GameObject(gameObject)
-	, m_SectionComplete(false)
+
 	, m_SpawnSlickSams(spawnSlickSams)
 	, m_SlickSamSpawnTimer(0.f)
 	, m_SlickSamSpawnInterval(slickSamSpawnInterval)
 	, m_SlickSamMoveInterval(slickSamMoveInterval)
+
+	, m_SpawnUggWrongs(spawnUggWrongs)
+	, m_UggWrongSpawnTimer1(0.f)
+	, m_UggWrongSpawnTimer2(-1.f) // So the right spawner has a 1 sec delay compared to the left one
+	, m_UggWrongSpawnInterval(uggWrongSpawnInterval)
+	, m_UggWrongMoveInterval(uggWrongMoveInterval)
+
+	, m_SectionComplete(false)
 {
+	// So it only takes 2 secs for the first Ugg/Wrongway to spawn
+	if (m_UggWrongSpawnInterval - 2.f > 0.f)
+	{
+		m_UggWrongSpawnTimer1 = m_UggWrongSpawnInterval - 2.f;
+		m_UggWrongSpawnTimer2 = m_UggWrongSpawnInterval - 2.f;
+	}
+	
 	m_SlickSamCompVector = new std::vector<SlickSam*>;
+	m_UggWrongCompVector = new std::vector<UggWrongway*>;
 }
 
 LevelSectionObserver::~LevelSectionObserver()
@@ -36,6 +53,15 @@ LevelSectionObserver::~LevelSectionObserver()
 		{
 			if (m_SlickSamCompVector->operator[](i) != nullptr)
 				m_SlickSamCompVector->operator[](i)->GetSubject()->RemoveObserver(this);
+		}
+	}
+
+	if (m_UggWrongCompVector->empty() == false)
+	{
+		for (int i = 0; i < m_UggWrongCompVector->size(); i++)
+		{
+			if (m_UggWrongCompVector->operator[](i) != nullptr)
+				m_UggWrongCompVector->operator[](i)->GetSubject()->RemoveObserver(this);
 		}
 	}
 
@@ -67,34 +93,12 @@ void LevelSectionObserver::SetPyramid(Pyramid* pyramid)
 	m_Pyramid = pyramid;
 }
 
-void LevelSectionObserver::SetSlickSamVector(std::vector<SlickSam*>* slickSamCompVector)
-{
-	if (m_SlickSamCompVector->empty() == false)
-	{
-		for (int i = 0; i < m_SlickSamCompVector->size(); i++)
-		{
-			if (m_SlickSamCompVector->operator[](i) != nullptr)
-				m_SlickSamCompVector->operator[](i)->GetSubject()->RemoveObserver(this);
-		}
-	}
-
-	m_SlickSamCompVector = slickSamCompVector;
-
-	if (m_SlickSamCompVector->empty() == false)
-	{
-		for (int i = 0; i < m_SlickSamCompVector->size(); i++)
-		{
-			if (m_SlickSamCompVector->operator[](i) != nullptr)
-				m_SlickSamCompVector->operator[](i)->GetSubject()->AddObserver(this);
-		}
-	}
-}
 
 void LevelSectionObserver::AddSlickSam(bool isSlick, bool isLeft)
 {
-	auto newSlickSameGO = MakeSlickSam(isSlick, isLeft, m_SlickSamMoveInterval);
-	dae::SceneManager::GetInstance().GetCurrentScene()->Add(newSlickSameGO);
-	auto* newSlickSamComp = newSlickSameGO->GetComponent<SlickSam>();
+	auto newSlickSamGO = MakeSlickSam(isSlick, isLeft, m_SlickSamMoveInterval);
+	dae::SceneManager::GetInstance().GetCurrentScene()->Add(newSlickSamGO);
+	auto* newSlickSamComp = newSlickSamGO->GetComponent<SlickSam>();
 
 	if (newSlickSamComp != nullptr)
 	{
@@ -107,10 +111,28 @@ void LevelSectionObserver::AddSlickSam(bool isSlick, bool isLeft)
 	}
 }
 
+void LevelSectionObserver::AddUggWrongway(bool isUgg, bool isLeft)
+{
+	auto newUggWrongGO = MakeUggWrongway(isUgg, isLeft, m_UggWrongMoveInterval);
+	dae::SceneManager::GetInstance().GetCurrentScene()->Add(newUggWrongGO);
+	auto* newUggWrongComp = newUggWrongGO->GetComponent<UggWrongway>();
+
+	if (newUggWrongComp != nullptr)
+	{
+		newUggWrongComp->GetSubject()->AddObserver(this);
+		m_UggWrongCompVector->push_back(newUggWrongComp);
+	}
+	else
+	{
+		std::cout << "Ugg/Wrongway creation failed\n";
+	}
+}
+
 void LevelSectionObserver::OnNotify(const dae::Event& event)
 {
 	switch (event)
 	{
+		
 	case dae::Event::QBertMove:
 		// 1 is subtracted from the idx, because the cubes are numbered from 1 to 28
 		// But they're stored counting from 0 in the vector
@@ -119,39 +141,40 @@ void LevelSectionObserver::OnNotify(const dae::Event& event)
 		if (CheckAllCubesTurned())
 			WinSection();
 
-		for (int i = 0; i < m_SlickSamCompVector->size(); i++)
+		KillCollidingSlickSam();
+
+		if (CheckCollidingUggWrong())
 		{
-			if (m_QBertComp->GetPositionIndex() == m_SlickSamCompVector->operator[](i)->GetPositionIndex())
-			{
-				auto* deadSlickSam = m_SlickSamCompVector->operator[](i);
-				m_SlickSamCompVector->erase(std::find(m_SlickSamCompVector->begin(), m_SlickSamCompVector->end(), deadSlickSam));
-				deadSlickSam->Die();
-			}
+			m_QBertComp->Die();
+			ClearEverything();
 		}
 		break;
+
+		
 	case dae::Event::SlickSamMove:
 		for (int i = 0; i < m_SlickSamCompVector->size(); i++)
-		{			
 			m_Pyramid->m_CubeGOVector[m_SlickSamCompVector->operator[](i)->GetPositionIndex() - 1]->GetComponent<Cube>()->SlickSamTurnCube();
-			
-			if (m_QBertComp->GetPositionIndex() == m_SlickSamCompVector->operator[](i)->GetPositionIndex())
-			{
-				auto* deadSlickSam = m_SlickSamCompVector->operator[](i);
-				m_SlickSamCompVector->erase(std::find(m_SlickSamCompVector->begin(), m_SlickSamCompVector->end(), deadSlickSam));
-				deadSlickSam->Die();
-			}
+
+		KillCollidingSlickSam();
+		break;
+
+		
+	case dae::Event::SlickSamFell:
+		KillFallenSlickSam();
+		break;
+
+
+	case dae::Event::UggWrongwayMove:
+		if (CheckCollidingUggWrong())
+		{
+			m_QBertComp->Die();
+			ClearEverything();
 		}
 		break;
-	case dae::Event::SlickSamFell:
-		for (int i = 0; i < m_SlickSamCompVector->size(); i++)
-		{
-			auto* slickSam = m_SlickSamCompVector->operator[](i);
-			if (slickSam->GetIsAlive() == false)
-			{
-				m_SlickSamCompVector->erase(std::find(m_SlickSamCompVector->begin(), m_SlickSamCompVector->end(), slickSam));
-				slickSam->Die();
-			}
-		}
+
+		
+	case dae::Event::UggWrongwayFell:
+		KillFallenUggWrong();
 		break;
 	}
 }
@@ -180,6 +203,105 @@ void LevelSectionObserver::WinSection()
 	}	
 }
 
+void LevelSectionObserver::ClearEverything()
+{
+	std::cout << "OUCH\n";
+	
+	auto nrComponents = m_SlickSamCompVector->size();
+	for (int i = 0; i < nrComponents; i++)
+	{
+		auto* slickSam = m_SlickSamCompVector->operator[](0);
+		m_SlickSamCompVector->erase(m_SlickSamCompVector->begin());
+		slickSam->Die();
+	}
+	
+	m_SlickSamSpawnTimer = 0.f;
+
+	
+	nrComponents = m_UggWrongCompVector->size();
+	for (int i = 0; i < nrComponents; i++)
+	{
+		auto* uggWrong = m_UggWrongCompVector->operator[](0);
+		m_UggWrongCompVector->erase(m_UggWrongCompVector->begin());
+		uggWrong->Die();
+	}
+	
+	m_UggWrongSpawnTimer1 = 0.f;
+	m_UggWrongSpawnTimer2 = -2.f;
+}
+
+bool LevelSectionObserver::CheckCollidingUggWrong() const
+{
+	for (int i = 0; i < m_UggWrongCompVector->size(); i++)
+	{
+		auto* uggWrong = m_UggWrongCompVector->operator[](i);
+		if (uggWrong->GetStartedLeft())
+		{
+			if (m_QBertComp->GetPositionIndex() == uggWrong->GetPositionIndex() + uggWrong->GetCurrentRow())
+			{
+				return true;
+			}
+		}
+		else
+		{
+			if (m_QBertComp->GetPositionIndex() == uggWrong->GetPositionIndex() + uggWrong->GetCurrentRow() + 1)
+			{
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
+
+void LevelSectionObserver::KillCollidingSlickSam() const
+{
+	auto nrSlickSams = m_SlickSamCompVector->size();
+	for (auto i = 0; i < nrSlickSams; i++)
+	{
+		if (m_QBertComp->GetPositionIndex() == m_SlickSamCompVector->operator[](i)->GetPositionIndex())
+		{
+			auto* deadSlickSam = m_SlickSamCompVector->operator[](i);
+			m_SlickSamCompVector->erase(std::find(m_SlickSamCompVector->begin(), m_SlickSamCompVector->end(), deadSlickSam));
+			deadSlickSam->Die();
+			i--;
+			nrSlickSams--;
+		}
+	}
+}
+
+void LevelSectionObserver::KillFallenSlickSam() const
+{
+	auto nrSlickSams = m_SlickSamCompVector->size();
+	for (auto i = 0; i < nrSlickSams; i++)
+	{
+		auto* slickSam = m_SlickSamCompVector->operator[](i);
+		if (slickSam->GetIsAlive() == false)
+		{
+			m_SlickSamCompVector->erase(std::find(m_SlickSamCompVector->begin(), m_SlickSamCompVector->end(), slickSam));
+			slickSam->Die();
+			i--;
+			nrSlickSams--;
+		}
+	}
+}
+
+void LevelSectionObserver::KillFallenUggWrong() const
+{
+	auto nrUggWrongs = m_UggWrongCompVector->size();
+	for (auto i = 0; i < nrUggWrongs; i++)
+	{
+		auto* uggWrong = m_UggWrongCompVector->operator[](i);
+		if (uggWrong->GetIsAlive() == false)
+		{
+			m_UggWrongCompVector->erase(std::find(m_UggWrongCompVector->begin(), m_UggWrongCompVector->end(), uggWrong));
+			uggWrong->Die();
+			i--;
+			nrUggWrongs--;
+		}
+	}
+}
+
 void LevelSectionObserver::Update(const float deltaTime)
 {
 	if (m_SpawnSlickSams)
@@ -201,6 +323,34 @@ void LevelSectionObserver::Update(const float deltaTime)
 
 			AddSlickSam(isSlick, isLeft);
 			m_SlickSamSpawnTimer -= m_SlickSamSpawnInterval;
+		}
+	}
+
+	if (m_SpawnUggWrongs)
+	{
+		m_UggWrongSpawnTimer1 += deltaTime;
+		m_UggWrongSpawnTimer2 += deltaTime;
+
+		if (m_UggWrongSpawnTimer1 >= m_UggWrongSpawnInterval)
+		{
+			bool isUgg = false;
+
+			if ((rand() % 2) + 1 == 1)
+				isUgg = true;
+
+			AddUggWrongway(isUgg, true);
+			m_UggWrongSpawnTimer1 -= m_UggWrongSpawnInterval;
+		}
+
+		if (m_UggWrongSpawnTimer2 >= m_UggWrongSpawnInterval)
+		{
+			bool isUgg = false;
+
+			if ((rand() % 2) + 1 == 1)
+				isUgg = true;
+
+			AddUggWrongway(isUgg, false);
+			m_UggWrongSpawnTimer2 -= m_UggWrongSpawnInterval;
 		}
 	}
 }
