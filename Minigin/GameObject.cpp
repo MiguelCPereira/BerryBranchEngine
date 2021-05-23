@@ -29,10 +29,7 @@ void dae::GameObject::Update(const float deltaTime)
 {
 	for (BaseComponent* baseComp : m_Components)
 	{
-		if (m_ComponentsRemoved)
-			break;
-		
-		if(baseComp != nullptr)
+		if (baseComp != nullptr && m_ComponentsRemoved == false)
 			baseComp->Update(deltaTime);
 	}
 }
@@ -41,10 +38,8 @@ void dae::GameObject::Render() const
 {
 	for (BaseComponent* baseComp : m_Components)
 	{
-		if (m_ComponentsRemoved)
-			break;
-		
-		if (baseComp != nullptr)
+
+		if (baseComp != nullptr && m_ComponentsRemoved == false)
 			baseComp->Render();
 	}
 }
@@ -67,7 +62,6 @@ void dae::GameObject::RemoveAllComponents()
 		component = nullptr;
 	}
 
+	//m_Components.clear();
 	m_ComponentsRemoved = true;
-	
-	m_Components.clear();
 }

@@ -20,9 +20,7 @@ SlickSam::SlickSam(const std::shared_ptr<dae::GameObject>& gameObject, int nrRow
 {}
 
 void SlickSam::Die()
-{
-	m_Alive = false;
-	
+{	
 	if (m_IsSlick)
 		std::cout << "Slick died\n";
 	else
@@ -54,7 +52,8 @@ bool SlickSam::MoveDown()
 	else
 	{
 		// Make them jump out of the map
-		Die();
+		m_Alive = false;
+		m_Subject->Notify(dae::Event::SlickSamFell);
 		return false;
 	}
 }
@@ -80,7 +79,8 @@ bool SlickSam::MoveRight()
 	else
 	{
 		// Make them jump out of the map
-		Die();
+		m_Alive = false;
+		m_Subject->Notify(dae::Event::SlickSamFell);
 		return false;
 	}
 }

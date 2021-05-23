@@ -14,6 +14,7 @@ namespace dae
 		void Update(const float deltaTime);
 		void Render();
 
+		std::shared_ptr<Scene> GetCurrentScene() const { return m_Scenes[m_CurrentScene]; }
 		int GetCurrentSceneIdx() const { return m_CurrentScene;  }
 		void ChangeScene(int newSceneIdx);
 	

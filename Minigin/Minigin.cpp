@@ -196,8 +196,6 @@ void dae::Minigin::LoadGame() const
 
 void dae::Minigin::Cleanup()
 {
-	//delete soundSystem;
-	//delete loggingSystem;
 	Renderer::GetInstance().Destroy();
 	SDL_DestroyWindow(m_Window);
 	m_Window = nullptr;
@@ -206,9 +204,6 @@ void dae::Minigin::Cleanup()
 
 void dae::Minigin::Run()
 {
-	//Initialize();
-	//LoadGame(); // AKA, Minigin Demo
-
 	{
 		auto& renderer = Renderer::GetInstance();
 		auto& sceneManager = SceneManager::GetInstance();

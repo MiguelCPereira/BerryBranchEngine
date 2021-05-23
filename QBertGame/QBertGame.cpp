@@ -1,52 +1,35 @@
 // Project includes
+#include <Minigin.h>
 #include <memory>
 #include<string>
-#include "QBert.h"
-#include "Pyramid.h"
-
-// Engine includes - I later on intend on making a factory class, so most of these includes are temporary
-#include <Minigin.h>
-#include "Scene.h"
-#include "GraphicsComponent.h"
-#include "GameObject.h"
-#include "QBertComponent.h" // This class is the same as "QBert" and will eventually be deleted, it only exists for now as to not crash the engine demo
-#include "ResourceManager.h"
-#include "SoundServiceLocator.h"
-#include "FPSComponent.h"
-//#include "LivesDisplayComponent.h"
-//#include "PointsDisplayComponent.h"
-#include "TextComponent.h"
-#include "Command.h"
-#include "InputManager.h"
-#include <SDL.h>
-
-#include "GameCommands.h"
-//#include "GameObserver.h"
-#include "LevelSectionObserver.h"
 #include <cstdlib>
 #include <ctime>
+#include <SDL.h>
+#include "Pyramid.h"
+#include "Factory.h"
+#include "Scene.h"
+#include "GameObject.h"
+#include "Command.h"
+#include "InputManager.h"
+#include "GameCommands.h"
+#include "LevelSectionObserver.h"
+//#include "GameObserver.h"
 
-#include "SlickSam.h"
+// I'll delete these headers once I manage to get TextComponent working and can create a Factory function for it
+#include "ResourceManager.h"
+#include "FPSComponent.h"
+#include "TextComponent.h"
 
 
 // Global Variables
-const int g_NrRows = 7;
-const float g_CubesActualWidth = 64.f;
-const float g_CubesActualHeight = 64.f;
-const int g_CubesSpriteWidth = 32;
 const int g_CubesSpriteHeight = 32;
-const float g_QBertInitialPosX = 304;
-const float g_QBertInitialPosY = 50;
-const int g_EnemiesLeftSpawnPosX = 284;
-const float g_EnemiesRightSpawnPosX = 349;
-const float g_EnemiesSpawnPosY = 110;
+const int g_CubesSpriteWidth = 32;
 std::shared_ptr<dae::GameObject> g_QBertGO;
 //std::shared_ptr<dae::GameObject> g_GameObserverGO;
 
 
 // Global Functions
 void SetUpGlobalGOs();
-void LoadDemo();
 void LoadLevel01();
 void LoadLevel02();
 void LoadLevel03();
@@ -59,7 +42,7 @@ void PrintInstructions();
 int main(int, char* [])
 {
 	// Get a Random Seed
-	srand((unsigned)time(NULL));
+	srand((unsigned)time(nullptr));
 
     dae::Minigin engine;
     engine.Initialize();
@@ -108,29 +91,35 @@ void LoadLevel01()
 	// Transfer QBert
 	scene1.Add(g_QBertGO);
 
-	// Slick
-	auto slickGO = std::make_shared<dae::GameObject>();
-	slickGO->AddComponent(new SlickSam(slickGO, g_NrRows, g_CubesActualWidth, g_CubesActualHeight, 12, 16, 2, 2, true));
-	slickGO->AddComponent(new dae::GraphicsComponent("Slick Sam Spritesheet.png", g_EnemiesLeftSpawnPosX, g_EnemiesSpawnPosY, 28, 33, 0, 0, 12, 16));
-	scene1.Add(slickGO);
-
-	// Sam
-	auto samGO = std::make_shared<dae::GameObject>();
-	samGO->AddComponent(new SlickSam(samGO, g_NrRows, g_CubesActualWidth, g_CubesActualHeight, 12, 16, 3, 2, false));
-	samGO->AddComponent(new dae::GraphicsComponent("Slick Sam Spritesheet.png", g_EnemiesRightSpawnPosX, g_EnemiesSpawnPosY, 28, 33, 12, 16, 12, 16));
-	scene1.Add(samGO);
-	
 	// Level Section Observer
-	auto* slickSamVector = new std::vector<SlickSam*>;
-	slickSamVector->push_back(slickGO->GetComponent<SlickSam>());
-	slickSamVector->push_back(samGO->GetComponent<SlickSam>());
-	sectionObserverGO1->AddComponent(new LevelSectionObserver(sectionObserverGO1, g_QBertGO->GetComponent<dae::QBert>(),
-		pyramid, slickSamVector));
+	sectionObserverGO1->AddComponent(new LevelSectionObserver(sectionObserverGO1, g_QBertGO->GetComponent<dae::QBert>(), pyramid));
 	scene1.Add(sectionObserverGO1);
 
 	// Transfer Game Observer
 	//g_GameObserverGO->AddComponent(new GameObserver(g_GameObserverGO, sectionObserverGO1->GetComponent<LevelSectionObserver>()));
 	//scene1.Add(g_GameObserverGO);
+
+	
+	//		!!!!!!!!!!!!!!!!! NEED TO FIX !!!!!!!!!!!!!!!!!
+	// Any action that involves Transform leads to a crash right now
+	// Because transform pointers are returning null for some reason
+	// So the creation of a TextComponent will always crash,
+	// as well as changing the root position of a GameObject
+
+	// Test Text
+	//auto font = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
+	//auto testTextGO = std::make_shared<dae::GameObject>();
+	//testTextGO->AddComponent(new dae::TextComponent("Hello! I'm a test!!", font));
+	//testTextGO->GetComponent<dae::TextComponent>()->SetPosition(80, 20);
+	//scene1.Add(testTextGO);
+
+	// FPS Counter
+	//font = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 19);
+	//auto fpsCounterGO = std::make_shared<dae::GameObject>();
+	//fpsCounterGO->AddComponent(new dae::FPSComponent(fpsCounterGO));
+	//fpsCounterGO->AddComponent(new dae::TextComponent("FAIL FPS", font, 255, 255, 0));
+	//fpsCounterGO->GetComponent<dae::TextComponent>()->SetPosition(5, 5);
+	//scene1.Add(fpsCounterGO);
 
 	// Initialize Scene
 	scene1.Initialize();
@@ -158,6 +147,7 @@ void LoadLevel01()
 	scene2.Add(sectionObserverGO2);
 
 	// Transfer Game Observer
+	//g_GameObserverGO->AddComponent(new GameObserver(g_GameObserverGO, sectionObserverGO1->GetComponent<LevelSectionObserver>()));
 	//scene2.Add(g_GameObserverGO);
 
 
@@ -179,11 +169,11 @@ void LoadLevel01()
 	scene3.Add(g_QBertGO);
 
 	// Level Section Observer
-	sectionObserverGO3 = std::make_shared<dae::GameObject>();
 	sectionObserverGO3->AddComponent(new LevelSectionObserver(sectionObserverGO3, g_QBertGO->GetComponent<dae::QBert>(), pyramid));
 	scene3.Add(sectionObserverGO3);
 
 	// Transfer Game Observer
+	//g_GameObserverGO->AddComponent(new GameObserver(g_GameObserverGO, sectionObserverGO1->GetComponent<LevelSectionObserver>()));
 	//scene3.Add(g_GameObserverGO);
 
 
@@ -205,11 +195,11 @@ void LoadLevel01()
 	scene4.Add(g_QBertGO);
 
 	// Level Section Observer
-	sectionObserverGO4 = std::make_shared<dae::GameObject>();
 	sectionObserverGO4->AddComponent(new LevelSectionObserver(sectionObserverGO4, g_QBertGO->GetComponent<dae::QBert>(), pyramid));
 	scene4.Add(sectionObserverGO4);
 
 	// Transfer Game Observer
+	//g_GameObserverGO->AddComponent(new GameObserver(g_GameObserverGO, sectionObserverGO1->GetComponent<LevelSectionObserver>()));
 	//scene4.Add(g_GameObserverGO);
 }
 
@@ -231,11 +221,9 @@ void LoadLevel02()
 
 	// Level Section Observer
 	auto sectionObserverGO = std::make_shared<dae::GameObject>();
-	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGO->GetComponent<dae::QBert>(), pyramid));
+	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGO->GetComponent<dae::QBert>(),
+		pyramid, true, 20.f, 1.f));
 	scene1.Add(sectionObserverGO);
-
-	// Transfer Game Observer
-	//scene1.Add(g_GameObserverGO);
 
 
 	//////////////////////////
@@ -257,11 +245,9 @@ void LoadLevel02()
 
 	// Level Section Observer
 	sectionObserverGO = std::make_shared<dae::GameObject>();
-	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGO->GetComponent<dae::QBert>(), pyramid));
+	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGO->GetComponent<dae::QBert>(),
+		pyramid, true, 15.f, 1.f));
 	scene2.Add(sectionObserverGO);
-
-	// Transfer Game Observer
-	//scene2.Add(g_GameObserverGO);
 
 
 	//////////////////////////
@@ -283,11 +269,9 @@ void LoadLevel02()
 
 	// Level Section Observer
 	sectionObserverGO = std::make_shared<dae::GameObject>();
-	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGO->GetComponent<dae::QBert>(), pyramid));
+	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGO->GetComponent<dae::QBert>(),
+		pyramid, true, 10.f, 1.f));
 	scene3.Add(sectionObserverGO);
-
-	// Transfer Game Observer
-	//scene3.Add(g_GameObserverGO);
 
 
 	//////////////////////////
@@ -309,11 +293,9 @@ void LoadLevel02()
 
 	// Level Section Observer
 	sectionObserverGO = std::make_shared<dae::GameObject>();
-	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGO->GetComponent<dae::QBert>(), pyramid));
+	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGO->GetComponent<dae::QBert>(),
+		pyramid, true, 5.f, 1.f));
 	scene4.Add(sectionObserverGO);
-
-	// Transfer Game Observer
-	//scene4.Add(g_GameObserverGO);
 }
 
 void LoadLevel03()
@@ -334,11 +316,9 @@ void LoadLevel03()
 
 	// Level Section Observer
 	auto sectionObserverGO = std::make_shared<dae::GameObject>();
-	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGO->GetComponent<dae::QBert>(), pyramid));
+	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGO->GetComponent<dae::QBert>(),
+		pyramid, true, 25.f, 1.f));
 	scene1.Add(sectionObserverGO);
-
-	// Transfer Game Observer
-	//scene1.Add(g_GameObserverGO);
 
 
 	//////////////////////////
@@ -360,11 +340,9 @@ void LoadLevel03()
 
 	// Level Section Observer
 	sectionObserverGO = std::make_shared<dae::GameObject>();
-	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGO->GetComponent<dae::QBert>(), pyramid));
+	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGO->GetComponent<dae::QBert>(),
+		pyramid, true, 20.f, 1.f));
 	scene2.Add(sectionObserverGO);
-
-	// Transfer Game Observer
-	//scene2.Add(g_GameObserverGO);
 
 
 	//////////////////////////
@@ -386,11 +364,9 @@ void LoadLevel03()
 
 	// Level Section Observer
 	sectionObserverGO = std::make_shared<dae::GameObject>();
-	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGO->GetComponent<dae::QBert>(), pyramid));
+	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGO->GetComponent<dae::QBert>(),
+		pyramid, true, 15.f, 1.f));
 	scene3.Add(sectionObserverGO);
-
-	// Transfer Game Observer
-	//scene3.Add(g_GameObserverGO);
 
 
 	//////////////////////////
@@ -412,181 +388,36 @@ void LoadLevel03()
 
 	// Level Section Observer
 	sectionObserverGO = std::make_shared<dae::GameObject>();
-	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGO->GetComponent<dae::QBert>(), pyramid));
+	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGO->GetComponent<dae::QBert>(),
+		pyramid, true, 10.f, 1.f));
 	scene4.Add(sectionObserverGO);
-
-	// Transfer Game Observer
-	//scene4.Add(g_GameObserverGO);
-}
-
-void LoadDemo()
-{
-	auto& scene = dae::SceneManager::GetInstance().CreateScene("Demo");
-
-	// DAE Background
-	auto gameObject = std::make_shared<dae::GameObject>();
-	gameObject->AddComponent(new dae::GraphicsComponent("background.jpg"));
-	scene.Add(gameObject);
-
-
-	// DAE Logo
-	gameObject = std::make_shared<dae::GameObject>();
-	gameObject->AddComponent(new dae::GraphicsComponent("logo.png", 216, 180));
-	scene.Add(gameObject);
-
-	// Engine Title
-	auto font = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
-	gameObject = std::make_shared<dae::GameObject>();
-	
-	// Any action that involves Transform leads to a crash right now
-	// Because transform pointers are all messed up for some reason and return null
-	// So the creation of a TextComponent will always crash,
-	// as well as trying to change the position of a GameObject
-	
-	//gameObject->AddComponent(new dae::TextComponent("Programming 4 Assignment", font));
-	//gameObject->GetComponent<dae::TextComponent>()->SetPosition(80, 20);
-	scene.Add(gameObject);
-
-
-	// FPS Counter
-	//font = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 19);
-	//gameObject = std::make_shared<dae::GameObject>();
-	//gameObject->AddComponent(new dae::FPSComponent(gameObject));
-	//gameObject->AddComponent(new dae::TextComponent("FAIL FPS", font, 255, 255, 0));
-	//gameObject->GetComponent<dae::TextComponent>()->SetPosition(5, 5);
-	//scene.Add(gameObject);
-	
-	// QBert
-	auto qBertGameObject = std::make_shared<dae::GameObject>();
-	qBertGameObject->AddComponent(new dae::QBertComponent(qBertGameObject));
-	qBertGameObject->AddComponent(new dae::GraphicsComponent("qBert.png", 50, 270));
-	scene.Add(qBertGameObject);
-
-
-	// Input
-	auto dieKeyboard = std::make_unique<dae::DieCommand>();
-	dieKeyboard->SetActor(qBertGameObject);
-	dieKeyboard->SetButtonPressType(dae::ButtonPress::PressedDown);
-	dae::InputManager::GetInstance().AddCommand(SDLK_q, std::move(dieKeyboard));
-
-	auto colorChangeKeyboard = std::make_unique<dae::ColorChangeCommand>();
-	colorChangeKeyboard->SetActor(qBertGameObject);
-	colorChangeKeyboard->SetButtonPressType(dae::ButtonPress::PressedDown);
-	dae::InputManager::GetInstance().AddCommand(SDLK_w, std::move(colorChangeKeyboard));
-
-	auto tileChangeKeyboard = std::make_unique<dae::TileChangeCommand>();
-	tileChangeKeyboard->SetActor(qBertGameObject);
-	tileChangeKeyboard->SetButtonPressType(dae::ButtonPress::PressedDown);
-	dae::InputManager::GetInstance().AddCommand(SDLK_e, std::move(tileChangeKeyboard));
-
-	auto playSoundKeyboard = std::make_unique<dae::PlaySoundCommand>(&SoundServiceLocator::GetSoundSystem());
-	playSoundKeyboard->SetActor(qBertGameObject);
-	playSoundKeyboard->SetButtonPressType(dae::ButtonPress::PressedDown);
-	dae::InputManager::GetInstance().AddCommand(SDLK_SPACE, std::move(playSoundKeyboard));
-
-
-	// Lives Displays
-	//font = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 25);
-	//gameObject = std::make_shared<dae::GameObject>();
-	//gameObject->AddComponent(new dae::TextComponent("Remaining Lives: FAIL", font));
-	//gameObject->GetComponent<dae::TextComponent>()->SetPosition(13, 140);
-	//gameObject->AddComponent(new dae::LivesDisplayComponent(gameObject, qBertGameObject->GetComponent<dae::QBertComponent>()));
-	//scene.Add(gameObject);
-
-
-	// Points Displays
-	//font = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 25);
-	//gameObject = std::make_shared<dae::GameObject>();
-	//gameObject->AddComponent(new dae::TextComponent("Points: FAIL", font));
-	//gameObject->GetComponent<dae::TextComponent>()->SetPosition(70, 180);
-	//gameObject->AddComponent(new dae::PointsDisplayComponent(gameObject, qBertGameObject->GetComponent<dae::QBertComponent>()));
-	//scene.Add(gameObject);
-
-	
-	
-	// 2nd QBert
-	auto qBertGameObject2 = std::make_shared<dae::GameObject>();
-	qBertGameObject2->AddComponent(new dae::QBertComponent(qBertGameObject2));
-	qBertGameObject2->AddComponent(new dae::GraphicsComponent("qBert.png", 445, 270));
-	scene.Add(qBertGameObject2);
-
-	auto dieKeyboard2 = std::make_unique<dae::DieCommand>();
-	dieKeyboard2->SetActor(qBertGameObject2);
-	dieKeyboard2->SetButtonPressType(dae::ButtonPress::PressedDown);
-	dae::InputManager::GetInstance().AddCommand(SDLK_i, std::move(dieKeyboard2));
-	auto colorChangeKeyboard2 = std::make_unique<dae::ColorChangeCommand>();
-	colorChangeKeyboard2->SetActor(qBertGameObject2);
-	colorChangeKeyboard2->SetButtonPressType(dae::ButtonPress::PressedDown);
-	dae::InputManager::GetInstance().AddCommand(SDLK_o, std::move(colorChangeKeyboard2));
-	auto tileChangeKeyboard2 = std::make_unique<dae::TileChangeCommand>();
-	tileChangeKeyboard2->SetActor(qBertGameObject2);
-	tileChangeKeyboard2->SetButtonPressType(dae::ButtonPress::PressedDown);
-	dae::InputManager::GetInstance().AddCommand(SDLK_p, std::move(tileChangeKeyboard2));
-
-	//font = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 25);
-	//gameObject = std::make_shared<dae::GameObject>();
-	//gameObject->AddComponent(new dae::TextComponent("Remaining Lives: FAIL", font));
-	//gameObject->GetComponent<dae::TextComponent>()->SetPosition(408, 140);
-	//gameObject->AddComponent(new dae::LivesDisplayComponent(gameObject, qBertGameObject2->GetComponent<dae::QBertComponent>()));
-	//scene.Add(gameObject);
-
-	//font = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 25);
-	//gameObject = std::make_shared<dae::GameObject>();
-	//gameObject->AddComponent(new dae::TextComponent("Points: FAIL", font));
-	//gameObject->GetComponent<dae::TextComponent>()->SetPosition(465, 180);
-	//gameObject->AddComponent(new dae::PointsDisplayComponent(gameObject, qBertGameObject2->GetComponent<dae::QBertComponent>()));
-
-	scene.Add(gameObject);
-
-
-	
-	// Instructions
-	std::cout << "Controls:\n";
-	std::cout << "\n";
-	std::cout << "   Q   | Kill 1st QBert\n";
-	std::cout << "   W   | Change Color of 1st QBert (gain 10 points)\n";
-	std::cout << "   E   | Change Tile of 1st QBert (gain 25 points)\n";
-	std::cout << "   I   | Kill 2nd QBert\n";
-	std::cout << "   O   | Change Color of 2nd QBert (gain 10 points)\n";
-	std::cout << "   P   | Change Tile of 2nd QBert (gain 25 points)\n";
-	std::cout << " SPACE | Make a jump sound\n\n";
-	
-    scene.Initialize();
 }
 
 void SetUpGlobalGOs()
 {
 	// QBert
-	const auto qBertSpriteWidth = 17.f;
-	const auto qBertSpriteHeight = 16.f;
-	auto qBertGO = std::make_shared<dae::GameObject>();
-	qBertGO->AddComponent(new dae::QBert(qBertGO, g_NrRows, g_CubesActualWidth, g_CubesActualHeight, qBertSpriteWidth, qBertSpriteHeight));
-	qBertGO->AddComponent(new dae::GraphicsComponent("QBert Spritesheet.png", g_QBertInitialPosX, g_QBertInitialPosY, 49, 48, qBertSpriteWidth * 2, 0, qBertSpriteWidth, qBertSpriteHeight));
-	
+	g_QBertGO = MakeQBert();
 	 
 	// Player Input
 	auto moveUpKeyboard = std::make_unique<QBertMoveUpCommand>();
-	moveUpKeyboard->SetActor(qBertGO);
+	moveUpKeyboard->SetActor(g_QBertGO);
 	moveUpKeyboard->SetButtonPressType(dae::ButtonPress::PressedDown);
 	dae::InputManager::GetInstance().AddCommand(SDLK_w, std::move(moveUpKeyboard));
 
 	auto moveDownKeyboard = std::make_unique<QBertMoveDownCommand>();
-	moveDownKeyboard->SetActor(qBertGO);
+	moveDownKeyboard->SetActor(g_QBertGO);
 	moveDownKeyboard->SetButtonPressType(dae::ButtonPress::PressedDown);
 	dae::InputManager::GetInstance().AddCommand(SDLK_s, std::move(moveDownKeyboard));
 
 	auto moveLeftKeyboard = std::make_unique<QBertMoveLeftCommand>();
-	moveLeftKeyboard->SetActor(qBertGO);
+	moveLeftKeyboard->SetActor(g_QBertGO);
 	moveLeftKeyboard->SetButtonPressType(dae::ButtonPress::PressedDown);
 	dae::InputManager::GetInstance().AddCommand(SDLK_a, std::move(moveLeftKeyboard));
 
 	auto moveRightKeyboard = std::make_unique<QBertMoveRightCommand>();
-	moveRightKeyboard->SetActor(qBertGO);
+	moveRightKeyboard->SetActor(g_QBertGO);
 	moveRightKeyboard->SetButtonPressType(dae::ButtonPress::PressedDown);
 	dae::InputManager::GetInstance().AddCommand(SDLK_d, std::move(moveRightKeyboard));
-
-	
-	g_QBertGO = std::move(qBertGO);
 
 
 	// Game Observer
@@ -599,7 +430,7 @@ void PrintInstructions()
 	std::cout << "Controls:\n";
 	std::cout << "\n";
 	std::cout << "   W   | Move Up/Right\n";
-	std::cout << "   S   | Move Down/Left\n";
 	std::cout << "   A   | Move Up/Left\n";
+	std::cout << "   S   | Move Down/Left\n";
 	std::cout << "   D   | Move Down/Right\n\n";
 }

@@ -16,8 +16,8 @@ namespace dae
 class LevelSectionObserver final : public dae::BaseComponent, public dae::Observer
 {
 public:
-	explicit LevelSectionObserver(const std::shared_ptr<dae::GameObject>& gameObject, dae::QBert* qBertComp, Pyramid* pyramid);
-	explicit LevelSectionObserver(const std::shared_ptr<dae::GameObject>& gameObject, dae::QBert* qBertComp, Pyramid* pyramid, std::vector<SlickSam*>* slickSamCompVector);
+	explicit LevelSectionObserver(const std::shared_ptr<dae::GameObject>& gameObject, dae::QBert* qBertComp, Pyramid* pyramid,
+		bool spawnSlickSams = false, float slickSamSpawnInterval = 0, float slickSamMoveInterval = 0);
 	~LevelSectionObserver() override;
 
 	void SetQBert(dae::QBert* qBertComp);
@@ -25,17 +25,22 @@ public:
 	void SetSlickSamVector(std::vector<SlickSam*>* slickSamCompVector);
 
 	void Initialize() override;
-	void Update(const float) override {}
+	void Update(const float deltaTime) override;
 	void OnNotify(const dae::Event& event) override;
 
 	bool CheckAllCubesTurned() const;
 	void WinSection();
 
+	void AddSlickSam(bool isSlick, bool isLeft);
+
 private:
 	dae::QBert* m_QBertComp{};
 	Pyramid* m_Pyramid;
-	std::vector<SlickSam*>* m_SlickSamCompVector{};
 	std::shared_ptr<dae::GameObject> m_GameObject{};
 	bool m_SectionComplete;
+	const bool m_SpawnSlickSams;
+	std::vector<SlickSam*>* m_SlickSamCompVector;
+	float m_SlickSamSpawnTimer, m_SlickSamSpawnInterval, m_SlickSamMoveInterval;
+	bool m_SlickSamVectorModified = false;
 };
 

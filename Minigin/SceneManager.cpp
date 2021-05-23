@@ -12,20 +12,11 @@ void dae::SceneManager::Initialize()
 
 void dae::SceneManager::Update(const float deltaTime)
 {
-	//for(auto& scene : m_Scenes)
-	//{
-	//	scene->Update(deltaTime);
-	//}
-
 	m_Scenes[m_CurrentScene]->Update(deltaTime);
 }
 
 void dae::SceneManager::Render()
 {
-	//for (const auto& scene : m_Scenes)
-	//{
-	//	scene->Render();
-	//}
 	m_Scenes[m_CurrentScene]->Render();
 }
 

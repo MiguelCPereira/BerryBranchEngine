@@ -358,6 +358,7 @@ xcopy "$(SolutionDir)$(Platform)\$(Configuration)\*.dll" "$(OutputPath)" /R /Y</
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Cube.cpp" />
+    <ClCompile Include="Factory.cpp" />
     <ClCompile Include="GameCommands.cpp" />
     <ClCompile Include="GameObserver.cpp" />
     <ClCompile Include="LevelSectionObserver.cpp" />
@@ -368,6 +369,7 @@ xcopy "$(SolutionDir)$(Platform)\$(Configuration)\*.dll" "$(OutputPath)" /R /Y</
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Cube.h" />
+    <ClInclude Include="Factory.h" />
     <ClInclude Include="GameCommands.h" />
     <ClInclude Include="GameObserver.h" />
     <ClInclude Include="LevelSectionObserver.h" />

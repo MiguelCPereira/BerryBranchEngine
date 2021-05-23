@@ -17,7 +17,8 @@ namespace dae
 		SlickSamCaught,
 		
 		QBertMove,
-		SlickSamMove
+		SlickSamMove,
+		SlickSamFell
 	};
 
 	class Observer

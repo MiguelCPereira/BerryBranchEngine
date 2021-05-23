@@ -48,6 +48,9 @@
     <ClCompile Include="SlickSam.cpp">
       <Filter>Components\Characters</Filter>
     </ClCompile>
+    <ClCompile Include="Factory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Pyramid.h">
@@ -70,6 +73,9 @@
     </ClInclude>
     <ClInclude Include="SlickSam.h">
       <Filter>Components\Characters</Filter>
+    </ClInclude>
+    <ClInclude Include="Factory.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
