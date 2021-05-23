@@ -40,71 +40,93 @@ void dae::QBert::ResetPosition()
 
 }
 
+void dae::QBert::SetFrozen(bool frozen)
+{
+	m_Frozen = frozen;
+}
+
+void dae::QBert::HideGraphics() const
+{
+	m_GameObject->GetComponent<GraphicsComponent>()->SetPosition(-50, -50);
+}
+
 bool dae::QBert::MoveUpRight()
 {
-	// If QBert isn't in the end of any of the pyramid rows
-	if (m_CurrentCubeIdx != m_CurrentRow * (m_CurrentRow + 1) / 2)
+	if (m_Frozen == false)
 	{
-		m_CurrentCubeIdx = m_CurrentCubeIdx - m_CurrentRow + 1;
-		m_CurrentRow--;
-		auto* graphics = m_GameObject->GetComponent<GraphicsComponent>();
-		graphics->SetPosition(graphics->GetPosX() + m_CubesWidth / 2.f, graphics->GetPosY() - m_CubesHeight * 0.75f);
-		graphics->SetSrcRectangle(0, 0, m_QBertSpriteWidth, m_QBertSpriteHeight);
-		m_Subject->Notify(Event::QBertMove);
-		return true;
+		// If QBert isn't in the end of any of the pyramid rows
+		if (m_CurrentCubeIdx != m_CurrentRow * (m_CurrentRow + 1) / 2)
+		{
+			m_CurrentCubeIdx = m_CurrentCubeIdx - m_CurrentRow + 1;
+			m_CurrentRow--;
+			auto* graphics = m_GameObject->GetComponent<GraphicsComponent>();
+			graphics->SetPosition(graphics->GetPosX() + m_CubesWidth / 2.f, graphics->GetPosY() - m_CubesHeight * 0.75f);
+			graphics->SetSrcRectangle(0, 0, m_QBertSpriteWidth, m_QBertSpriteHeight);
+			m_Subject->Notify(Event::QBertMove);
+			return true;
+		}
+		return false;
 	}
-	
 	return false;
 }
 
 bool dae::QBert::MoveUpLeft()
 {
-	// If QBert isn't in the beginning of any of the pyramid rows
-	if (m_CurrentCubeIdx != m_CurrentRow * (m_CurrentRow + 1) / 2 - m_CurrentRow + 1 && m_CurrentCubeIdx != 1)
+	if (m_Frozen == false)
 	{
-		m_CurrentCubeIdx = m_CurrentCubeIdx - m_CurrentRow;
-		m_CurrentRow--;
-		auto* graphics = m_GameObject->GetComponent<GraphicsComponent>();
-		graphics->SetPosition(graphics->GetPosX() - m_CubesWidth / 2.f, graphics->GetPosY() - m_CubesHeight * 0.75f);
-		graphics->SetSrcRectangle(m_QBertSpriteWidth, 0, m_QBertSpriteWidth, m_QBertSpriteHeight);
-		m_Subject->Notify(Event::QBertMove);
-		return true;
+		// If QBert isn't in the beginning of any of the pyramid rows
+		if (m_CurrentCubeIdx != m_CurrentRow * (m_CurrentRow + 1) / 2 - m_CurrentRow + 1 && m_CurrentCubeIdx != 1)
+		{
+			m_CurrentCubeIdx = m_CurrentCubeIdx - m_CurrentRow;
+			m_CurrentRow--;
+			auto* graphics = m_GameObject->GetComponent<GraphicsComponent>();
+			graphics->SetPosition(graphics->GetPosX() - m_CubesWidth / 2.f, graphics->GetPosY() - m_CubesHeight * 0.75f);
+			graphics->SetSrcRectangle(m_QBertSpriteWidth, 0, m_QBertSpriteWidth, m_QBertSpriteHeight);
+			m_Subject->Notify(Event::QBertMove);
+			return true;
+		}
+		return false;
 	}
-
 	return false;
 }
 
 bool dae::QBert::MoveDownLeft()
 {
-	// If QBert isn't in the last pyramid row
-	if (m_CurrentRow != m_LastRow)
+	if (m_Frozen == false)
 	{
-		m_CurrentCubeIdx = m_CurrentCubeIdx + m_CurrentRow;
-		m_CurrentRow++;
-		auto* graphics = m_GameObject->GetComponent<GraphicsComponent>();
-		graphics->SetPosition(graphics->GetPosX() - m_CubesWidth / 2.f, graphics->GetPosY() + m_CubesHeight * 0.75f);
-		graphics->SetSrcRectangle(m_QBertSpriteWidth * 3, 0, m_QBertSpriteWidth, m_QBertSpriteHeight);
-		m_Subject->Notify(Event::QBertMove);
-		return true;
+		// If QBert isn't in the last pyramid row
+		if (m_CurrentRow != m_LastRow)
+		{
+			m_CurrentCubeIdx = m_CurrentCubeIdx + m_CurrentRow;
+			m_CurrentRow++;
+			auto* graphics = m_GameObject->GetComponent<GraphicsComponent>();
+			graphics->SetPosition(graphics->GetPosX() - m_CubesWidth / 2.f, graphics->GetPosY() + m_CubesHeight * 0.75f);
+			graphics->SetSrcRectangle(m_QBertSpriteWidth * 3, 0, m_QBertSpriteWidth, m_QBertSpriteHeight);
+			m_Subject->Notify(Event::QBertMove);
+			return true;
+		}
+		return false;
 	}
-
 	return false;
 }
 
 bool dae::QBert::MoveDownRight()
 {
-	// If QBert isn't in the last pyramid row
-	if (m_CurrentRow != m_LastRow)
+	if (m_Frozen == false)
 	{
-		m_CurrentCubeIdx = m_CurrentCubeIdx + m_CurrentRow + 1;
-		m_CurrentRow++;
-		auto* graphics = m_GameObject->GetComponent<GraphicsComponent>();
-		graphics->SetPosition(graphics->GetPosX() + m_CubesWidth / 2.f, graphics->GetPosY() + m_CubesHeight * 0.75f);
-		graphics->SetSrcRectangle(m_QBertSpriteWidth * 2, 0, m_QBertSpriteWidth, m_QBertSpriteHeight);
-		m_Subject->Notify(Event::QBertMove);
-		return true;
+		// If QBert isn't in the last pyramid row
+		if (m_CurrentRow != m_LastRow)
+		{
+			m_CurrentCubeIdx = m_CurrentCubeIdx + m_CurrentRow + 1;
+			m_CurrentRow++;
+			auto* graphics = m_GameObject->GetComponent<GraphicsComponent>();
+			graphics->SetPosition(graphics->GetPosX() + m_CubesWidth / 2.f, graphics->GetPosY() + m_CubesHeight * 0.75f);
+			graphics->SetSrcRectangle(m_QBertSpriteWidth * 2, 0, m_QBertSpriteWidth, m_QBertSpriteHeight);
+			m_Subject->Notify(Event::QBertMove);
+			return true;
+		}
+		return false;
 	}
-
 	return false;
 }
 

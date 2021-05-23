@@ -13,8 +13,8 @@ public:
 	bool GetStartedLeft() const { return m_StartingLeft; }
 	int GetCurrentRow() const { return m_CurrentRow; }
 
-	void ChangeTile() const;
-	void Die();
+	void SetFrozen(bool frozen);
+	void Die() const;
 
 	// If the name of the movement functions seem confusing
 	// Picture if the sprite was drawn on top of the cube,
@@ -28,6 +28,7 @@ public:
 
 private:
 	std::shared_ptr<dae::GameObject> m_GameObject{};
+	bool m_Frozen{ false };
 	int m_CurrentCubeIdx;
 	int m_CurrentRow;
 	int m_LastRow;

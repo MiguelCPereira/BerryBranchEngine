@@ -11,8 +11,8 @@ public:
 	int GetPositionIndex() const { return m_CurrentCubeIdx; }
 	bool GetIsAlive() const { return m_Alive; }
 
-	void ChangeTile() const;
-	void Die();
+	void SetFrozen(bool frozen);
+	void Die() const;
 
 	bool MoveDownLeft();
 	bool MoveDownRight();
@@ -21,6 +21,7 @@ public:
 
 private:
 	std::shared_ptr<dae::GameObject> m_GameObject{};
+	bool m_Frozen{ false };
 	int m_CurrentCubeIdx;
 	int m_CurrentRow{ 2 };
 	int m_LastRow;

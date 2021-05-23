@@ -18,6 +18,12 @@ public:
 	void SlickSamTurnCube();
 	bool GetIsTurned() const { return m_Turned; }
 
+	// These functions are only for animation purposes
+	// They don't actually change anything about the cube's functionality
+	void MakeCube1stColor() const;
+	void MakeCube2ndColor() const;
+	void MakeCube3rdColor() const;
+
 	void Update(const float deltaTime) override;
 
 private:

@@ -16,6 +16,8 @@ namespace dae
 		
 		void Die();
 		void ResetPosition();
+		void SetFrozen(bool frozen);
+		void HideGraphics() const;
 
 		bool MoveUpRight();
 		bool MoveUpLeft();
@@ -28,6 +30,7 @@ namespace dae
 	private:
 		int m_Lives{ 3 };
 		int m_HP{ 100 };
+		bool m_Frozen{ false };
 		std::shared_ptr<GameObject> m_GameObject{};
 		int m_CurrentCubeIdx{ 1 };
 		int m_CurrentRow{ 1 };

@@ -13,7 +13,7 @@
 #include "UggWrongway.h"
 
 LevelSectionObserver::LevelSectionObserver(const std::shared_ptr<dae::GameObject>& gameObject, dae::QBert* qBertComp, Pyramid* pyramid,
-	bool spawnSlickSams, bool spawnUggWrongs, float slickSamSpawnInterval, float slickSamMoveInterval, float uggWrongSpawnInterval, float uggWrongMoveInterval)
+	int level, bool spawnSlickSams, bool spawnUggWrongs, float slickSamSpawnInterval, float slickSamMoveInterval, float uggWrongSpawnInterval, float uggWrongMoveInterval)
 	: m_GameObject(gameObject)
 	, m_QBertComp(qBertComp)
 	, m_Pyramid(pyramid)
@@ -25,11 +25,19 @@ LevelSectionObserver::LevelSectionObserver(const std::shared_ptr<dae::GameObject
 
 	, m_SpawnUggWrongs(spawnUggWrongs)
 	, m_UggWrongSpawnTimer1(0.f)
-	, m_UggWrongSpawnTimer2(-1.f) // So the right spawner has a 1 sec delay compared to the left one
+	, m_UggWrongSpawnTimer2(0.f)
 	, m_UggWrongSpawnInterval(uggWrongSpawnInterval)
 	, m_UggWrongMoveInterval(uggWrongMoveInterval)
 
 	, m_SectionComplete(false)
+	, m_AnimationTimer(0.f)
+	, m_FullAnimationTime(3.f)
+	, m_FlashingTimer(0.1f)
+	, m_FlashingColorTime(0.1f)
+	, m_PostAnimationPause(2.f)
+	, m_PostAnimationTimer(0.f)
+	, m_EverythingClear(false)
+	, m_Level(level)
 {
 	// So it only takes 2 secs for the first Ugg/Wrongway to spawn
 	if (m_UggWrongSpawnInterval - 2.f > 0.f)
@@ -93,7 +101,6 @@ void LevelSectionObserver::SetPyramid(Pyramid* pyramid)
 	m_Pyramid = pyramid;
 }
 
-
 void LevelSectionObserver::AddSlickSam(bool isSlick, bool isLeft)
 {
 	auto newSlickSamGO = MakeSlickSam(isSlick, isLeft, m_SlickSamMoveInterval);
@@ -146,7 +153,7 @@ void LevelSectionObserver::OnNotify(const dae::Event& event)
 		if (CheckCollidingUggWrong())
 		{
 			m_QBertComp->Die();
-			ClearEverything();
+			ClearAllEnemies();
 		}
 		break;
 
@@ -168,7 +175,7 @@ void LevelSectionObserver::OnNotify(const dae::Event& event)
 		if (CheckCollidingUggWrong())
 		{
 			m_QBertComp->Die();
-			ClearEverything();
+			ClearAllEnemies();
 		}
 		break;
 
@@ -188,46 +195,6 @@ bool LevelSectionObserver::CheckAllCubesTurned() const
 	}
 	
 	return true;
-}
-
-void LevelSectionObserver::WinSection()
-{
-	if (m_SectionComplete == false)
-	{
-		m_SectionComplete = true;
-		std::cout << "Color Switch!\n";
-		m_Subject->Notify(dae::Event::ColorChange);
-		m_QBertComp->ResetPosition();
-		auto& scene = dae::SceneManager::GetInstance();
-		scene.ChangeScene(scene.GetCurrentSceneIdx() + 1);
-	}	
-}
-
-void LevelSectionObserver::ClearEverything()
-{
-	std::cout << "OUCH\n";
-	
-	auto nrComponents = m_SlickSamCompVector->size();
-	for (int i = 0; i < nrComponents; i++)
-	{
-		auto* slickSam = m_SlickSamCompVector->operator[](0);
-		m_SlickSamCompVector->erase(m_SlickSamCompVector->begin());
-		slickSam->Die();
-	}
-	
-	m_SlickSamSpawnTimer = 0.f;
-
-	
-	nrComponents = m_UggWrongCompVector->size();
-	for (int i = 0; i < nrComponents; i++)
-	{
-		auto* uggWrong = m_UggWrongCompVector->operator[](0);
-		m_UggWrongCompVector->erase(m_UggWrongCompVector->begin());
-		uggWrong->Die();
-	}
-	
-	m_UggWrongSpawnTimer1 = 0.f;
-	m_UggWrongSpawnTimer2 = -2.f;
 }
 
 bool LevelSectionObserver::CheckCollidingUggWrong() const
@@ -302,55 +269,185 @@ void LevelSectionObserver::KillFallenUggWrong() const
 	}
 }
 
-void LevelSectionObserver::Update(const float deltaTime)
+void LevelSectionObserver::ClearAllEnemies()
 {
-	if (m_SpawnSlickSams)
+	std::cout << "OUCH\n";
+
+	auto nrComponents = m_SlickSamCompVector->size();
+	for (int i = 0; i < nrComponents; i++)
 	{
-		m_SlickSamSpawnTimer += deltaTime;
-
-		if (m_SlickSamSpawnTimer >= m_SlickSamSpawnInterval)
-		{
-			bool isSlick = false;
-			bool isLeft = false;
-
-			// A random 50/50 chance of spawning either a Slick or a Sam
-			if ((rand() % 2) + 1 == 1)
-				isSlick = true;
-
-			// A random 50/50 chance of spawning either a left or right
-			if ((rand() % 2) + 1 == 1)
-				isLeft = true;
-
-			AddSlickSam(isSlick, isLeft);
-			m_SlickSamSpawnTimer -= m_SlickSamSpawnInterval;
-		}
+		auto* slickSam = m_SlickSamCompVector->operator[](0);
+		m_SlickSamCompVector->erase(m_SlickSamCompVector->begin());
+		slickSam->Die();
 	}
 
-	if (m_SpawnUggWrongs)
+	m_SlickSamSpawnTimer = 0.f;
+
+
+	nrComponents = m_UggWrongCompVector->size();
+	for (int i = 0; i < nrComponents; i++)
 	{
-		m_UggWrongSpawnTimer1 += deltaTime;
-		m_UggWrongSpawnTimer2 += deltaTime;
+		auto* uggWrong = m_UggWrongCompVector->operator[](0);
+		m_UggWrongCompVector->erase(m_UggWrongCompVector->begin());
+		uggWrong->Die();
+	}
 
-		if (m_UggWrongSpawnTimer1 >= m_UggWrongSpawnInterval)
+	m_UggWrongSpawnTimer1 = 0.f;
+	m_UggWrongSpawnTimer2 = -2.f;
+}
+
+void LevelSectionObserver::WinSection()
+{
+	if (m_SectionComplete == false)
+	{
+		ChangeFreezeEverything(true);
+		m_SectionComplete = true;
+		std::cout << "Color Switch!\n";
+		m_Subject->Notify(dae::Event::ColorChange);
+	}
+}
+
+void LevelSectionObserver::ChangeFreezeEverything(bool freeze) const
+{
+	m_QBertComp->SetFrozen(freeze);
+	
+	for (auto i = 0; i < m_SlickSamCompVector->size(); i++)
+		m_SlickSamCompVector->operator[](0)->SetFrozen(freeze);
+
+	for (auto i = 0; i < m_UggWrongCompVector->size(); i++)
+		m_UggWrongCompVector->operator[](0)->SetFrozen(freeze);
+	
+}
+
+void LevelSectionObserver::ChangeSection() const
+{
+	m_QBertComp->ResetPosition();
+	auto& scene = dae::SceneManager::GetInstance();
+	scene.ChangeScene(scene.GetCurrentSceneIdx() + 1);
+}
+
+void LevelSectionObserver::Update(const float deltaTime)
+{
+	if (m_SectionComplete == false)
+	{
+		if (m_SpawnSlickSams)
 		{
-			bool isUgg = false;
+			m_SlickSamSpawnTimer += deltaTime;
 
-			if ((rand() % 2) + 1 == 1)
-				isUgg = true;
+			if (m_SlickSamSpawnTimer >= m_SlickSamSpawnInterval)
+			{
+				bool isSlick = false;
+				bool isLeft = false;
 
-			AddUggWrongway(isUgg, true);
-			m_UggWrongSpawnTimer1 -= m_UggWrongSpawnInterval;
+				// A random 50/50 chance of spawning either a Slick or a Sam
+				if ((rand() % 2) + 1 == 1)
+					isSlick = true;
+
+				// A random 50/50 chance of spawning either a left or right
+				if ((rand() % 2) + 1 == 1)
+					isLeft = true;
+
+				AddSlickSam(isSlick, isLeft);
+				m_SlickSamSpawnTimer -= m_SlickSamSpawnInterval;
+			}
 		}
 
-		if (m_UggWrongSpawnTimer2 >= m_UggWrongSpawnInterval)
+		if (m_SpawnUggWrongs)
 		{
-			bool isUgg = false;
+			m_UggWrongSpawnTimer1 += deltaTime;
+			m_UggWrongSpawnTimer2 += deltaTime;
 
-			if ((rand() % 2) + 1 == 1)
-				isUgg = true;
+			if (m_UggWrongSpawnTimer1 >= m_UggWrongSpawnInterval)
+			{
+				bool isUgg = false;
 
-			AddUggWrongway(isUgg, false);
-			m_UggWrongSpawnTimer2 -= m_UggWrongSpawnInterval;
+				if ((rand() % 2) + 1 == 1)
+					isUgg = true;
+
+				AddUggWrongway(isUgg, true);
+				m_UggWrongSpawnTimer1 -= m_UggWrongSpawnInterval;
+			}
+
+			// An extra second is added so the right spawner has a tiny delay compared to the left one
+			if (m_UggWrongSpawnTimer2 >= m_UggWrongSpawnInterval + 1.f)
+			{
+				bool isUgg = false;
+
+				if ((rand() % 2) + 1 == 1)
+					isUgg = true;
+
+				AddUggWrongway(isUgg, false);
+				m_UggWrongSpawnTimer2 -= m_UggWrongSpawnInterval;
+			}
+		}
+	}
+	else
+	{
+		LevelWonAnimation(deltaTime);
+	}
+}
+
+void LevelSectionObserver::LevelWonAnimation(const float deltaTime)
+{
+	m_AnimationTimer += deltaTime;
+	m_FlashingTimer += deltaTime;
+
+	if (m_AnimationTimer < m_FullAnimationTime)
+	{
+		// If it's time to change color
+		if (m_FlashingTimer >= m_FlashingColorTime)
+		{
+			if (m_CurrentFlashingColor == 1)
+			{
+				// Turn every cube into the 2nd row color (yellow, blue, dark grey, grey-yellow, no-base blue or dark blue)
+				for (const std::shared_ptr<dae::GameObject>& cube : m_Pyramid->m_CubeGOVector)
+					cube->GetComponent<Cube>()->MakeCube2ndColor();
+
+				m_CurrentFlashingColor = 2;
+			}
+			else if (m_CurrentFlashingColor == 2)
+			{
+				// Turn every cube into the 3rd row color (red, green, blue, purple, pink or dark purple)
+				for (const std::shared_ptr<dae::GameObject>& cube : m_Pyramid->m_CubeGOVector)
+					cube->GetComponent<Cube>()->MakeCube3rdColor();
+
+				m_CurrentFlashingColor = 3;
+			}
+			else
+			{
+				// Turn every cube into the 1st row color (blue, yellow, white, light-blue, no-base yellow or baby-blue)
+				for (const std::shared_ptr<dae::GameObject>& cube : m_Pyramid->m_CubeGOVector)
+					cube->GetComponent<Cube>()->MakeCube1stColor();
+
+				m_CurrentFlashingColor = 1;
+			}
+
+			m_FlashingTimer = 0.f;
+		}
+	}
+	else // Animation complete
+	{
+		if (m_EverythingClear == false)
+		{
+			m_EverythingClear = true;
+			ClearAllEnemies();
+			m_QBertComp->HideGraphics();
+
+			// Set cubes to original turned color
+			for (const std::shared_ptr<dae::GameObject>& cube : m_Pyramid->m_CubeGOVector)
+			{
+				if(m_Level == 2)
+					cube->GetComponent<Cube>()->MakeCube3rdColor();
+				else
+					cube->GetComponent<Cube>()->MakeCube2ndColor();
+			}
+		}
+		
+		m_PostAnimationTimer += deltaTime;
+		if (m_PostAnimationTimer >= m_PostAnimationPause)
+		{
+			m_QBertComp->SetFrozen(false);
+			ChangeSection();
 		}
 	}
 }

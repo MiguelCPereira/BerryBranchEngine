@@ -93,6 +93,21 @@ void Cube::SlickSamTurnCube()
 	}
 }
 
+void Cube::MakeCube1stColor() const
+{
+	m_GameObject->GetComponent<dae::GraphicsComponent>()->SetSrcRectangle(float(m_ColorIdx) * m_CubeSpriteWidth, 0, m_CubeSpriteWidth, m_CubeSpriteHeight);
+}
+
+void Cube::MakeCube2ndColor() const
+{
+	m_GameObject->GetComponent<dae::GraphicsComponent>()->SetSrcRectangle(float(m_ColorIdx) * m_CubeSpriteWidth, m_CubeSpriteHeight, m_CubeSpriteWidth, m_CubeSpriteHeight);
+}
+
+void Cube::MakeCube3rdColor() const
+{
+	m_GameObject->GetComponent<dae::GraphicsComponent>()->SetSrcRectangle(float(m_ColorIdx) * m_CubeSpriteWidth, m_CubeSpriteHeight * 2, m_CubeSpriteWidth, m_CubeSpriteHeight);
+}
+
 void Cube::Update(const float)
 {
 }

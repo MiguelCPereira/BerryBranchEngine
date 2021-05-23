@@ -93,7 +93,7 @@ void LoadLevel01()
 
 	// Level Section Observer
 	sectionObserverGO1->AddComponent(new LevelSectionObserver(sectionObserverGO1, g_QBertGO->GetComponent<dae::QBert>(),
-		pyramid, false, false));
+		pyramid, 1, false, false));
 
 	scene1.Add(sectionObserverGO1);
 
@@ -146,7 +146,7 @@ void LoadLevel01()
 
 	// Level Section Observer
 	sectionObserverGO2->AddComponent(new LevelSectionObserver(sectionObserverGO2, g_QBertGO->GetComponent<dae::QBert>(),
-		pyramid, false, false));
+		pyramid, 1, false, false));
 	scene2.Add(sectionObserverGO2);
 
 	// Transfer Game Observer
@@ -173,7 +173,7 @@ void LoadLevel01()
 
 	// Level Section Observer
 	sectionObserverGO3->AddComponent(new LevelSectionObserver(sectionObserverGO3, g_QBertGO->GetComponent<dae::QBert>(),
-		pyramid, false, true, 0, 0, 10.f, 1.f));
+		pyramid, 1, false, true, 0, 0, 10.f, 1.f));
 	scene3.Add(sectionObserverGO3);
 
 	// Transfer Game Observer
@@ -200,7 +200,7 @@ void LoadLevel01()
 
 	// Level Section Observer
 	sectionObserverGO4->AddComponent(new LevelSectionObserver(sectionObserverGO4, g_QBertGO->GetComponent<dae::QBert>(),
-		pyramid, false, true, 0, 0, 7.f, 1.f));
+		pyramid, 1, false, true, 0, 0, 7.f, 1.f));
 	scene4.Add(sectionObserverGO4);
 
 	// Transfer Game Observer
@@ -227,7 +227,7 @@ void LoadLevel02()
 	// Level Section Observer
 	auto sectionObserverGO = std::make_shared<dae::GameObject>();
 	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGO->GetComponent<dae::QBert>(),
-		pyramid, true, true, 20.f, 1.f, 15.f, 1.f));
+		pyramid, 2, true, true, 20.f, 1.f, 15.f, 1.f));
 	scene1.Add(sectionObserverGO);
 
 
@@ -251,7 +251,7 @@ void LoadLevel02()
 	// Level Section Observer
 	sectionObserverGO = std::make_shared<dae::GameObject>();
 	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGO->GetComponent<dae::QBert>(),
-		pyramid, true, true, 15.f, 1.f, 10.f, 1.f));
+		pyramid, 2, true, true, 15.f, 1.f, 10.f, 1.f));
 	scene2.Add(sectionObserverGO);
 
 
@@ -275,7 +275,7 @@ void LoadLevel02()
 	// Level Section Observer
 	sectionObserverGO = std::make_shared<dae::GameObject>();
 	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGO->GetComponent<dae::QBert>(),
-		pyramid, true, true, 10.f, 1.f, 7.f, 1.f));
+		pyramid, 2, true, true, 10.f, 1.f, 7.f, 1.f));
 	scene3.Add(sectionObserverGO);
 
 
@@ -299,7 +299,7 @@ void LoadLevel02()
 	// Level Section Observer
 	sectionObserverGO = std::make_shared<dae::GameObject>();
 	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGO->GetComponent<dae::QBert>(),
-		pyramid, true, true, 5.f, 1.f, 5.f, 1.f));
+		pyramid, 2, true, true, 5.f, 1.f, 5.f, 1.f));
 	scene4.Add(sectionObserverGO);
 }
 
@@ -322,7 +322,7 @@ void LoadLevel03()
 	// Level Section Observer
 	auto sectionObserverGO = std::make_shared<dae::GameObject>();
 	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGO->GetComponent<dae::QBert>(),
-		pyramid, true, true, 25.f, 1.f, 15.f, 1.f));
+		pyramid, 3, true, true, 25.f, 1.f, 15.f, 1.f));
 	scene1.Add(sectionObserverGO);
 
 
@@ -346,7 +346,7 @@ void LoadLevel03()
 	// Level Section Observer
 	sectionObserverGO = std::make_shared<dae::GameObject>();
 	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGO->GetComponent<dae::QBert>(),
-		pyramid, true, true, 20.f, 1.f, 10.f, 1.f));
+		pyramid, 3, true, true, 20.f, 1.f, 10.f, 1.f));
 	scene2.Add(sectionObserverGO);
 
 
@@ -370,7 +370,7 @@ void LoadLevel03()
 	// Level Section Observer
 	sectionObserverGO = std::make_shared<dae::GameObject>();
 	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGO->GetComponent<dae::QBert>(),
-		pyramid, true, true, 15.f, 1.f, 7.f, 1.f));
+		pyramid, 3, true, true, 15.f, 1.f, 7.f, 1.f));
 	scene3.Add(sectionObserverGO);
 
 
@@ -394,7 +394,7 @@ void LoadLevel03()
 	// Level Section Observer
 	sectionObserverGO = std::make_shared<dae::GameObject>();
 	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGO->GetComponent<dae::QBert>(),
-		pyramid, true, true, 10.f, 1.f, 5.f ,1.f));
+		pyramid, 3, true, true, 10.f, 1.f, 5.f ,1.f));
 	scene4.Add(sectionObserverGO);
 }
 

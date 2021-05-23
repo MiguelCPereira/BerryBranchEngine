@@ -18,7 +18,7 @@ class LevelSectionObserver final : public dae::BaseComponent, public dae::Observ
 {
 public:
 	explicit LevelSectionObserver(const std::shared_ptr<dae::GameObject>& gameObject, dae::QBert* qBertComp, Pyramid* pyramid,
-		bool spawnSlickSams, bool spawnUggWrongs,
+		int level, bool spawnSlickSams, bool spawnUggWrongs,
 		float slickSamSpawnInterval = 0, float slickSamMoveInterval = 0,
 		float uggWrongSpawnInterval = 0, float uggWrongMoveInterval = 0);
 	~LevelSectionObserver() override;
@@ -31,12 +31,16 @@ public:
 	void OnNotify(const dae::Event& event) override;
 
 	bool CheckAllCubesTurned() const;
-	void WinSection();
-	void ClearEverything();
 	bool CheckCollidingUggWrong() const;
 	void KillCollidingSlickSam() const;
 	void KillFallenSlickSam() const;
 	void KillFallenUggWrong() const;
+	void ClearAllEnemies();
+
+	void WinSection();
+	void LevelWonAnimation(const float deltaTime);
+	void ChangeFreezeEverything(bool freeze) const;
+	void ChangeSection() const;
 
 	void AddSlickSam(bool isSlick, bool isLeft);
 	void AddUggWrongway(bool isUgg, bool isLeft);
@@ -55,5 +59,12 @@ private:
 	float m_UggWrongSpawnTimer1, m_UggWrongSpawnTimer2, m_UggWrongSpawnInterval, m_UggWrongMoveInterval;
 
 	bool m_SectionComplete;
+	float m_AnimationTimer, m_FullAnimationTime;
+	float m_FlashingTimer, m_FlashingColorTime;
+	float m_PostAnimationTimer, m_PostAnimationPause;
+	int m_CurrentFlashingColor;
+	bool m_EverythingClear;
+	const int m_Level;
+	
 };
 
