@@ -17,6 +17,7 @@ namespace dae
 class LevelSectionObserver final : public dae::BaseComponent, public dae::Observer
 {
 public:
+	explicit LevelSectionObserver(float transitionTime); // An empty observer just for the level title scenes
 	explicit LevelSectionObserver(const std::shared_ptr<dae::GameObject>& gameObject, dae::QBert* qBertComp, Pyramid* pyramid,
 		int level, bool spawnSlickSams, bool spawnUggWrongs,
 		float slickSamSpawnInterval = 0, float slickSamMoveInterval = 0,
@@ -65,6 +66,8 @@ private:
 	int m_CurrentFlashingColor;
 	bool m_EverythingClear;
 	const int m_Level;
+
+	float m_LevelTitleTimer, m_LevelTitleScreenTime;
 	
 };
 

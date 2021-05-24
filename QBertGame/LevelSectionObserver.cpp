@@ -12,6 +12,40 @@
 #include "Factory.h"
 #include "UggWrongway.h"
 
+LevelSectionObserver::LevelSectionObserver(float transitionTime)
+	: m_GameObject()
+	, m_QBertComp()
+	, m_Pyramid()
+
+	, m_SpawnSlickSams()
+	, m_SlickSamSpawnTimer()
+	, m_SlickSamSpawnInterval()
+	, m_SlickSamMoveInterval()
+
+	, m_SpawnUggWrongs()
+	, m_UggWrongSpawnTimer1()
+	, m_UggWrongSpawnTimer2()
+	, m_UggWrongSpawnInterval()
+	, m_UggWrongMoveInterval()
+
+	, m_SectionComplete()
+	, m_AnimationTimer()
+	, m_FullAnimationTime()
+	, m_FlashingTimer()
+	, m_FlashingColorTime()
+	, m_PostAnimationTimer()
+	, m_PostAnimationPause()
+	, m_CurrentFlashingColor()
+	, m_EverythingClear()
+	, m_Level()
+
+	, m_LevelTitleTimer(0.f)
+	, m_LevelTitleScreenTime(transitionTime)
+{
+}
+
+
+
 LevelSectionObserver::LevelSectionObserver(const std::shared_ptr<dae::GameObject>& gameObject, dae::QBert* qBertComp, Pyramid* pyramid,
 	int level, bool spawnSlickSams, bool spawnUggWrongs, float slickSamSpawnInterval, float slickSamMoveInterval, float uggWrongSpawnInterval, float uggWrongMoveInterval)
 	: m_GameObject(gameObject)
@@ -31,13 +65,17 @@ LevelSectionObserver::LevelSectionObserver(const std::shared_ptr<dae::GameObject
 
 	, m_SectionComplete(false)
 	, m_AnimationTimer(0.f)
-	, m_FullAnimationTime(3.f)
+	, m_FullAnimationTime(2.f)
 	, m_FlashingTimer(0.1f)
 	, m_FlashingColorTime(0.1f)
-	, m_PostAnimationPause(2.f)
 	, m_PostAnimationTimer(0.f)
+	, m_PostAnimationPause(1.f)
+	, m_CurrentFlashingColor(3)
 	, m_EverythingClear(false)
 	, m_Level(level)
+
+	, m_LevelTitleTimer()
+	, m_LevelTitleScreenTime()
 {
 	// So it only takes 2 secs for the first Ugg/Wrongway to spawn
 	if (m_UggWrongSpawnInterval - 2.f > 0.f)
@@ -57,7 +95,7 @@ LevelSectionObserver::~LevelSectionObserver()
 
 	if (m_SlickSamCompVector->empty() == false)
 	{
-		for (int i = 0; i < m_SlickSamCompVector->size(); i++)
+		for (size_t i = 0; i < m_SlickSamCompVector->size(); i++)
 		{
 			if (m_SlickSamCompVector->operator[](i) != nullptr)
 				m_SlickSamCompVector->operator[](i)->GetSubject()->RemoveObserver(this);
@@ -66,7 +104,7 @@ LevelSectionObserver::~LevelSectionObserver()
 
 	if (m_UggWrongCompVector->empty() == false)
 	{
-		for (int i = 0; i < m_UggWrongCompVector->size(); i++)
+		for (size_t i = 0; i < m_UggWrongCompVector->size(); i++)
 		{
 			if (m_UggWrongCompVector->operator[](i) != nullptr)
 				m_UggWrongCompVector->operator[](i)->GetSubject()->RemoveObserver(this);
@@ -159,7 +197,7 @@ void LevelSectionObserver::OnNotify(const dae::Event& event)
 
 		
 	case dae::Event::SlickSamMove:
-		for (int i = 0; i < m_SlickSamCompVector->size(); i++)
+		for (size_t i = 0; i < m_SlickSamCompVector->size(); i++)
 			m_Pyramid->m_CubeGOVector[m_SlickSamCompVector->operator[](i)->GetPositionIndex() - 1]->GetComponent<Cube>()->SlickSamTurnCube();
 
 		KillCollidingSlickSam();
@@ -199,7 +237,7 @@ bool LevelSectionObserver::CheckAllCubesTurned() const
 
 bool LevelSectionObserver::CheckCollidingUggWrong() const
 {
-	for (int i = 0; i < m_UggWrongCompVector->size(); i++)
+	for (size_t i = 0; i < m_UggWrongCompVector->size(); i++)
 	{
 		auto* uggWrong = m_UggWrongCompVector->operator[](i);
 		if (uggWrong->GetStartedLeft())
@@ -224,7 +262,7 @@ bool LevelSectionObserver::CheckCollidingUggWrong() const
 void LevelSectionObserver::KillCollidingSlickSam() const
 {
 	auto nrSlickSams = m_SlickSamCompVector->size();
-	for (auto i = 0; i < nrSlickSams; i++)
+	for (size_t i = 0; i < nrSlickSams; i++)
 	{
 		if (m_QBertComp->GetPositionIndex() == m_SlickSamCompVector->operator[](i)->GetPositionIndex())
 		{
@@ -239,7 +277,7 @@ void LevelSectionObserver::KillCollidingSlickSam() const
 
 void LevelSectionObserver::KillFallenSlickSam() const
 {
-	auto nrSlickSams = m_SlickSamCompVector->size();
+	auto nrSlickSams = int(m_SlickSamCompVector->size());
 	for (auto i = 0; i < nrSlickSams; i++)
 	{
 		auto* slickSam = m_SlickSamCompVector->operator[](i);
@@ -255,7 +293,7 @@ void LevelSectionObserver::KillFallenSlickSam() const
 
 void LevelSectionObserver::KillFallenUggWrong() const
 {
-	auto nrUggWrongs = m_UggWrongCompVector->size();
+	auto nrUggWrongs = int(m_UggWrongCompVector->size());
 	for (auto i = 0; i < nrUggWrongs; i++)
 	{
 		auto* uggWrong = m_UggWrongCompVector->operator[](i);
@@ -273,8 +311,8 @@ void LevelSectionObserver::ClearAllEnemies()
 {
 	std::cout << "OUCH\n";
 
-	auto nrComponents = m_SlickSamCompVector->size();
-	for (int i = 0; i < nrComponents; i++)
+	auto nrComponents = int(m_SlickSamCompVector->size());
+	for (auto i = 0; i < nrComponents; i++)
 	{
 		auto* slickSam = m_SlickSamCompVector->operator[](0);
 		m_SlickSamCompVector->erase(m_SlickSamCompVector->begin());
@@ -284,8 +322,8 @@ void LevelSectionObserver::ClearAllEnemies()
 	m_SlickSamSpawnTimer = 0.f;
 
 
-	nrComponents = m_UggWrongCompVector->size();
-	for (int i = 0; i < nrComponents; i++)
+	nrComponents = int(m_UggWrongCompVector->size());
+	for (auto i = 0; i < nrComponents; i++)
 	{
 		auto* uggWrong = m_UggWrongCompVector->operator[](0);
 		m_UggWrongCompVector->erase(m_UggWrongCompVector->begin());
@@ -311,79 +349,91 @@ void LevelSectionObserver::ChangeFreezeEverything(bool freeze) const
 {
 	m_QBertComp->SetFrozen(freeze);
 	
-	for (auto i = 0; i < m_SlickSamCompVector->size(); i++)
+	for (size_t i = 0; i < m_SlickSamCompVector->size(); i++)
 		m_SlickSamCompVector->operator[](0)->SetFrozen(freeze);
 
-	for (auto i = 0; i < m_UggWrongCompVector->size(); i++)
+	for (size_t i = 0; i < m_UggWrongCompVector->size(); i++)
 		m_UggWrongCompVector->operator[](0)->SetFrozen(freeze);
 	
 }
 
 void LevelSectionObserver::ChangeSection() const
 {
-	m_QBertComp->ResetPosition();
+	if(m_QBertComp != nullptr)
+		m_QBertComp->ResetPosition();
+	
 	auto& scene = dae::SceneManager::GetInstance();
 	scene.ChangeScene(scene.GetCurrentSceneIdx() + 1);
 }
 
 void LevelSectionObserver::Update(const float deltaTime)
 {
-	if (m_SectionComplete == false)
+	if (m_LevelTitleScreenTime <= 0.f)
 	{
-		if (m_SpawnSlickSams)
+		if (m_SectionComplete == false)
 		{
-			m_SlickSamSpawnTimer += deltaTime;
-
-			if (m_SlickSamSpawnTimer >= m_SlickSamSpawnInterval)
+			if (m_SpawnSlickSams)
 			{
-				bool isSlick = false;
-				bool isLeft = false;
+				m_SlickSamSpawnTimer += deltaTime;
 
-				// A random 50/50 chance of spawning either a Slick or a Sam
-				if ((rand() % 2) + 1 == 1)
-					isSlick = true;
+				if (m_SlickSamSpawnTimer >= m_SlickSamSpawnInterval)
+				{
+					bool isSlick = false;
+					bool isLeft = false;
 
-				// A random 50/50 chance of spawning either a left or right
-				if ((rand() % 2) + 1 == 1)
-					isLeft = true;
+					// A random 50/50 chance of spawning either a Slick or a Sam
+					if ((rand() % 2) + 1 == 1)
+						isSlick = true;
 
-				AddSlickSam(isSlick, isLeft);
-				m_SlickSamSpawnTimer -= m_SlickSamSpawnInterval;
+					// A random 50/50 chance of spawning either a left or right
+					if ((rand() % 2) + 1 == 1)
+						isLeft = true;
+
+					AddSlickSam(isSlick, isLeft);
+					m_SlickSamSpawnTimer -= m_SlickSamSpawnInterval;
+				}
+			}
+
+			if (m_SpawnUggWrongs)
+			{
+				m_UggWrongSpawnTimer1 += deltaTime;
+				m_UggWrongSpawnTimer2 += deltaTime;
+
+				if (m_UggWrongSpawnTimer1 >= m_UggWrongSpawnInterval)
+				{
+					bool isUgg = false;
+
+					if ((rand() % 2) + 1 == 1)
+						isUgg = true;
+
+					AddUggWrongway(isUgg, true);
+					m_UggWrongSpawnTimer1 -= m_UggWrongSpawnInterval;
+				}
+
+				// An extra second is added so the right spawner has a tiny delay compared to the left one
+				if (m_UggWrongSpawnTimer2 >= m_UggWrongSpawnInterval + 1.f)
+				{
+					bool isUgg = false;
+
+					if ((rand() % 2) + 1 == 1)
+						isUgg = true;
+
+					AddUggWrongway(isUgg, false);
+					m_UggWrongSpawnTimer2 -= m_UggWrongSpawnInterval;
+				}
 			}
 		}
-
-		if (m_SpawnUggWrongs)
+		else
 		{
-			m_UggWrongSpawnTimer1 += deltaTime;
-			m_UggWrongSpawnTimer2 += deltaTime;
-
-			if (m_UggWrongSpawnTimer1 >= m_UggWrongSpawnInterval)
-			{
-				bool isUgg = false;
-
-				if ((rand() % 2) + 1 == 1)
-					isUgg = true;
-
-				AddUggWrongway(isUgg, true);
-				m_UggWrongSpawnTimer1 -= m_UggWrongSpawnInterval;
-			}
-
-			// An extra second is added so the right spawner has a tiny delay compared to the left one
-			if (m_UggWrongSpawnTimer2 >= m_UggWrongSpawnInterval + 1.f)
-			{
-				bool isUgg = false;
-
-				if ((rand() % 2) + 1 == 1)
-					isUgg = true;
-
-				AddUggWrongway(isUgg, false);
-				m_UggWrongSpawnTimer2 -= m_UggWrongSpawnInterval;
-			}
+			LevelWonAnimation(deltaTime);
 		}
 	}
 	else
 	{
-		LevelWonAnimation(deltaTime);
+		m_LevelTitleTimer += deltaTime;
+		
+		if (m_LevelTitleTimer >= m_LevelTitleScreenTime)
+			ChangeSection();
 	}
 }
 

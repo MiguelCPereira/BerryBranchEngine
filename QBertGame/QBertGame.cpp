@@ -64,18 +64,19 @@ int main(int, char* [])
 
 void LoadLevel01()
 {
-	//// All Level Sections Observers GameObjects
-	auto sectionObserverGO1 = std::make_shared<dae::GameObject>();
-	auto sectionObserverGO2 = std::make_shared<dae::GameObject>();
-	auto sectionObserverGO3 = std::make_shared<dae::GameObject>();
-	auto sectionObserverGO4 = std::make_shared<dae::GameObject>();
-	
-	//auto* sectionsVector = new std::vector<std::shared_ptr<dae::GameObject>>;
-	//sectionsVector->push_back(sectionObserverGO1);
-	//sectionsVector->push_back(sectionObserverGO2);
-	//sectionsVector->push_back(sectionObserverGO3);
-	//sectionsVector->push_back(sectionObserverGO4);
+	//// Level Title Screen
 
+	// Create Scene
+	auto& levelTitleScene = dae::SceneManager::GetInstance().CreateScene("Level01Title");
+
+	// Add All Needed Game Objects
+	levelTitleScene.Add(MakeLevelTitle(1));
+	levelTitleScene.Add(MakeLevelTransition());
+
+	// Initialize Scene
+	levelTitleScene.Initialize();
+	
+	
 	
 	//// Section 01
 
@@ -92,14 +93,11 @@ void LoadLevel01()
 	scene1.Add(g_QBertGO);
 
 	// Level Section Observer
-	sectionObserverGO1->AddComponent(new LevelSectionObserver(sectionObserverGO1, g_QBertGO->GetComponent<dae::QBert>(),
+	auto sectionObserverGO = std::make_shared<dae::GameObject>();
+	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGO->GetComponent<dae::QBert>(),
 		pyramid, 1, false, false));
 
-	scene1.Add(sectionObserverGO1);
-
-	// Transfer Game Observer
-	//g_GameObserverGO->AddComponent(new GameObserver(g_GameObserverGO, sectionObserverGO1->GetComponent<LevelSectionObserver>()));
-	//scene1.Add(g_GameObserverGO);
+	scene1.Add(sectionObserverGO);
 
 	
 	//		!!!!!!!!!!!!!!!!! NEED TO FIX !!!!!!!!!!!!!!!!!
@@ -123,9 +121,6 @@ void LoadLevel01()
 	//fpsCounterGO->GetComponent<dae::TextComponent>()->SetPosition(5, 5);
 	//scene1.Add(fpsCounterGO);
 
-	// Initialize Scene
-	scene1.Initialize();
-
 	
 	//////////////////////////
 
@@ -145,13 +140,10 @@ void LoadLevel01()
 	scene2.Add(g_QBertGO);
 
 	// Level Section Observer
-	sectionObserverGO2->AddComponent(new LevelSectionObserver(sectionObserverGO2, g_QBertGO->GetComponent<dae::QBert>(),
+	sectionObserverGO = std::make_shared<dae::GameObject>();
+	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGO->GetComponent<dae::QBert>(),
 		pyramid, 1, false, false));
-	scene2.Add(sectionObserverGO2);
-
-	// Transfer Game Observer
-	//g_GameObserverGO->AddComponent(new GameObserver(g_GameObserverGO, sectionObserverGO1->GetComponent<LevelSectionObserver>()));
-	//scene2.Add(g_GameObserverGO);
+	scene2.Add(sectionObserverGO);
 
 
 	//////////////////////////
@@ -172,13 +164,10 @@ void LoadLevel01()
 	scene3.Add(g_QBertGO);
 
 	// Level Section Observer
-	sectionObserverGO3->AddComponent(new LevelSectionObserver(sectionObserverGO3, g_QBertGO->GetComponent<dae::QBert>(),
+	sectionObserverGO = std::make_shared<dae::GameObject>();
+	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGO->GetComponent<dae::QBert>(),
 		pyramid, 1, false, true, 0, 0, 10.f, 1.f));
-	scene3.Add(sectionObserverGO3);
-
-	// Transfer Game Observer
-	//g_GameObserverGO->AddComponent(new GameObserver(g_GameObserverGO, sectionObserverGO1->GetComponent<LevelSectionObserver>()));
-	//scene3.Add(g_GameObserverGO);
+	scene3.Add(sectionObserverGO);
 
 
 	//////////////////////////
@@ -199,17 +188,25 @@ void LoadLevel01()
 	scene4.Add(g_QBertGO);
 
 	// Level Section Observer
-	sectionObserverGO4->AddComponent(new LevelSectionObserver(sectionObserverGO4, g_QBertGO->GetComponent<dae::QBert>(),
+	sectionObserverGO = std::make_shared<dae::GameObject>();
+	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGO->GetComponent<dae::QBert>(),
 		pyramid, 1, false, true, 0, 0, 7.f, 1.f));
-	scene4.Add(sectionObserverGO4);
-
-	// Transfer Game Observer
-	//g_GameObserverGO->AddComponent(new GameObserver(g_GameObserverGO, sectionObserverGO1->GetComponent<LevelSectionObserver>()));
-	//scene4.Add(g_GameObserverGO);
+	scene4.Add(sectionObserverGO);
 }
 
 void LoadLevel02()
 {
+	//// Level Title Screen
+
+	// Create Scene
+	auto& levelTitleScene = dae::SceneManager::GetInstance().CreateScene("Level01Title");
+
+	// Add All Needed Game Objects
+	levelTitleScene.Add(MakeLevelTitle(2));
+	levelTitleScene.Add(MakeLevelTransition());
+
+
+
 	//// Section 01
 
 	// Create Scene
@@ -305,6 +302,17 @@ void LoadLevel02()
 
 void LoadLevel03()
 {
+	//// Level Title Screen
+
+	// Create Scene
+	auto& levelTitleScene = dae::SceneManager::GetInstance().CreateScene("Level01Title");
+
+	// Add All Needed Game Objects
+	levelTitleScene.Add(MakeLevelTitle(3));
+	levelTitleScene.Add(MakeLevelTransition());
+
+
+
 	//// Section 01
 
 	// Create Scene

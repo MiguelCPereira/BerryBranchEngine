@@ -29,7 +29,7 @@ dae::Scene& dae::SceneManager::CreateScene(const std::string& name)
 
 void dae::SceneManager::ChangeScene(int newSceneIdx)
 {
-	if (newSceneIdx < m_Scenes.size())
+	if (newSceneIdx < int(m_Scenes.size()))
 	{
 		m_CurrentScene = newSceneIdx;
 		m_Scenes[m_CurrentScene]->Initialize();

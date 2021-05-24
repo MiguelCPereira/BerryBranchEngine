@@ -1,9 +1,9 @@
 #include "Factory.h"
 #include "GameObject.h"
 #include "GraphicsComponent.h"
+#include "LevelSectionObserver.h"
 #include "SceneManager.h"
 #include "SlickSam.h"
-#include "Scene.h"
 #include "QBert.h"
 #include "UggWrongway.h"
 
@@ -106,4 +106,32 @@ std::shared_ptr<dae::GameObject> MakeUggWrongway(bool isUgg, bool isLeft, float 
 	return newGO;
 }
 
+std::shared_ptr<dae::GameObject> MakeLevelTitle(int lvlNr)
+{
+	const auto width = 500.f;
+	const auto height = 230.f;
+	const auto positionX = 78.f;
+	const auto positionY = 150.f;
 
+	auto newGO = std::make_shared<dae::GameObject>();
+
+	if (lvlNr == 1)
+		newGO->AddComponent(new dae::GraphicsComponent("Level 01 Title.png", positionX, positionY, width, height));
+	else if (lvlNr == 2)
+		newGO->AddComponent(new dae::GraphicsComponent("Level 02 Title.png", positionX, positionY, width, height));
+	else
+		newGO->AddComponent(new dae::GraphicsComponent("Level 03 Title.png", positionX, positionY, width, height));
+
+	return newGO;
+}
+
+
+std::shared_ptr<dae::GameObject> MakeLevelTransition()
+{
+	const float transitionTime = 2.f;
+
+	auto sectionObserverGO = std::make_shared<dae::GameObject>();
+	sectionObserverGO->AddComponent(new LevelSectionObserver(transitionTime));
+
+	return sectionObserverGO;
+}

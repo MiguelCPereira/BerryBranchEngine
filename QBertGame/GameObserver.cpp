@@ -50,7 +50,7 @@ void GameObserver::OnNotify(const dae::Event& event)
 			WinLevel();
 		}
 
-		if (m_CurrentSectionCounter <= m_NextSectionObserverGOs->size())
+		if (m_CurrentSectionCounter <= int(m_NextSectionObserverGOs->size()))
 		{
 			auto& scene = dae::SceneManager::GetInstance();
 			scene.ChangeScene(scene.GetCurrentSceneIdx() + 1);

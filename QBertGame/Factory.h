@@ -19,3 +19,7 @@ std::shared_ptr<dae::GameObject> MakeSlickSam(bool isSlick, bool isLeft, float  
 
 std::shared_ptr<dae::GameObject> MakeUggWrongway(bool isUgg, bool isLeft, float  moveInterval);
 
+std::shared_ptr<dae::GameObject> MakeLevelTitle(int lvlNr);
+
+std::shared_ptr<dae::GameObject> MakeLevelTransition();
+
