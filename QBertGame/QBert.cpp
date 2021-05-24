@@ -4,9 +4,10 @@
 #include "GraphicsComponent.h"
 
 
-dae::QBert::QBert(const std::shared_ptr<GameObject>& gameObject, int nrRows, float cubesWidth, float cubesHeight,
-	float qBertSpriteWidth, float qBertSpriteHeight)
+dae::QBert::QBert(const std::shared_ptr<GameObject>& gameObject, const std::shared_ptr<GameObject>& cursesGameObject,
+	int nrRows, float cubesWidth, float cubesHeight, float qBertSpriteWidth, float qBertSpriteHeight)
 	: m_GameObject(gameObject)
+	, m_CursesGameObject(cursesGameObject)
 	, m_LastRow(nrRows)
 	, m_CubesWidth(cubesWidth)
 	, m_CubesHeight(cubesHeight)
@@ -22,11 +23,13 @@ void dae::QBert::Die()
 	if (m_Lives - 1 >= 0)
 	{
 		m_Lives--;
-		// Play animation and sounds
+		std::cout << "Ouch! You now have " << m_Lives << " lives left\n";
+		// Play sound
 		m_Subject->Notify(Event::ActorDeath);
 	}
 	else
 	{
+		std::cout << "You just lost your last life, game over\n";
 		// Game over
 	}
 }
@@ -45,9 +48,32 @@ void dae::QBert::SetFrozen(bool frozen)
 	m_Frozen = frozen;
 }
 
-void dae::QBert::HideGraphics() const
+void dae::QBert::SetHideGraphics(bool isHidden)
 {
-	m_GameObject->GetComponent<GraphicsComponent>()->SetPosition(-50, -50);
+	if (isHidden)
+	{
+		m_PosXBeforeHidden = m_GameObject->GetComponent<GraphicsComponent>()->GetPosX();
+		m_PosYBeforeHidden = m_GameObject->GetComponent<GraphicsComponent>()->GetPosY();
+		m_GameObject->GetComponent<GraphicsComponent>()->SetPosition(-50, -50);
+	}
+	else
+	{
+		m_GameObject->GetComponent<GraphicsComponent>()->SetPosition(m_PosXBeforeHidden, m_PosYBeforeHidden);
+	}
+}
+
+void dae::QBert::SetCursesHidden(bool isHidden) const
+{
+	auto posX = -50.f;
+	auto posY = -50.f;
+	
+	if (isHidden == false)
+	{
+		posX = m_GameObject->GetComponent<GraphicsComponent>()->GetPosX() + 5.f;
+		posY = m_GameObject->GetComponent<GraphicsComponent>()->GetPosY() - 38.f;
+	}
+
+	m_CursesGameObject->GetComponent<GraphicsComponent>()->SetPosition(posX, posY);
 }
 
 bool dae::QBert::MoveUpRight()

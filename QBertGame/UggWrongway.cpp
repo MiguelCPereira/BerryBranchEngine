@@ -26,13 +26,7 @@ void UggWrongway::SetFrozen(bool frozen)
 
 void UggWrongway::Die() const
 {
-	if (m_IsUgg)
-		std::cout << "Ugg died\n";
-	else
-		std::cout << "Wrongway died\n";
-
 	//Play Animation and Sound
-
 	m_GameObject->RemoveAllComponents();
 }
 
@@ -162,28 +156,31 @@ void UggWrongway::Update(const float deltaTime)
 {
 	if (m_Alive)
 	{
-		m_JumpTimer += deltaTime;
-
-		if (m_JumpTimer >= m_JumpInterval)
+		if (m_Frozen == false)
 		{
-			// A random 50/50 chance of Ugg/Wrongway moving to the side or up
+			m_JumpTimer += deltaTime;
 
-			if ((rand() % 2) + 1 == 1)
+			if (m_JumpTimer >= m_JumpInterval)
 			{
-				if(m_StartingLeft)
-					MoveUpRight();
-				else
-					MoveUpLeft();
-			}
-			else
-			{
-				if (m_StartingLeft)
-					MoveRight();
-				else
-					MoveLeft();
-			}
+				// A random 50/50 chance of Ugg/Wrongway moving to the side or up
 
-			m_JumpTimer -= m_JumpInterval;
+				if ((rand() % 2) + 1 == 1)
+				{
+					if (m_StartingLeft)
+						MoveUpRight();
+					else
+						MoveUpLeft();
+				}
+				else
+				{
+					if (m_StartingLeft)
+						MoveRight();
+					else
+						MoveLeft();
+				}
+
+				m_JumpTimer -= m_JumpInterval;
+			}
 		}
 	}
 }

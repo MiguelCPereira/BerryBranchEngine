@@ -7,20 +7,30 @@
 #include "QBert.h"
 #include "UggWrongway.h"
 
-std::shared_ptr<dae::GameObject> MakeQBert()
+std::vector<std::shared_ptr<dae::GameObject>> MakeQBert()
 {
+	auto actualWidth = 55.f;
+	auto actualHeight = 29.f;
 	const auto spriteWidth = 17.f;
 	const auto spriteHeight = 16.f;
 	const auto initialPosX = 308.f;
 	const auto initialPosY = 50.f;
-	const auto actualWidth = 49.f;
-	const auto actualHeight = 48.f;
 
+	auto cursesGO = std::make_shared<dae::GameObject>();
+	cursesGO->AddComponent(new dae::GraphicsComponent("QBert Curses.png", -20, -20, actualWidth, actualHeight));
+
+	actualWidth = 49.f;
+	actualHeight = 48.f;
+	
 	auto qBertGO = std::make_shared<dae::GameObject>();
-	qBertGO->AddComponent(new dae::QBert(qBertGO, g_NrRows, g_CubesActualWidth, g_CubesActualHeight, spriteWidth, spriteHeight));
+	qBertGO->AddComponent(new dae::QBert(qBertGO, cursesGO, g_NrRows, g_CubesActualWidth, g_CubesActualHeight, spriteWidth, spriteHeight));
 	qBertGO->AddComponent(new dae::GraphicsComponent("QBert Spritesheet.png", initialPosX, initialPosY, actualWidth, actualHeight, spriteWidth * 2, 0, spriteWidth, spriteHeight));
 
-	return qBertGO;
+	std::vector< std::shared_ptr<dae::GameObject>> returnVector;
+	returnVector.push_back(std::move(qBertGO));
+	returnVector.push_back(std::move(cursesGO));
+	
+	return returnVector;
 }
 
 
@@ -134,4 +144,18 @@ std::shared_ptr<dae::GameObject> MakeLevelTransition()
 	sectionObserverGO->AddComponent(new LevelSectionObserver(transitionTime));
 
 	return sectionObserverGO;
+}
+
+
+std::shared_ptr<dae::GameObject> MakeVictoryTitle()
+{
+	const auto width = 474.f;
+	const auto height = 263.f;
+	const auto positionX = 86.f;
+	const auto positionY = 90.f;
+
+	auto newGO = std::make_shared<dae::GameObject>();
+	newGO->AddComponent(new dae::GraphicsComponent("Victory Title.png", positionX, positionY, width, height));
+
+	return newGO;
 }

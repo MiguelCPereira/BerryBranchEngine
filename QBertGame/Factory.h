@@ -1,5 +1,6 @@
 #pragma once
 #include <memory>
+#include <vector>
 
 const int g_NrRows = 7;
 const float g_CubesActualWidth = 64.f;
@@ -13,13 +14,15 @@ namespace dae
 	class GameObject;
 }
 
-std::shared_ptr<dae::GameObject> MakeQBert();
+std::vector<std::shared_ptr<dae::GameObject>> MakeQBert();
 
 std::shared_ptr<dae::GameObject> MakeSlickSam(bool isSlick, bool isLeft, float  moveInterval);
 
 std::shared_ptr<dae::GameObject> MakeUggWrongway(bool isUgg, bool isLeft, float  moveInterval);
 
 std::shared_ptr<dae::GameObject> MakeLevelTitle(int lvlNr);
+
+std::shared_ptr<dae::GameObject> MakeVictoryTitle();
 
 std::shared_ptr<dae::GameObject> MakeLevelTransition();
 

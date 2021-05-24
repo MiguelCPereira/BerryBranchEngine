@@ -67,6 +67,11 @@ private:
 	bool m_EverythingClear;
 	const int m_Level;
 
+	bool m_DeadQbert;
+	float m_DeadQbertTimer, m_DeadQbertMaxTime;
+	bool m_DeathEmptyScene;
+	float m_DeathEmptySceneTimer, m_DeathEmptySceneMaxTime;
+
 	float m_LevelTitleTimer, m_LevelTitleScreenTime;
 	
 };

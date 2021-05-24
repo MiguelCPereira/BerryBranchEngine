@@ -39,6 +39,13 @@ LevelSectionObserver::LevelSectionObserver(float transitionTime)
 	, m_EverythingClear()
 	, m_Level()
 
+	, m_DeadQbert()
+	, m_DeadQbertTimer()
+	, m_DeadQbertMaxTime()
+	, m_DeathEmptyScene()
+	, m_DeathEmptySceneTimer()
+	, m_DeathEmptySceneMaxTime()
+
 	, m_LevelTitleTimer(0.f)
 	, m_LevelTitleScreenTime(transitionTime)
 {
@@ -73,6 +80,13 @@ LevelSectionObserver::LevelSectionObserver(const std::shared_ptr<dae::GameObject
 	, m_CurrentFlashingColor(3)
 	, m_EverythingClear(false)
 	, m_Level(level)
+
+	, m_DeadQbert(false)
+	, m_DeadQbertTimer(0.f)
+	, m_DeadQbertMaxTime(2.f)
+	, m_DeathEmptyScene(false)
+	, m_DeathEmptySceneTimer(0.f)
+	, m_DeathEmptySceneMaxTime(1.f)
 
 	, m_LevelTitleTimer()
 	, m_LevelTitleScreenTime()
@@ -118,7 +132,10 @@ LevelSectionObserver::~LevelSectionObserver()
 void LevelSectionObserver::Initialize()
 {
 	if (m_QBertComp != nullptr)
+	{
 		m_QBertComp->GetSubject()->AddObserver(this);
+		m_QBertComp->SetFrozen(false);
+	}
 }
 
 void LevelSectionObserver::SetQBert(dae::QBert* qBertComp)
@@ -190,8 +207,12 @@ void LevelSectionObserver::OnNotify(const dae::Event& event)
 
 		if (CheckCollidingUggWrong())
 		{
+			ChangeFreezeEverything(true);
+			m_DeadQbert = true;
 			m_QBertComp->Die();
-			ClearAllEnemies();
+			
+			// Make QBert curse
+			m_QBertComp->SetCursesHidden(false);
 		}
 		break;
 
@@ -212,8 +233,12 @@ void LevelSectionObserver::OnNotify(const dae::Event& event)
 	case dae::Event::UggWrongwayMove:
 		if (CheckCollidingUggWrong())
 		{
+			ChangeFreezeEverything(true);
+			m_DeadQbert = true;
 			m_QBertComp->Die();
-			ClearAllEnemies();
+
+			// Make QBert curse
+			m_QBertComp->SetCursesHidden(false);
 		}
 		break;
 
@@ -309,8 +334,6 @@ void LevelSectionObserver::KillFallenUggWrong() const
 
 void LevelSectionObserver::ClearAllEnemies()
 {
-	std::cout << "OUCH\n";
-
 	auto nrComponents = int(m_SlickSamCompVector->size());
 	for (auto i = 0; i < nrComponents; i++)
 	{
@@ -340,7 +363,6 @@ void LevelSectionObserver::WinSection()
 	{
 		ChangeFreezeEverything(true);
 		m_SectionComplete = true;
-		std::cout << "Color Switch!\n";
 		m_Subject->Notify(dae::Event::ColorChange);
 	}
 }
@@ -359,8 +381,11 @@ void LevelSectionObserver::ChangeFreezeEverything(bool freeze) const
 
 void LevelSectionObserver::ChangeSection() const
 {
-	if(m_QBertComp != nullptr)
+	if (m_QBertComp != nullptr)
+	{
 		m_QBertComp->ResetPosition();
+		m_QBertComp->SetFrozen(true);
+	}
 	
 	auto& scene = dae::SceneManager::GetInstance();
 	scene.ChangeScene(scene.GetCurrentSceneIdx() + 1);
@@ -368,58 +393,90 @@ void LevelSectionObserver::ChangeSection() const
 
 void LevelSectionObserver::Update(const float deltaTime)
 {
+	// This first if statement will only not run if the instance of this class was created with
+	// the first constructor - which means it's only gonna be used for a level transition
 	if (m_LevelTitleScreenTime <= 0.f)
 	{
 		if (m_SectionComplete == false)
 		{
-			if (m_SpawnSlickSams)
+			if(m_DeadQbert)
 			{
-				m_SlickSamSpawnTimer += deltaTime;
-
-				if (m_SlickSamSpawnTimer >= m_SlickSamSpawnInterval)
+				m_DeadQbertTimer += deltaTime;
+				if (m_DeadQbertTimer >= m_DeadQbertMaxTime)
 				{
-					bool isSlick = false;
-					bool isLeft = false;
-
-					// A random 50/50 chance of spawning either a Slick or a Sam
-					if ((rand() % 2) + 1 == 1)
-						isSlick = true;
-
-					// A random 50/50 chance of spawning either a left or right
-					if ((rand() % 2) + 1 == 1)
-						isLeft = true;
-
-					AddSlickSam(isSlick, isLeft);
-					m_SlickSamSpawnTimer -= m_SlickSamSpawnInterval;
+					m_QBertComp->SetHideGraphics(true);
+					m_QBertComp->SetCursesHidden(true);
+					ClearAllEnemies();
+					m_DeadQbertTimer = 0.f;
+					m_DeadQbert = false;
+					m_DeathEmptyScene = true;
 				}
 			}
-
-			if (m_SpawnUggWrongs)
+			else
 			{
-				m_UggWrongSpawnTimer1 += deltaTime;
-				m_UggWrongSpawnTimer2 += deltaTime;
-
-				if (m_UggWrongSpawnTimer1 >= m_UggWrongSpawnInterval)
+				if(m_DeathEmptyScene)
 				{
-					bool isUgg = false;
-
-					if ((rand() % 2) + 1 == 1)
-						isUgg = true;
-
-					AddUggWrongway(isUgg, true);
-					m_UggWrongSpawnTimer1 -= m_UggWrongSpawnInterval;
+					m_DeathEmptySceneTimer += deltaTime;
+					if(m_DeathEmptySceneTimer >= m_DeathEmptySceneMaxTime)
+					{
+						m_QBertComp->SetHideGraphics(false);
+						m_QBertComp->SetFrozen(false);
+						m_DeathEmptySceneTimer = 0.f;
+						m_DeathEmptyScene = false;
+					}
 				}
-
-				// An extra second is added so the right spawner has a tiny delay compared to the left one
-				if (m_UggWrongSpawnTimer2 >= m_UggWrongSpawnInterval + 1.f)
+				else
 				{
-					bool isUgg = false;
+					if (m_SpawnSlickSams)
+					{
+						m_SlickSamSpawnTimer += deltaTime;
 
-					if ((rand() % 2) + 1 == 1)
-						isUgg = true;
+						if (m_SlickSamSpawnTimer >= m_SlickSamSpawnInterval)
+						{
+							bool isSlick = false;
+							bool isLeft = false;
 
-					AddUggWrongway(isUgg, false);
-					m_UggWrongSpawnTimer2 -= m_UggWrongSpawnInterval;
+							// A random 50/50 chance of spawning either a Slick or a Sam
+							if ((rand() % 2) + 1 == 1)
+								isSlick = true;
+
+							// A random 50/50 chance of spawning either a left or right
+							if ((rand() % 2) + 1 == 1)
+								isLeft = true;
+
+							AddSlickSam(isSlick, isLeft);
+							m_SlickSamSpawnTimer -= m_SlickSamSpawnInterval;
+						}
+					}
+
+					if (m_SpawnUggWrongs)
+					{
+						m_UggWrongSpawnTimer1 += deltaTime;
+						m_UggWrongSpawnTimer2 += deltaTime;
+
+						if (m_UggWrongSpawnTimer1 >= m_UggWrongSpawnInterval)
+						{
+							bool isUgg = false;
+
+							if ((rand() % 2) + 1 == 1)
+								isUgg = true;
+
+							AddUggWrongway(isUgg, true);
+							m_UggWrongSpawnTimer1 -= m_UggWrongSpawnInterval;
+						}
+
+						// An extra second is added so the right spawner has a tiny delay compared to the left one
+						if (m_UggWrongSpawnTimer2 >= m_UggWrongSpawnInterval + 1.f)
+						{
+							bool isUgg = false;
+
+							if ((rand() % 2) + 1 == 1)
+								isUgg = true;
+
+							AddUggWrongway(isUgg, false);
+							m_UggWrongSpawnTimer2 -= m_UggWrongSpawnInterval;
+						}
+					}
 				}
 			}
 		}
@@ -481,7 +538,7 @@ void LevelSectionObserver::LevelWonAnimation(const float deltaTime)
 		{
 			m_EverythingClear = true;
 			ClearAllEnemies();
-			m_QBertComp->HideGraphics();
+			m_QBertComp->SetHideGraphics(true);
 
 			// Set cubes to original turned color
 			for (const std::shared_ptr<dae::GameObject>& cube : m_Pyramid->m_CubeGOVector)

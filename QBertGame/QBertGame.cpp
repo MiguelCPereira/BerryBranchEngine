@@ -24,7 +24,7 @@
 // Global Variables
 const int g_CubesSpriteHeight = 32;
 const int g_CubesSpriteWidth = 32;
-std::shared_ptr<dae::GameObject> g_QBertGO;
+std::vector<std::shared_ptr<dae::GameObject>> g_QBertGOs;
 //std::shared_ptr<dae::GameObject> g_GameObserverGO;
 
 
@@ -41,7 +41,6 @@ void PrintInstructions();
 
 int main(int, char* [])
 {
-	// Get a Random Seed
 	srand((unsigned)time(nullptr));
 
     dae::Minigin engine;
@@ -90,11 +89,13 @@ void LoadLevel01()
 		scene1.Add(cube);
 
 	// Transfer QBert
-	scene1.Add(g_QBertGO);
+	for(auto gameObject : g_QBertGOs)
+		scene1.Add(gameObject);
+	
 
 	// Level Section Observer
 	auto sectionObserverGO = std::make_shared<dae::GameObject>();
-	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGO->GetComponent<dae::QBert>(),
+	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0]->GetComponent<dae::QBert>(),
 		pyramid, 1, false, false));
 
 	scene1.Add(sectionObserverGO);
@@ -137,11 +138,12 @@ void LoadLevel01()
 		scene2.Add(cube);
 
 	// Transfer QBert
-	scene2.Add(g_QBertGO);
+	for (auto gameObject : g_QBertGOs)
+		scene2.Add(gameObject);
 
 	// Level Section Observer
 	sectionObserverGO = std::make_shared<dae::GameObject>();
-	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGO->GetComponent<dae::QBert>(),
+	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0]->GetComponent<dae::QBert>(),
 		pyramid, 1, false, false));
 	scene2.Add(sectionObserverGO);
 
@@ -161,11 +163,12 @@ void LoadLevel01()
 		scene3.Add(cube);
 
 	// Transfer QBert
-	scene3.Add(g_QBertGO);
+	for (auto gameObject : g_QBertGOs)
+		scene3.Add(gameObject);
 
 	// Level Section Observer
 	sectionObserverGO = std::make_shared<dae::GameObject>();
-	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGO->GetComponent<dae::QBert>(),
+	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0]->GetComponent<dae::QBert>(),
 		pyramid, 1, false, true, 0, 0, 10.f, 1.f));
 	scene3.Add(sectionObserverGO);
 
@@ -185,11 +188,12 @@ void LoadLevel01()
 		scene4.Add(cube);
 
 	// Transfer QBert
-	scene4.Add(g_QBertGO);
+	for (auto gameObject : g_QBertGOs)
+		scene4.Add(gameObject);
 
 	// Level Section Observer
 	sectionObserverGO = std::make_shared<dae::GameObject>();
-	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGO->GetComponent<dae::QBert>(),
+	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0]->GetComponent<dae::QBert>(),
 		pyramid, 1, false, true, 0, 0, 7.f, 1.f));
 	scene4.Add(sectionObserverGO);
 }
@@ -219,11 +223,12 @@ void LoadLevel02()
 		scene1.Add(cube);
 
 	// Transfer QBert
-	scene1.Add(g_QBertGO);
+	for (auto gameObject : g_QBertGOs)
+		scene1.Add(gameObject);
 
 	// Level Section Observer
 	auto sectionObserverGO = std::make_shared<dae::GameObject>();
-	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGO->GetComponent<dae::QBert>(),
+	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0]->GetComponent<dae::QBert>(),
 		pyramid, 2, true, true, 20.f, 1.f, 15.f, 1.f));
 	scene1.Add(sectionObserverGO);
 
@@ -243,11 +248,12 @@ void LoadLevel02()
 		scene2.Add(cube);
 
 	// Transfer QBert
-	scene2.Add(g_QBertGO);
+	for (auto gameObject : g_QBertGOs)
+		scene2.Add(gameObject);
 
 	// Level Section Observer
 	sectionObserverGO = std::make_shared<dae::GameObject>();
-	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGO->GetComponent<dae::QBert>(),
+	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0]->GetComponent<dae::QBert>(),
 		pyramid, 2, true, true, 15.f, 1.f, 10.f, 1.f));
 	scene2.Add(sectionObserverGO);
 
@@ -267,11 +273,12 @@ void LoadLevel02()
 		scene3.Add(cube);
 
 	// Transfer QBert
-	scene3.Add(g_QBertGO);
+	for (auto gameObject : g_QBertGOs)
+		scene3.Add(gameObject);
 
 	// Level Section Observer
 	sectionObserverGO = std::make_shared<dae::GameObject>();
-	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGO->GetComponent<dae::QBert>(),
+	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0]->GetComponent<dae::QBert>(),
 		pyramid, 2, true, true, 10.f, 1.f, 7.f, 1.f));
 	scene3.Add(sectionObserverGO);
 
@@ -291,11 +298,12 @@ void LoadLevel02()
 		scene4.Add(cube);
 
 	// Transfer QBert
-	scene4.Add(g_QBertGO);
+	for (auto gameObject : g_QBertGOs)
+		scene4.Add(gameObject);
 
 	// Level Section Observer
 	sectionObserverGO = std::make_shared<dae::GameObject>();
-	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGO->GetComponent<dae::QBert>(),
+	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0]->GetComponent<dae::QBert>(),
 		pyramid, 2, true, true, 5.f, 1.f, 5.f, 1.f));
 	scene4.Add(sectionObserverGO);
 }
@@ -325,11 +333,12 @@ void LoadLevel03()
 		scene1.Add(cube);
 
 	// Transfer QBert
-	scene1.Add(g_QBertGO);
+	for (auto gameObject : g_QBertGOs)
+		scene1.Add(gameObject);
 
 	// Level Section Observer
 	auto sectionObserverGO = std::make_shared<dae::GameObject>();
-	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGO->GetComponent<dae::QBert>(),
+	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0]->GetComponent<dae::QBert>(),
 		pyramid, 3, true, true, 25.f, 1.f, 15.f, 1.f));
 	scene1.Add(sectionObserverGO);
 
@@ -349,11 +358,12 @@ void LoadLevel03()
 		scene2.Add(cube);
 
 	// Transfer QBert
-	scene2.Add(g_QBertGO);
+	for (auto gameObject : g_QBertGOs)
+		scene2.Add(gameObject);
 
 	// Level Section Observer
 	sectionObserverGO = std::make_shared<dae::GameObject>();
-	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGO->GetComponent<dae::QBert>(),
+	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0]->GetComponent<dae::QBert>(),
 		pyramid, 3, true, true, 20.f, 1.f, 10.f, 1.f));
 	scene2.Add(sectionObserverGO);
 
@@ -373,11 +383,12 @@ void LoadLevel03()
 		scene3.Add(cube);
 
 	// Transfer QBert
-	scene3.Add(g_QBertGO);
+	for (auto gameObject : g_QBertGOs)
+		scene3.Add(gameObject);
 
 	// Level Section Observer
 	sectionObserverGO = std::make_shared<dae::GameObject>();
-	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGO->GetComponent<dae::QBert>(),
+	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0]->GetComponent<dae::QBert>(),
 		pyramid, 3, true, true, 15.f, 1.f, 7.f, 1.f));
 	scene3.Add(sectionObserverGO);
 
@@ -397,38 +408,52 @@ void LoadLevel03()
 		scene4.Add(cube);
 
 	// Transfer QBert
-	scene4.Add(g_QBertGO);
+	for (auto gameObject : g_QBertGOs)
+		scene4.Add(gameObject);
 
 	// Level Section Observer
 	sectionObserverGO = std::make_shared<dae::GameObject>();
-	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGO->GetComponent<dae::QBert>(),
+	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0]->GetComponent<dae::QBert>(),
 		pyramid, 3, true, true, 10.f, 1.f, 5.f ,1.f));
 	scene4.Add(sectionObserverGO);
+
+
+
+
+
+	//// Victory Screen
+
+	// Create Scene
+	auto& victoryScene = dae::SceneManager::GetInstance().CreateScene("VictoryScene");
+
+	// Add All Needed Game Objects
+	victoryScene.Add(MakeVictoryTitle());
 }
 
 void SetUpGlobalGOs()
 {
 	// QBert
-	g_QBertGO = MakeQBert();
+	g_QBertGOs = MakeQBert();
+	
 	 
 	// Player Input
 	auto moveUpKeyboard = std::make_unique<QBertMoveUpCommand>();
-	moveUpKeyboard->SetActor(g_QBertGO);
+	moveUpKeyboard->SetActor(g_QBertGOs[0]);
 	moveUpKeyboard->SetButtonPressType(dae::ButtonPress::PressedDown);
 	dae::InputManager::GetInstance().AddCommand(SDLK_w, std::move(moveUpKeyboard));
 
 	auto moveDownKeyboard = std::make_unique<QBertMoveDownCommand>();
-	moveDownKeyboard->SetActor(g_QBertGO);
+	moveDownKeyboard->SetActor(g_QBertGOs[0]);
 	moveDownKeyboard->SetButtonPressType(dae::ButtonPress::PressedDown);
 	dae::InputManager::GetInstance().AddCommand(SDLK_s, std::move(moveDownKeyboard));
 
 	auto moveLeftKeyboard = std::make_unique<QBertMoveLeftCommand>();
-	moveLeftKeyboard->SetActor(g_QBertGO);
+	moveLeftKeyboard->SetActor(g_QBertGOs[0]);
 	moveLeftKeyboard->SetButtonPressType(dae::ButtonPress::PressedDown);
 	dae::InputManager::GetInstance().AddCommand(SDLK_a, std::move(moveLeftKeyboard));
 
 	auto moveRightKeyboard = std::make_unique<QBertMoveRightCommand>();
-	moveRightKeyboard->SetActor(g_QBertGO);
+	moveRightKeyboard->SetActor(g_QBertGOs[0]);
 	moveRightKeyboard->SetButtonPressType(dae::ButtonPress::PressedDown);
 	dae::InputManager::GetInstance().AddCommand(SDLK_d, std::move(moveRightKeyboard));
 
