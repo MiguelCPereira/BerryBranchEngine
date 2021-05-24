@@ -53,7 +53,7 @@ LevelSectionObserver::LevelSectionObserver(float transitionTime)
 
 
 
-LevelSectionObserver::LevelSectionObserver(const std::shared_ptr<dae::GameObject>& gameObject, dae::QBert* qBertComp, Pyramid* pyramid,
+LevelSectionObserver::LevelSectionObserver(const std::shared_ptr<dae::GameObject>& gameObject, QBert* qBertComp, Pyramid* pyramid,
 	int level, bool spawnSlickSams, bool spawnUggWrongs, float slickSamSpawnInterval, float slickSamMoveInterval, float uggWrongSpawnInterval, float uggWrongMoveInterval)
 	: m_GameObject(gameObject)
 	, m_QBertComp(qBertComp)
@@ -138,7 +138,7 @@ void LevelSectionObserver::Initialize()
 	}
 }
 
-void LevelSectionObserver::SetQBert(dae::QBert* qBertComp)
+void LevelSectionObserver::SetQBert(QBert* qBertComp)
 {
 	if (m_QBertComp != nullptr)
 		m_QBertComp->GetSubject()->RemoveObserver(this);
@@ -195,7 +195,7 @@ void LevelSectionObserver::OnNotify(const dae::Event& event)
 	switch (event)
 	{
 		
-	case dae::Event::QBertMove:
+	case dae::Event::QBertLanded:
 		// 1 is subtracted from the idx, because the cubes are numbered from 1 to 28
 		// But they're stored counting from 0 in the vector
 		m_Pyramid->m_CubeGOVector[m_QBertComp->GetPositionIndex() - 1]->GetComponent<Cube>()->TurnCube();
@@ -217,7 +217,7 @@ void LevelSectionObserver::OnNotify(const dae::Event& event)
 		break;
 
 		
-	case dae::Event::SlickSamMove:
+	case dae::Event::SlickSamLanded:
 		for (size_t i = 0; i < m_SlickSamCompVector->size(); i++)
 			m_Pyramid->m_CubeGOVector[m_SlickSamCompVector->operator[](i)->GetPositionIndex() - 1]->GetComponent<Cube>()->SlickSamTurnCube();
 
@@ -230,7 +230,7 @@ void LevelSectionObserver::OnNotify(const dae::Event& event)
 		break;
 
 
-	case dae::Event::UggWrongwayMove:
+	case dae::Event::UggWrongwayLanded:
 		if (CheckCollidingUggWrong())
 		{
 			ChangeFreezeEverything(true);
@@ -262,23 +262,27 @@ bool LevelSectionObserver::CheckAllCubesTurned() const
 
 bool LevelSectionObserver::CheckCollidingUggWrong() const
 {
-	for (size_t i = 0; i < m_UggWrongCompVector->size(); i++)
+	if (m_QBertComp->GetAirborne() == false)
 	{
-		auto* uggWrong = m_UggWrongCompVector->operator[](i);
-		if (uggWrong->GetStartedLeft())
+		for (size_t i = 0; i < m_UggWrongCompVector->size(); i++)
 		{
-			if (m_QBertComp->GetPositionIndex() == uggWrong->GetPositionIndex() + uggWrong->GetCurrentRow())
+			auto* uggWrong = m_UggWrongCompVector->operator[](i);
+			if (uggWrong->GetStartedLeft())
 			{
-				return true;
+				if (m_QBertComp->GetPositionIndex() == uggWrong->GetPositionIndex() + uggWrong->GetCurrentRow())
+				{
+					return true;
+				}
+			}
+			else
+			{
+				if (m_QBertComp->GetPositionIndex() == uggWrong->GetPositionIndex() + uggWrong->GetCurrentRow() + 1)
+				{
+					return true;
+				}
 			}
 		}
-		else
-		{
-			if (m_QBertComp->GetPositionIndex() == uggWrong->GetPositionIndex() + uggWrong->GetCurrentRow() + 1)
-			{
-				return true;
-			}
-		}
+		return false;
 	}
 
 	return false;
@@ -286,16 +290,19 @@ bool LevelSectionObserver::CheckCollidingUggWrong() const
 
 void LevelSectionObserver::KillCollidingSlickSam() const
 {
-	auto nrSlickSams = m_SlickSamCompVector->size();
-	for (size_t i = 0; i < nrSlickSams; i++)
+	if (m_QBertComp->GetAirborne() == false)
 	{
-		if (m_QBertComp->GetPositionIndex() == m_SlickSamCompVector->operator[](i)->GetPositionIndex())
+		auto nrSlickSams = m_SlickSamCompVector->size();
+		for (size_t i = 0; i < nrSlickSams; i++)
 		{
-			auto* deadSlickSam = m_SlickSamCompVector->operator[](i);
-			m_SlickSamCompVector->erase(std::find(m_SlickSamCompVector->begin(), m_SlickSamCompVector->end(), deadSlickSam));
-			deadSlickSam->Die();
-			i--;
-			nrSlickSams--;
+			if (m_QBertComp->GetPositionIndex() == m_SlickSamCompVector->operator[](i)->GetPositionIndex())
+			{
+				auto* deadSlickSam = m_SlickSamCompVector->operator[](i);
+				m_SlickSamCompVector->erase(std::find(m_SlickSamCompVector->begin(), m_SlickSamCompVector->end(), deadSlickSam));
+				deadSlickSam->Die();
+				i--;
+				nrSlickSams--;
+			}
 		}
 	}
 }

@@ -4,10 +4,7 @@
 
 void dae::SceneManager::Initialize()
 {
-	for (auto& scene : m_Scenes)
-	{
-		scene->Initialize();
-	}
+	m_Scenes[m_CurrentScene]->Initialize();
 }
 
 void dae::SceneManager::Update(const float deltaTime)

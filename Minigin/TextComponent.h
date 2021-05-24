@@ -28,7 +28,7 @@ namespace dae
 	private:
 		bool m_NeedsUpdate;
 		std::string m_Text;
-		Transform* m_Transform{};
+		Transform* m_Transform;
 		std::shared_ptr<Font> m_Font;
 		std::shared_ptr<Texture2D> m_Texture;
 		int m_ColorR, m_ColorG, m_ColorB;

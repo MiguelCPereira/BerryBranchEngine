@@ -51,7 +51,7 @@ bool SlickSam::MoveDownLeft()
 			else
 				graphics->SetSrcRectangle(0, m_SpriteHeight, m_SpriteWidth, m_SpriteHeight);
 
-			m_Subject->Notify(dae::Event::SlickSamMove);
+			m_Subject->Notify(dae::Event::SlickSamLanded);
 			return true;
 		}
 		else
@@ -82,7 +82,7 @@ bool SlickSam::MoveDownRight()
 			else
 				graphics->SetSrcRectangle(m_SpriteWidth, m_SpriteHeight, m_SpriteWidth, m_SpriteHeight);
 
-			m_Subject->Notify(dae::Event::SlickSamMove);
+			m_Subject->Notify(dae::Event::SlickSamLanded);
 			return true;
 		}
 		else

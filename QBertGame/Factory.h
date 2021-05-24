@@ -26,3 +26,5 @@ std::shared_ptr<dae::GameObject> MakeVictoryTitle();
 
 std::shared_ptr<dae::GameObject> MakeLevelTransition();
 
+std::shared_ptr<dae::GameObject> MakeFPSCounter();
+

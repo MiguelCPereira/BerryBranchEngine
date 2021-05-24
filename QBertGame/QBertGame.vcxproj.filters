@@ -57,6 +57,9 @@
     <ClCompile Include="LevelTransition.cpp">
       <Filter>Components</Filter>
     </ClCompile>
+    <ClCompile Include="JumpingObserver.cpp">
+      <Filter>Components\Observers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Pyramid.h">
@@ -88,6 +91,9 @@
     </ClInclude>
     <ClInclude Include="LevelTransition.h">
       <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="JumpingObserver.h">
+      <Filter>Components\Observers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

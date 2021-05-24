@@ -361,6 +361,7 @@ xcopy "$(SolutionDir)$(Platform)\$(Configuration)\*.dll" "$(OutputPath)" /R /Y</
     <ClCompile Include="Factory.cpp" />
     <ClCompile Include="GameCommands.cpp" />
     <ClCompile Include="GameObserver.cpp" />
+    <ClCompile Include="JumpingObserver.cpp" />
     <ClCompile Include="LevelSectionObserver.cpp" />
     <ClCompile Include="LevelTransition.cpp" />
     <ClCompile Include="Pyramid.cpp" />
@@ -374,6 +375,7 @@ xcopy "$(SolutionDir)$(Platform)\$(Configuration)\*.dll" "$(OutputPath)" /R /Y</
     <ClInclude Include="Factory.h" />
     <ClInclude Include="GameCommands.h" />
     <ClInclude Include="GameObserver.h" />
+    <ClInclude Include="JumpingObserver.h" />
     <ClInclude Include="LevelSectionObserver.h" />
     <ClInclude Include="LevelTransition.h" />
     <ClInclude Include="Pyramid.h" />

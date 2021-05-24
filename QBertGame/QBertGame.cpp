@@ -16,16 +16,12 @@
 //#include "GameObserver.h"
 
 // I'll delete these headers once I manage to get TextComponent working and can create a Factory function for it
-#include "ResourceManager.h"
-#include "FPSComponent.h"
-#include "TextComponent.h"
 
 
 // Global Variables
 const int g_CubesSpriteHeight = 32;
 const int g_CubesSpriteWidth = 32;
 std::vector<std::shared_ptr<dae::GameObject>> g_QBertGOs;
-//std::shared_ptr<dae::GameObject> g_GameObserverGO;
 
 
 // Global Functions
@@ -51,7 +47,6 @@ int main(int, char* [])
 	LoadLevel02();
 	LoadLevel03();
 	PrintInstructions();
-
 	
 	engine.Run();
 	
@@ -92,35 +87,15 @@ void LoadLevel01()
 	for(auto gameObject : g_QBertGOs)
 		scene1.Add(gameObject);
 	
-
 	// Level Section Observer
 	auto sectionObserverGO = std::make_shared<dae::GameObject>();
-	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0]->GetComponent<dae::QBert>(),
+	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0]->GetComponent<QBert>(),
 		pyramid, 1, false, false));
 
 	scene1.Add(sectionObserverGO);
 
-	
-	//		!!!!!!!!!!!!!!!!! NEED TO FIX !!!!!!!!!!!!!!!!!
-	// Any action that involves Transform leads to a crash right now
-	// Because transform pointers are returning null for some reason
-	// So the creation of a TextComponent will always crash,
-	// as well as changing the root position of a GameObject
-
-	// Test Text
-	//auto font = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
-	//auto testTextGO = std::make_shared<dae::GameObject>();
-	//testTextGO->AddComponent(new dae::TextComponent("Hello! I'm a test!!", font));
-	//testTextGO->GetComponent<dae::TextComponent>()->SetPosition(80, 20);
-	//scene1.Add(testTextGO);
-
 	// FPS Counter
-	//font = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 19);
-	//auto fpsCounterGO = std::make_shared<dae::GameObject>();
-	//fpsCounterGO->AddComponent(new dae::FPSComponent(fpsCounterGO));
-	//fpsCounterGO->AddComponent(new dae::TextComponent("FAIL FPS", font, 255, 255, 0));
-	//fpsCounterGO->GetComponent<dae::TextComponent>()->SetPosition(5, 5);
-	//scene1.Add(fpsCounterGO);
+	scene1.Add(MakeFPSCounter());
 
 	
 	//////////////////////////
@@ -138,14 +113,19 @@ void LoadLevel01()
 		scene2.Add(cube);
 
 	// Transfer QBert
-	for (auto gameObject : g_QBertGOs)
-		scene2.Add(gameObject);
+	// (we don't add the JumpingObserverGO again, because it's already
+	// taking effect on the qBert component from the first transfer)
+	for(size_t i = 0; i < g_QBertGOs.size() - 1; i++)
+		scene2.Add(g_QBertGOs[i]);
 
 	// Level Section Observer
 	sectionObserverGO = std::make_shared<dae::GameObject>();
-	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0]->GetComponent<dae::QBert>(),
+	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0]->GetComponent<QBert>(),
 		pyramid, 1, false, false));
 	scene2.Add(sectionObserverGO);
+
+	// FPS Counter
+	scene2.Add(MakeFPSCounter());
 
 
 	//////////////////////////
@@ -163,14 +143,19 @@ void LoadLevel01()
 		scene3.Add(cube);
 
 	// Transfer QBert
-	for (auto gameObject : g_QBertGOs)
-		scene3.Add(gameObject);
+	// (we don't add the JumpingObserverGO again, because it's already
+	// taking effect on the qBert component from the first transfer)
+	for (size_t i = 0; i < g_QBertGOs.size() - 1; i++)
+		scene3.Add(g_QBertGOs[i]);
 
 	// Level Section Observer
 	sectionObserverGO = std::make_shared<dae::GameObject>();
-	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0]->GetComponent<dae::QBert>(),
+	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0]->GetComponent<QBert>(),
 		pyramid, 1, false, true, 0, 0, 10.f, 1.f));
 	scene3.Add(sectionObserverGO);
+
+	// FPS Counter
+	scene3.Add(MakeFPSCounter());
 
 
 	//////////////////////////
@@ -188,14 +173,19 @@ void LoadLevel01()
 		scene4.Add(cube);
 
 	// Transfer QBert
-	for (auto gameObject : g_QBertGOs)
-		scene4.Add(gameObject);
+	// (we don't add the JumpingObserverGO again, because it's already
+	// taking effect on the qBert component from the first transfer)
+	for (size_t i = 0; i < g_QBertGOs.size() - 1; i++)
+		scene4.Add(g_QBertGOs[i]);
 
 	// Level Section Observer
 	sectionObserverGO = std::make_shared<dae::GameObject>();
-	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0]->GetComponent<dae::QBert>(),
+	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0]->GetComponent<QBert>(),
 		pyramid, 1, false, true, 0, 0, 7.f, 1.f));
 	scene4.Add(sectionObserverGO);
+
+	// FPS Counter
+	scene4.Add(MakeFPSCounter());
 }
 
 void LoadLevel02()
@@ -223,14 +213,19 @@ void LoadLevel02()
 		scene1.Add(cube);
 
 	// Transfer QBert
-	for (auto gameObject : g_QBertGOs)
-		scene1.Add(gameObject);
+	// (we don't add the JumpingObserverGO again, because it's already
+	// taking effect on the qBert component from the first transfer)
+	for (size_t i = 0; i < g_QBertGOs.size() - 1; i++)
+		scene1.Add(g_QBertGOs[i]);
 
 	// Level Section Observer
 	auto sectionObserverGO = std::make_shared<dae::GameObject>();
-	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0]->GetComponent<dae::QBert>(),
+	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0]->GetComponent<QBert>(),
 		pyramid, 2, true, true, 20.f, 1.f, 15.f, 1.f));
 	scene1.Add(sectionObserverGO);
+
+	// FPS Counter
+	scene1.Add(MakeFPSCounter());
 
 
 	//////////////////////////
@@ -248,14 +243,19 @@ void LoadLevel02()
 		scene2.Add(cube);
 
 	// Transfer QBert
-	for (auto gameObject : g_QBertGOs)
-		scene2.Add(gameObject);
+	// (we don't add the JumpingObserverGO again, because it's already
+	// taking effect on the qBert component from the first transfer)
+	for (size_t i = 0; i < g_QBertGOs.size() - 1; i++)
+		scene2.Add(g_QBertGOs[i]);
 
 	// Level Section Observer
 	sectionObserverGO = std::make_shared<dae::GameObject>();
-	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0]->GetComponent<dae::QBert>(),
+	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0]->GetComponent<QBert>(),
 		pyramid, 2, true, true, 15.f, 1.f, 10.f, 1.f));
 	scene2.Add(sectionObserverGO);
+
+	// FPS Counter
+	scene2.Add(MakeFPSCounter());
 
 
 	//////////////////////////
@@ -273,14 +273,19 @@ void LoadLevel02()
 		scene3.Add(cube);
 
 	// Transfer QBert
-	for (auto gameObject : g_QBertGOs)
-		scene3.Add(gameObject);
+	// (we don't add the JumpingObserverGO again, because it's already
+	// taking effect on the qBert component from the first transfer)
+	for (size_t i = 0; i < g_QBertGOs.size() - 1; i++)
+		scene3.Add(g_QBertGOs[i]);
 
 	// Level Section Observer
 	sectionObserverGO = std::make_shared<dae::GameObject>();
-	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0]->GetComponent<dae::QBert>(),
+	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0]->GetComponent<QBert>(),
 		pyramid, 2, true, true, 10.f, 1.f, 7.f, 1.f));
 	scene3.Add(sectionObserverGO);
+
+	// FPS Counter
+	scene3.Add(MakeFPSCounter());
 
 
 	//////////////////////////
@@ -298,14 +303,19 @@ void LoadLevel02()
 		scene4.Add(cube);
 
 	// Transfer QBert
-	for (auto gameObject : g_QBertGOs)
-		scene4.Add(gameObject);
+	// (we don't add the JumpingObserverGO again, because it's already
+	// taking effect on the qBert component from the first transfer)
+	for (size_t i = 0; i < g_QBertGOs.size() - 1; i++)
+		scene4.Add(g_QBertGOs[i]);
 
 	// Level Section Observer
 	sectionObserverGO = std::make_shared<dae::GameObject>();
-	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0]->GetComponent<dae::QBert>(),
+	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0]->GetComponent<QBert>(),
 		pyramid, 2, true, true, 5.f, 1.f, 5.f, 1.f));
 	scene4.Add(sectionObserverGO);
+
+	// FPS Counter
+	scene4.Add(MakeFPSCounter());
 }
 
 void LoadLevel03()
@@ -333,14 +343,19 @@ void LoadLevel03()
 		scene1.Add(cube);
 
 	// Transfer QBert
-	for (auto gameObject : g_QBertGOs)
-		scene1.Add(gameObject);
+	// (we don't add the JumpingObserverGO again, because it's already
+	// taking effect on the qBert component from the first transfer)
+	for (size_t i = 0; i < g_QBertGOs.size() - 1; i++)
+		scene1.Add(g_QBertGOs[i]);
 
 	// Level Section Observer
 	auto sectionObserverGO = std::make_shared<dae::GameObject>();
-	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0]->GetComponent<dae::QBert>(),
+	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0]->GetComponent<QBert>(),
 		pyramid, 3, true, true, 25.f, 1.f, 15.f, 1.f));
 	scene1.Add(sectionObserverGO);
+
+	// FPS Counter
+	scene1.Add(MakeFPSCounter());
 
 
 	//////////////////////////
@@ -358,14 +373,19 @@ void LoadLevel03()
 		scene2.Add(cube);
 
 	// Transfer QBert
-	for (auto gameObject : g_QBertGOs)
-		scene2.Add(gameObject);
+	// (we don't add the JumpingObserverGO again, because it's already
+	// taking effect on the qBert component from the first transfer)
+	for (size_t i = 0; i < g_QBertGOs.size() - 1; i++)
+		scene2.Add(g_QBertGOs[i]);
 
 	// Level Section Observer
 	sectionObserverGO = std::make_shared<dae::GameObject>();
-	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0]->GetComponent<dae::QBert>(),
+	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0]->GetComponent<QBert>(),
 		pyramid, 3, true, true, 20.f, 1.f, 10.f, 1.f));
 	scene2.Add(sectionObserverGO);
+
+	// FPS Counter
+	scene2.Add(MakeFPSCounter());
 
 
 	//////////////////////////
@@ -383,14 +403,19 @@ void LoadLevel03()
 		scene3.Add(cube);
 
 	// Transfer QBert
-	for (auto gameObject : g_QBertGOs)
-		scene3.Add(gameObject);
+	// (we don't add the JumpingObserverGO again, because it's already
+	// taking effect on the qBert component from the first transfer)
+	for (size_t i = 0; i < g_QBertGOs.size() - 1; i++)
+		scene3.Add(g_QBertGOs[i]);
 
 	// Level Section Observer
 	sectionObserverGO = std::make_shared<dae::GameObject>();
-	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0]->GetComponent<dae::QBert>(),
+	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0]->GetComponent<QBert>(),
 		pyramid, 3, true, true, 15.f, 1.f, 7.f, 1.f));
 	scene3.Add(sectionObserverGO);
+
+	// FPS Counter
+	scene3.Add(MakeFPSCounter());
 
 
 	//////////////////////////
@@ -408,14 +433,19 @@ void LoadLevel03()
 		scene4.Add(cube);
 
 	// Transfer QBert
-	for (auto gameObject : g_QBertGOs)
-		scene4.Add(gameObject);
+	// (we don't add the JumpingObserverGO again, because it's already
+	// taking effect on the qBert component from the first transfer)
+	for (size_t i = 0; i < g_QBertGOs.size() - 1; i++)
+		scene4.Add(g_QBertGOs[i]);
 
 	// Level Section Observer
 	sectionObserverGO = std::make_shared<dae::GameObject>();
-	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0]->GetComponent<dae::QBert>(),
+	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0]->GetComponent<QBert>(),
 		pyramid, 3, true, true, 10.f, 1.f, 5.f ,1.f));
 	scene4.Add(sectionObserverGO);
+
+	// FPS Counter
+	scene4.Add(MakeFPSCounter());
 
 
 

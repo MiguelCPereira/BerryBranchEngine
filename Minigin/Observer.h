@@ -16,11 +16,18 @@ namespace dae
 		CoilyDeath,
 		SlickSamCaught,
 		
-		QBertMove,
-		SlickSamMove,
+		QBertLanded,
+		SlickSamLanded,
 		SlickSamFell,
-		UggWrongwayMove,
-		UggWrongwayFell
+		UggWrongwayLanded,
+		UggWrongwayFell,
+
+		JumpUpRight,
+		JumpUpLeft,
+		JumpDownRight,
+		JumpDownLeft,
+		JumpLeft,
+		JumpRight
 	};
 
 	class Observer

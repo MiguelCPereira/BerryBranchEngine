@@ -47,7 +47,7 @@ bool UggWrongway::MoveUpLeft()
 			else
 				graphics->SetSrcRectangle(m_SpriteWidth * 3, m_SpriteHeight, m_SpriteWidth, m_SpriteHeight);
 
-			m_Subject->Notify(dae::Event::UggWrongwayMove);
+			m_Subject->Notify(dae::Event::UggWrongwayLanded);
 			return true;
 		}
 		else
@@ -78,7 +78,7 @@ bool UggWrongway::MoveUpRight()
 			else
 				graphics->SetSrcRectangle(m_SpriteWidth, m_SpriteHeight, m_SpriteWidth, m_SpriteHeight);
 
-			m_Subject->Notify(dae::Event::UggWrongwayMove);
+			m_Subject->Notify(dae::Event::UggWrongwayLanded);
 			return true;
 		}
 		else
@@ -108,7 +108,7 @@ bool UggWrongway::MoveLeft()
 			else
 				graphics->SetSrcRectangle(m_SpriteWidth * 2, m_SpriteHeight, m_SpriteWidth, m_SpriteHeight);
 
-			m_Subject->Notify(dae::Event::UggWrongwayMove);
+			m_Subject->Notify(dae::Event::UggWrongwayLanded);
 			return true;
 		}
 		else
@@ -138,7 +138,7 @@ bool UggWrongway::MoveRight()
 			else
 				graphics->SetSrcRectangle(0, m_SpriteHeight, m_SpriteWidth, m_SpriteHeight);
 
-			m_Subject->Notify(dae::Event::UggWrongwayMove);
+			m_Subject->Notify(dae::Event::UggWrongwayLanded);
 			return true;
 		}
 		else

@@ -6,6 +6,10 @@
 #include "SlickSam.h"
 #include "QBert.h"
 #include "UggWrongway.h"
+#include "ResourceManager.h"
+#include "FPSComponent.h"
+#include "JumpingObserver.h"
+#include "TextComponent.h"
 
 std::vector<std::shared_ptr<dae::GameObject>> MakeQBert()
 {
@@ -17,18 +21,23 @@ std::vector<std::shared_ptr<dae::GameObject>> MakeQBert()
 	const auto initialPosY = 50.f;
 
 	auto cursesGO = std::make_shared<dae::GameObject>();
-	cursesGO->AddComponent(new dae::GraphicsComponent("QBert Curses.png", -20, -20, actualWidth, actualHeight));
+	cursesGO->AddComponent(new dae::GraphicsComponent("QBert Curses.png", -50, -50, actualWidth, actualHeight));
 
 	actualWidth = 49.f;
 	actualHeight = 48.f;
 	
 	auto qBertGO = std::make_shared<dae::GameObject>();
-	qBertGO->AddComponent(new dae::QBert(qBertGO, cursesGO, g_NrRows, g_CubesActualWidth, g_CubesActualHeight, spriteWidth, spriteHeight));
+	qBertGO->AddComponent(new QBert(qBertGO, cursesGO, g_NrRows, g_CubesActualWidth, g_CubesActualHeight, spriteWidth, spriteHeight));
 	qBertGO->AddComponent(new dae::GraphicsComponent("QBert Spritesheet.png", initialPosX, initialPosY, actualWidth, actualHeight, spriteWidth * 2, 0, spriteWidth, spriteHeight));
 
+	auto jumpingObserverGO = std::make_shared<dae::GameObject>();
+	jumpingObserverGO->AddComponent(new JumpingObserver(jumpingObserverGO, qBertGO->GetComponent<QBert>(),
+		qBertGO->GetComponent<dae::GraphicsComponent>(), g_CubesActualWidth, g_CubesActualHeight));
+	
 	std::vector< std::shared_ptr<dae::GameObject>> returnVector;
 	returnVector.push_back(std::move(qBertGO));
 	returnVector.push_back(std::move(cursesGO));
+	returnVector.push_back(std::move(jumpingObserverGO));
 	
 	return returnVector;
 }
@@ -158,4 +167,16 @@ std::shared_ptr<dae::GameObject> MakeVictoryTitle()
 	newGO->AddComponent(new dae::GraphicsComponent("Victory Title.png", positionX, positionY, width, height));
 
 	return newGO;
+}
+
+
+std::shared_ptr<dae::GameObject> MakeFPSCounter()
+{
+	auto font = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 19);
+	auto fpsCounterGO = std::make_shared<dae::GameObject>();
+	fpsCounterGO->AddComponent(new dae::FPSComponent(fpsCounterGO));
+	fpsCounterGO->AddComponent(new dae::TextComponent("FAIL FPS", font, 255, 255, 0));
+	fpsCounterGO->GetComponent<dae::TextComponent>()->SetPosition(10, 10);
+
+	return fpsCounterGO;
 }

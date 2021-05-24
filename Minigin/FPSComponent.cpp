@@ -17,7 +17,7 @@ void dae::FPSComponent::Update(const float deltaTime)
 {
 	m_SecCounter += deltaTime;
 
-	m_FpsSumOverSec += int(1.f / deltaTime);
+	m_FpsSumOverSec += 1.f / deltaTime;
 	m_Frames++;
 
 	if (m_SecCounter >= m_RenderInterval)

@@ -5,24 +5,24 @@
 class QBertMoveUpCommand final : public dae::Command
 {
 public:
-	void Execute() override { GetActor()->GetComponent<dae::QBert>()->MoveUpRight(); }
+	void Execute() override { GetActor()->GetComponent<QBert>()->MoveUpRight(); }
 };
 
 class QBertMoveDownCommand final : public dae::Command
 {
 public:
-	void Execute() override { GetActor()->GetComponent<dae::QBert>()->MoveDownLeft(); }
+	void Execute() override { GetActor()->GetComponent<QBert>()->MoveDownLeft(); }
 };
 
 class QBertMoveLeftCommand final : public dae::Command
 {
 public:
-	void Execute() override { GetActor()->GetComponent<dae::QBert>()->MoveUpLeft(); }
+	void Execute() override { GetActor()->GetComponent<QBert>()->MoveUpLeft(); }
 };
 
 class QBertMoveRightCommand final : public dae::Command
 {
 public:
-	void Execute() override { GetActor()->GetComponent<dae::QBert>()->MoveDownRight(); }
+	void Execute() override { GetActor()->GetComponent<QBert>()->MoveDownRight(); }
 };
 

@@ -9,11 +9,25 @@
 #include "Transform.h"
 
 dae::TextComponent::TextComponent(const std::string& text, const std::shared_ptr<Font>& font)
-	: m_NeedsUpdate(true), m_Text(text), m_Font(font), m_Texture(nullptr), m_ColorR(255), m_ColorG(255), m_ColorB(255)
+	: m_NeedsUpdate(true)
+	, m_Text(text)
+	, m_Transform(new Transform())
+	, m_Font(font)
+	, m_Texture(nullptr)
+	, m_ColorR(255)
+	, m_ColorG(255)
+	, m_ColorB(255)
 { }
 
 dae::TextComponent::TextComponent(const std::string& text, const std::shared_ptr<Font>& font, int colorR, int colorG, int colorB)
-	: m_NeedsUpdate(true), m_Text(text), m_Font(font), m_Texture(nullptr), m_ColorR(colorR), m_ColorG(colorG), m_ColorB(colorB)
+	: m_NeedsUpdate(true)
+	, m_Text(text)
+	, m_Transform(new Transform())
+	, m_Font(font)
+	, m_Texture(nullptr)
+	, m_ColorR(colorR)
+	, m_ColorG(colorG)
+	, m_ColorB(colorB)
 { }
 
 void dae::TextComponent::Update(const float)

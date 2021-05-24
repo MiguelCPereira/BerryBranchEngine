@@ -4,7 +4,7 @@
 #include "GraphicsComponent.h"
 
 
-dae::QBert::QBert(const std::shared_ptr<GameObject>& gameObject, const std::shared_ptr<GameObject>& cursesGameObject,
+QBert::QBert(const std::shared_ptr<dae::GameObject>& gameObject, const std::shared_ptr<dae::GameObject>& cursesGameObject,
 	int nrRows, float cubesWidth, float cubesHeight, float qBertSpriteWidth, float qBertSpriteHeight)
 	: m_GameObject(gameObject)
 	, m_CursesGameObject(cursesGameObject)
@@ -15,17 +15,19 @@ dae::QBert::QBert(const std::shared_ptr<GameObject>& gameObject, const std::shar
 	, m_QBertSpriteHeight(qBertSpriteHeight)
 	, m_QBertInitialPosX()
 	, m_QBertInitialPosY()
+	, m_PosXBeforeHidden()
+	, m_PosYBeforeHidden()
 {}
 
 
-void dae::QBert::Die()
+void QBert::Die()
 {
 	if (m_Lives - 1 >= 0)
 	{
 		m_Lives--;
 		std::cout << "Ouch! You now have " << m_Lives << " lives left\n";
 		// Play sound
-		m_Subject->Notify(Event::ActorDeath);
+		m_Subject->Notify(dae::Event::ActorDeath);
 	}
 	else
 	{
@@ -34,49 +36,49 @@ void dae::QBert::Die()
 	}
 }
 
-void dae::QBert::ResetPosition()
+void QBert::ResetPosition()
 {
 	m_CurrentCubeIdx = 1;
 	m_CurrentRow = 1;
-	m_GameObject->GetComponent<GraphicsComponent>()->SetPosition(m_QBertInitialPosX, m_QBertInitialPosY);
-	m_GameObject->GetComponent<GraphicsComponent>()->SetSrcRectangle(m_QBertSpriteWidth * 2, 0, m_QBertSpriteWidth, m_QBertSpriteHeight);
+	m_GameObject->GetComponent<dae::GraphicsComponent>()->SetPosition(m_QBertInitialPosX, m_QBertInitialPosY);
+	m_GameObject->GetComponent<dae::GraphicsComponent>()->SetSrcRectangle(m_QBertSpriteWidth * 2, 0, m_QBertSpriteWidth, m_QBertSpriteHeight);
 
 }
 
-void dae::QBert::SetFrozen(bool frozen)
+void QBert::SetFrozen(bool frozen)
 {
 	m_Frozen = frozen;
 }
 
-void dae::QBert::SetHideGraphics(bool isHidden)
+void QBert::SetHideGraphics(bool isHidden)
 {
 	if (isHidden)
 	{
-		m_PosXBeforeHidden = m_GameObject->GetComponent<GraphicsComponent>()->GetPosX();
-		m_PosYBeforeHidden = m_GameObject->GetComponent<GraphicsComponent>()->GetPosY();
-		m_GameObject->GetComponent<GraphicsComponent>()->SetPosition(-50, -50);
+		m_PosXBeforeHidden = m_GameObject->GetComponent<dae::GraphicsComponent>()->GetPosX();
+		m_PosYBeforeHidden = m_GameObject->GetComponent<dae::GraphicsComponent>()->GetPosY();
+		m_GameObject->GetComponent<dae::GraphicsComponent>()->SetPosition(-50, -50);
 	}
 	else
 	{
-		m_GameObject->GetComponent<GraphicsComponent>()->SetPosition(m_PosXBeforeHidden, m_PosYBeforeHidden);
+		m_GameObject->GetComponent<dae::GraphicsComponent>()->SetPosition(m_PosXBeforeHidden, m_PosYBeforeHidden);
 	}
 }
 
-void dae::QBert::SetCursesHidden(bool isHidden) const
+void QBert::SetCursesHidden(bool isHidden) const
 {
 	auto posX = -50.f;
 	auto posY = -50.f;
 	
 	if (isHidden == false)
 	{
-		posX = m_GameObject->GetComponent<GraphicsComponent>()->GetPosX() + 5.f;
-		posY = m_GameObject->GetComponent<GraphicsComponent>()->GetPosY() - 38.f;
+		posX = m_GameObject->GetComponent<dae::GraphicsComponent>()->GetPosX() + 5.f;
+		posY = m_GameObject->GetComponent<dae::GraphicsComponent>()->GetPosY() - 38.f;
 	}
 
-	m_CursesGameObject->GetComponent<GraphicsComponent>()->SetPosition(posX, posY);
+	m_CursesGameObject->GetComponent<dae::GraphicsComponent>()->SetPosition(posX, posY);
 }
 
-bool dae::QBert::MoveUpRight()
+bool QBert::MoveUpRight()
 {
 	if (m_Frozen == false)
 	{
@@ -85,10 +87,10 @@ bool dae::QBert::MoveUpRight()
 		{
 			m_CurrentCubeIdx = m_CurrentCubeIdx - m_CurrentRow + 1;
 			m_CurrentRow--;
-			auto* graphics = m_GameObject->GetComponent<GraphicsComponent>();
-			graphics->SetPosition(graphics->GetPosX() + m_CubesWidth / 2.f, graphics->GetPosY() - m_CubesHeight * 0.75f);
+			auto* graphics = m_GameObject->GetComponent<dae::GraphicsComponent>();
 			graphics->SetSrcRectangle(0, 0, m_QBertSpriteWidth, m_QBertSpriteHeight);
-			m_Subject->Notify(Event::QBertMove);
+			m_Airborne = true;
+			m_Subject->Notify(dae::Event::JumpUpRight);
 			return true;
 		}
 		return false;
@@ -96,7 +98,7 @@ bool dae::QBert::MoveUpRight()
 	return false;
 }
 
-bool dae::QBert::MoveUpLeft()
+bool QBert::MoveUpLeft()
 {
 	if (m_Frozen == false)
 	{
@@ -105,10 +107,10 @@ bool dae::QBert::MoveUpLeft()
 		{
 			m_CurrentCubeIdx = m_CurrentCubeIdx - m_CurrentRow;
 			m_CurrentRow--;
-			auto* graphics = m_GameObject->GetComponent<GraphicsComponent>();
-			graphics->SetPosition(graphics->GetPosX() - m_CubesWidth / 2.f, graphics->GetPosY() - m_CubesHeight * 0.75f);
+			auto* graphics = m_GameObject->GetComponent<dae::GraphicsComponent>();
 			graphics->SetSrcRectangle(m_QBertSpriteWidth, 0, m_QBertSpriteWidth, m_QBertSpriteHeight);
-			m_Subject->Notify(Event::QBertMove);
+			m_Airborne = true;
+			m_Subject->Notify(dae::Event::JumpUpLeft);
 			return true;
 		}
 		return false;
@@ -116,7 +118,7 @@ bool dae::QBert::MoveUpLeft()
 	return false;
 }
 
-bool dae::QBert::MoveDownLeft()
+bool QBert::MoveDownLeft()
 {
 	if (m_Frozen == false)
 	{
@@ -125,10 +127,10 @@ bool dae::QBert::MoveDownLeft()
 		{
 			m_CurrentCubeIdx = m_CurrentCubeIdx + m_CurrentRow;
 			m_CurrentRow++;
-			auto* graphics = m_GameObject->GetComponent<GraphicsComponent>();
-			graphics->SetPosition(graphics->GetPosX() - m_CubesWidth / 2.f, graphics->GetPosY() + m_CubesHeight * 0.75f);
+			auto* graphics = m_GameObject->GetComponent<dae::GraphicsComponent>();
 			graphics->SetSrcRectangle(m_QBertSpriteWidth * 3, 0, m_QBertSpriteWidth, m_QBertSpriteHeight);
-			m_Subject->Notify(Event::QBertMove);
+			m_Airborne = true;
+			m_Subject->Notify(dae::Event::JumpDownLeft);
 			return true;
 		}
 		return false;
@@ -136,7 +138,7 @@ bool dae::QBert::MoveDownLeft()
 	return false;
 }
 
-bool dae::QBert::MoveDownRight()
+bool QBert::MoveDownRight()
 {
 	if (m_Frozen == false)
 	{
@@ -145,10 +147,10 @@ bool dae::QBert::MoveDownRight()
 		{
 			m_CurrentCubeIdx = m_CurrentCubeIdx + m_CurrentRow + 1;
 			m_CurrentRow++;
-			auto* graphics = m_GameObject->GetComponent<GraphicsComponent>();
-			graphics->SetPosition(graphics->GetPosX() + m_CubesWidth / 2.f, graphics->GetPosY() + m_CubesHeight * 0.75f);
+			auto* graphics = m_GameObject->GetComponent<dae::GraphicsComponent>();
 			graphics->SetSrcRectangle(m_QBertSpriteWidth * 2, 0, m_QBertSpriteWidth, m_QBertSpriteHeight);
-			m_Subject->Notify(Event::QBertMove);
+			m_Airborne = true;
+			m_Subject->Notify(dae::Event::JumpDownRight);
 			return true;
 		}
 		return false;
@@ -156,15 +158,21 @@ bool dae::QBert::MoveDownRight()
 	return false;
 }
 
-
-void dae::QBert::Initialize()
+void QBert::JumpFinished()
 {
-	auto* graphics = m_GameObject->GetComponent<GraphicsComponent>();
+	m_Airborne = false;
+	m_Subject->Notify(dae::Event::QBertLanded);
+}
+
+
+void QBert::Initialize()
+{
+	auto* graphics = m_GameObject->GetComponent<dae::GraphicsComponent>();
 	m_QBertInitialPosX = graphics->GetPosX();
 	m_QBertInitialPosY = graphics->GetPosY();
 }
 
-void dae::QBert::Update(const float)
+void QBert::Update(const float)
 {
 	//if (changedColor)
 	//	m_Subject->Notify(Event::ColorChange);

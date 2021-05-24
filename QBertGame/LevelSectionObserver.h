@@ -7,24 +7,24 @@
 class UggWrongway;
 class SlickSam;
 class Pyramid;
+class QBert;
 
 namespace dae
 {
 	class GraphicsComponent;
-	class QBert;
 }
 
 class LevelSectionObserver final : public dae::BaseComponent, public dae::Observer
 {
 public:
 	explicit LevelSectionObserver(float transitionTime); // An empty observer just for the level title scenes
-	explicit LevelSectionObserver(const std::shared_ptr<dae::GameObject>& gameObject, dae::QBert* qBertComp, Pyramid* pyramid,
+	explicit LevelSectionObserver(const std::shared_ptr<dae::GameObject>& gameObject, QBert* qBertComp, Pyramid* pyramid,
 		int level, bool spawnSlickSams, bool spawnUggWrongs,
 		float slickSamSpawnInterval = 0, float slickSamMoveInterval = 0,
 		float uggWrongSpawnInterval = 0, float uggWrongMoveInterval = 0);
 	~LevelSectionObserver() override;
 
-	void SetQBert(dae::QBert* qBertComp);
+	void SetQBert(QBert* qBertComp);
 	void SetPyramid(Pyramid* pyramid);
 
 	void Initialize() override;
@@ -48,7 +48,7 @@ public:
 
 private:
 	std::shared_ptr<dae::GameObject> m_GameObject{};
-	dae::QBert* m_QBertComp{};
+	QBert* m_QBertComp{};
 	Pyramid* m_Pyramid;
 	
 	const bool m_SpawnSlickSams;
@@ -73,6 +73,5 @@ private:
 	float m_DeathEmptySceneTimer, m_DeathEmptySceneMaxTime;
 
 	float m_LevelTitleTimer, m_LevelTitleScreenTime;
-	
 };
 
