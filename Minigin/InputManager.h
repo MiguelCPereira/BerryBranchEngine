@@ -52,8 +52,8 @@ namespace dae
 	class InputManager final : public Singleton<InputManager>
 	{
 	public:
-		void AddCommand(ControllerKey button, std::unique_ptr<Command> command);
-		void AddCommand(SDL_Keycode key, std::unique_ptr<Command> command);
+		void MINIGIN_ENTRY AddCommand(ControllerKey button, std::unique_ptr<Command> command);
+		void MINIGIN_ENTRY AddCommand(SDL_Keycode key, std::unique_ptr<Command> command);
 		bool ProcessInput();
 		bool IsPressed(ControllerButton button) const;
 		void ExecuteButton(ControllerButton button) const;

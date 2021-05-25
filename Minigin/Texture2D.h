@@ -1,11 +1,12 @@
 #pragma once
+
 struct SDL_Texture;
 namespace dae
 {
 	/**
 	 * Simple RAII wrapper for an SDL_Texture
 	 */
-	class Texture2D
+	class MINIGIN_ENTRY Texture2D
 	{
 	public:
 		SDL_Texture* GetSDLTexture() const;

@@ -1,5 +1,6 @@
 #pragma once
 #include "SceneManager.h"
+#include "MiniginLibType.h"
 
 namespace dae
 {
@@ -8,9 +9,9 @@ namespace dae
 	{
 		friend Scene& SceneManager::CreateScene(const std::string& name);
 	public:
-		void Add(const std::shared_ptr<GameObject>& object);
+		void MINIGIN_ENTRY Add(const std::shared_ptr<GameObject>& object);
 
-		void Initialize();
+		void MINIGIN_ENTRY Initialize();
 		void Update(const float deltaTime);
 		void Render() const;
 

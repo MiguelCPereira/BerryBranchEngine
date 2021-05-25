@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include "MiniginLibType.h"
 
 namespace dae
 {
@@ -13,11 +14,11 @@ namespace dae
 		void Update(const float deltaTime);
 		void Render() const;
 
-		void SetPosition(float x, float y);
-		void RemoveAllComponents();
+		void SetPosition(float x, float y) const;
+		void MINIGIN_ENTRY RemoveAllComponents();
 
 		GameObject() = default;
-		~GameObject();
+		MINIGIN_ENTRY ~GameObject();
 		
 		GameObject(const GameObject& other)
 			: m_Transform(other.m_Transform)
@@ -55,7 +56,7 @@ namespace dae
 			}
 		}
 
-		void AddComponent(BaseComponent* newComponent);
+		void MINIGIN_ENTRY AddComponent(BaseComponent* newComponent);
 
 		template<typename T>
 		T* GetComponent()

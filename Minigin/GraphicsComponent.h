@@ -8,10 +8,9 @@ namespace dae
 	class GraphicsComponent final : public BaseComponent
 	{
 	public:
-		GraphicsComponent();
-		GraphicsComponent(const std::string& imageFile);
-		//GraphicsComponent(const std::string& imageFile, float x, float y, float width = 0, float height = 0);
-		GraphicsComponent(const std::string& imageFile, float x, float y, float width = 0, float height = 0, float srcX = 0, float srcY = 0, float srcWidth = 0, float srcHeight = 0);
+		MINIGIN_ENTRY GraphicsComponent();
+		MINIGIN_ENTRY GraphicsComponent(const std::string& imageFile);
+		MINIGIN_ENTRY GraphicsComponent(const std::string& imageFile, float x, float y, float width = 0, float height = 0, float srcX = 0, float srcY = 0, float srcWidth = 0, float srcHeight = 0);
 		~GraphicsComponent() = default;
 
 		GraphicsComponent(const GraphicsComponent& other) = delete;
@@ -21,10 +20,10 @@ namespace dae
 
 		void Update(const float deltaTime) override;
 		void Render() const override;
-		void SetPosition(float x, float y);
-		void SetSize(float width, float height);
-		void SetTexture(const std::string& imageFile);
-		void SetSrcRectangle(float x, float y, float width, float height);
+		void MINIGIN_ENTRY SetPosition(float x, float y);
+		void MINIGIN_ENTRY SetSize(float width, float height);
+		void MINIGIN_ENTRY SetTexture(const std::string& imageFile);
+		void MINIGIN_ENTRY SetSrcRectangle(float x, float y, float width, float height);
 
 		float GetPosX() { return m_PosX; }
 		float GetPosY() { return m_PosY; }

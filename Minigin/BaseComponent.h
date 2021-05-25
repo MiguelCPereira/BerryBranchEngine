@@ -1,11 +1,12 @@
 #pragma once
 #include "Subject.h"
+#include "MiniginLibType.h"
 
 namespace dae
 {
 	class GameObject;
 
-	class BaseComponent
+	class MINIGIN_ENTRY BaseComponent
 	{
 	public:
 		BaseComponent();

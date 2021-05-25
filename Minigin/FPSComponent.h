@@ -8,7 +8,7 @@ namespace dae
 	class FPSComponent final : public BaseComponent
 	{
 	public:
-		FPSComponent(std::shared_ptr<GameObject> ownerObject);
+		MINIGIN_ENTRY FPSComponent(std::shared_ptr<GameObject> ownerObject);
 		~FPSComponent() = default;
 		
 		void Initialize() override;

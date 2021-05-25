@@ -13,9 +13,6 @@
 #include "InputManager.h"
 #include "GameCommands.h"
 #include "LevelSectionObserver.h"
-//#include "GameObserver.h"
-
-// I'll delete these headers once I manage to get TextComponent working and can create a Factory function for it
 
 
 // Global Variables

@@ -14,10 +14,10 @@ namespace dae
 		void Render() const override;
 
 		void SetText(const std::string& text);
-		void SetPosition(float x, float y);
+		void MINIGIN_ENTRY SetPosition(float x, float y);
 
-		explicit TextComponent(const std::string& text, const std::shared_ptr<Font>& font);
-		explicit TextComponent(const std::string& text, const std::shared_ptr<Font>& font, int colorR, int colorG, int colorB);
+		explicit MINIGIN_ENTRY TextComponent(const std::string& text, const std::shared_ptr<Font>& font);
+		explicit MINIGIN_ENTRY TextComponent(const std::string& text, const std::shared_ptr<Font>& font, int colorR, int colorG, int colorB);
 		virtual ~TextComponent() = default;
 		
 		TextComponent(const TextComponent& other) = delete;
