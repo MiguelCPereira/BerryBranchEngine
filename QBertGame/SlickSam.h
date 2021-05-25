@@ -10,17 +10,20 @@ public:
 
 	int GetPositionIndex() const { return m_CurrentCubeIdx; }
 	bool GetIsAlive() const { return m_Alive; }
+	bool GetAirborne() const { return m_Airborne; }
 
 	void SetFrozen(bool frozen);
 	void Die() const;
 
 	bool MoveDownLeft();
 	bool MoveDownRight();
+	void JumpFinished();
 
 	void Update(const float deltaTime) override;
 
 private:
 	std::shared_ptr<dae::GameObject> m_GameObject{};
+	bool m_Airborne{ false };
 	bool m_Frozen{ false };
 	int m_CurrentCubeIdx;
 	int m_CurrentRow{ 2 };

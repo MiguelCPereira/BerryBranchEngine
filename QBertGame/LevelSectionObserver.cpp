@@ -269,14 +269,16 @@ bool LevelSectionObserver::CheckCollidingUggWrong() const
 			auto* uggWrong = m_UggWrongCompVector->operator[](i);
 			if (uggWrong->GetStartedLeft())
 			{
-				if (m_QBertComp->GetPositionIndex() == uggWrong->GetPositionIndex() + uggWrong->GetCurrentRow())
+				if (m_QBertComp->GetPositionIndex() == uggWrong->GetPositionIndex() + uggWrong->GetCurrentRow() &&
+					uggWrong->GetAirborne() == false)
 				{
 					return true;
 				}
 			}
 			else
 			{
-				if (m_QBertComp->GetPositionIndex() == uggWrong->GetPositionIndex() + uggWrong->GetCurrentRow() + 1)
+				if (m_QBertComp->GetPositionIndex() == uggWrong->GetPositionIndex() + uggWrong->GetCurrentRow() + 1 &&
+					uggWrong->GetAirborne() == false)
 				{
 					return true;
 				}
@@ -295,7 +297,9 @@ void LevelSectionObserver::KillCollidingSlickSam() const
 		auto nrSlickSams = m_SlickSamCompVector->size();
 		for (size_t i = 0; i < nrSlickSams; i++)
 		{
-			if (m_QBertComp->GetPositionIndex() == m_SlickSamCompVector->operator[](i)->GetPositionIndex())
+			
+			if (m_QBertComp->GetPositionIndex() == m_SlickSamCompVector->operator[](i)->GetPositionIndex() &&
+				m_SlickSamCompVector->operator[](i)->GetAirborne() == false)
 			{
 				auto* deadSlickSam = m_SlickSamCompVector->operator[](i);
 				m_SlickSamCompVector->erase(std::find(m_SlickSamCompVector->begin(), m_SlickSamCompVector->end(), deadSlickSam));

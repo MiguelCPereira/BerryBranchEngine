@@ -13,10 +13,6 @@ public:
 	void RemoveObserver(dae::Observer* observer)
 	{
 		m_Observers.erase(std::remove(m_Observers.begin(), m_Observers.end(), observer), m_Observers.end());
-		
-		//const auto observerPos = std::find(m_Observers.begin(), m_Observers.end(), observer);
-		//if (observerPos != m_Observers.end())
-		//	m_Observers.erase(observerPos);
 	}
 	void Notify(dae::Event event)
 	{

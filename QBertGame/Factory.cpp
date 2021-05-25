@@ -27,17 +27,15 @@ std::vector<std::shared_ptr<dae::GameObject>> MakeQBert()
 	actualHeight = 48.f;
 	
 	auto qBertGO = std::make_shared<dae::GameObject>();
-	qBertGO->AddComponent(new QBert(qBertGO, cursesGO, g_NrRows, g_CubesActualWidth, g_CubesActualHeight, spriteWidth, spriteHeight));
-	qBertGO->AddComponent(new dae::GraphicsComponent("QBert Spritesheet.png", initialPosX, initialPosY, actualWidth, actualHeight, spriteWidth * 2, 0, spriteWidth, spriteHeight));
-
-	auto jumpingObserverGO = std::make_shared<dae::GameObject>();
-	jumpingObserverGO->AddComponent(new JumpingObserver(jumpingObserverGO, qBertGO->GetComponent<QBert>(),
-		qBertGO->GetComponent<dae::GraphicsComponent>(), g_CubesActualWidth, g_CubesActualHeight));
+	qBertGO->AddComponent(new QBert(qBertGO, cursesGO, g_NrRows, spriteWidth, spriteHeight));
+	qBertGO->AddComponent(new dae::GraphicsComponent("QBert Spritesheet.png", initialPosX, initialPosY,
+		actualWidth, actualHeight, spriteWidth * 2, 0, spriteWidth, spriteHeight));
+	qBertGO->AddComponent(new JumpingObserver(qBertGO->GetComponent<QBert>(), qBertGO->GetComponent<dae::GraphicsComponent>(),
+		g_CubesActualWidth, g_CubesActualHeight));
 	
 	std::vector< std::shared_ptr<dae::GameObject>> returnVector;
 	returnVector.push_back(std::move(qBertGO));
 	returnVector.push_back(std::move(cursesGO));
-	returnVector.push_back(std::move(jumpingObserverGO));
 	
 	return returnVector;
 }
@@ -56,29 +54,41 @@ std::shared_ptr<dae::GameObject> MakeSlickSam(bool isSlick, bool isLeft, float  
 	{
 		if (isLeft)
 		{
-			newGO->AddComponent(new SlickSam(newGO, g_NrRows, g_CubesActualWidth, g_CubesActualHeight, spriteWidth, spriteHeight, 2, moveInterval, true));
-			newGO->AddComponent(new dae::GraphicsComponent("Slick Sam Spritesheet.png", g_EnemiesLeftSpawnPosX, g_EnemiesSpawnPosY, actualWidth, actualHeight, 0, 0, spriteWidth, spriteHeight));
+			newGO->AddComponent(new SlickSam(newGO, g_NrRows, g_CubesActualWidth, g_CubesActualHeight,
+				spriteWidth, spriteHeight, 2, moveInterval, true));
+			newGO->AddComponent(new dae::GraphicsComponent("Slick Sam Spritesheet.png", g_EnemiesLeftSpawnPosX,g_EnemiesSpawnPosY,
+				actualWidth, actualHeight, 0, 0, spriteWidth, spriteHeight));
 		}
 		else
 		{
-			newGO->AddComponent(new SlickSam(newGO, g_NrRows, g_CubesActualWidth, g_CubesActualHeight, spriteWidth, spriteHeight, 3, moveInterval, true));
-			newGO->AddComponent(new dae::GraphicsComponent("Slick Sam Spritesheet.png", g_EnemiesRightSpawnPosX, g_EnemiesSpawnPosY, actualWidth, actualHeight, 0, 0, spriteWidth, spriteHeight));
+			newGO->AddComponent(new SlickSam(newGO, g_NrRows, g_CubesActualWidth, g_CubesActualHeight,
+				spriteWidth, spriteHeight, 3, moveInterval, true));
+			newGO->AddComponent(new dae::GraphicsComponent("Slick Sam Spritesheet.png", g_EnemiesRightSpawnPosX, g_EnemiesSpawnPosY,
+				actualWidth, actualHeight, 0, 0, spriteWidth, spriteHeight));
 		}
 	}
 	else
 	{
 		if (isLeft)
 		{
-			newGO->AddComponent(new SlickSam(newGO, g_NrRows, g_CubesActualWidth, g_CubesActualHeight, spriteWidth, spriteHeight, 2, moveInterval, false));
-			newGO->AddComponent(new dae::GraphicsComponent("Slick Sam Spritesheet.png", g_EnemiesLeftSpawnPosX, g_EnemiesSpawnPosY, actualWidth, actualHeight, spriteWidth, spriteHeight, spriteWidth, spriteHeight));
+			newGO->AddComponent(new SlickSam(newGO, g_NrRows, g_CubesActualWidth, g_CubesActualHeight,
+				spriteWidth, spriteHeight, 2, moveInterval, false));
+			newGO->AddComponent(new dae::GraphicsComponent("Slick Sam Spritesheet.png", g_EnemiesLeftSpawnPosX, g_EnemiesSpawnPosY,
+				actualWidth, actualHeight, spriteWidth, spriteHeight, spriteWidth, spriteHeight));
 		}
 		else
 		{
-			newGO->AddComponent(new SlickSam(newGO, g_NrRows, g_CubesActualWidth, g_CubesActualHeight, spriteWidth, spriteHeight, 3, moveInterval, false));
-			newGO->AddComponent(new dae::GraphicsComponent("Slick Sam Spritesheet.png", g_EnemiesRightSpawnPosX, g_EnemiesSpawnPosY, actualWidth, actualHeight, spriteWidth, spriteHeight, spriteWidth, spriteHeight));
+			newGO->AddComponent(new SlickSam(newGO, g_NrRows, g_CubesActualWidth, g_CubesActualHeight,
+				spriteWidth, spriteHeight, 3, moveInterval, false));
+			newGO->AddComponent(new dae::GraphicsComponent("Slick Sam Spritesheet.png", g_EnemiesRightSpawnPosX, g_EnemiesSpawnPosY,
+				actualWidth, actualHeight, spriteWidth, spriteHeight, spriteWidth, spriteHeight));
 		}
 	}
-
+	
+	newGO->AddComponent(new JumpingObserver(newGO->GetComponent<SlickSam>(), newGO->GetComponent<dae::GraphicsComponent>(),
+		g_CubesActualWidth, g_CubesActualHeight));
+	newGO->GetComponent<JumpingObserver>()->Initialize();
+	
 	return newGO;
 }
 
@@ -99,28 +109,40 @@ std::shared_ptr<dae::GameObject> MakeUggWrongway(bool isUgg, bool isLeft, float 
 	{
 		if (isLeft)
 		{
-			newGO->AddComponent(new UggWrongway(newGO, g_NrRows, g_CubesActualWidth, g_CubesActualHeight, spriteWidth, spriteHeight, 22, moveInterval, true, true));
-			newGO->AddComponent(new dae::GraphicsComponent("Ugg Wrongway Spritesheet.png", leftSpawnPositionX, spawnPositionY, actualWidth, actualHeight, spriteWidth, 0, spriteWidth, spriteHeight));
+			newGO->AddComponent(new UggWrongway(newGO, g_NrRows, g_CubesActualWidth, g_CubesActualHeight,
+				spriteWidth, spriteHeight, 22, moveInterval, true, true));
+			newGO->AddComponent(new dae::GraphicsComponent("Ugg Wrongway Spritesheet.png", leftSpawnPositionX, spawnPositionY,
+				actualWidth, actualHeight, spriteWidth, 0, spriteWidth, spriteHeight));
 		}
 		else
 		{
-			newGO->AddComponent(new UggWrongway(newGO, g_NrRows, g_CubesActualWidth, g_CubesActualHeight, spriteWidth, spriteHeight, 28, moveInterval, true, false));
-			newGO->AddComponent(new dae::GraphicsComponent("Ugg Wrongway Spritesheet.png", rightSpawnPositionX, spawnPositionY, actualWidth, actualHeight, spriteWidth*3, 0, spriteWidth, spriteHeight));
+			newGO->AddComponent(new UggWrongway(newGO, g_NrRows, g_CubesActualWidth, g_CubesActualHeight,
+				spriteWidth, spriteHeight, 28, moveInterval, true, false));
+			newGO->AddComponent(new dae::GraphicsComponent("Ugg Wrongway Spritesheet.png", rightSpawnPositionX, spawnPositionY,
+				actualWidth, actualHeight, spriteWidth*3, 0, spriteWidth, spriteHeight));
 		}
 	}
 	else
 	{
 		if (isLeft)
 		{
-			newGO->AddComponent(new UggWrongway(newGO, g_NrRows, g_CubesActualWidth, g_CubesActualHeight, spriteWidth, spriteHeight, 22, moveInterval, false, true));
-			newGO->AddComponent(new dae::GraphicsComponent("Ugg Wrongway Spritesheet.png", leftSpawnPositionX, spawnPositionY, actualWidth, actualHeight, spriteWidth, spriteHeight, spriteWidth, spriteHeight));
+			newGO->AddComponent(new UggWrongway(newGO, g_NrRows, g_CubesActualWidth, g_CubesActualHeight,
+				spriteWidth, spriteHeight, 22, moveInterval, false, true));
+			newGO->AddComponent(new dae::GraphicsComponent("Ugg Wrongway Spritesheet.png", leftSpawnPositionX, spawnPositionY,
+				actualWidth, actualHeight, spriteWidth, spriteHeight, spriteWidth, spriteHeight));
 		}
 		else
 		{
-			newGO->AddComponent(new UggWrongway(newGO, g_NrRows, g_CubesActualWidth, g_CubesActualHeight, spriteWidth, spriteHeight, 28, moveInterval, false, false));
-			newGO->AddComponent(new dae::GraphicsComponent("Ugg Wrongway Spritesheet.png", rightSpawnPositionX, spawnPositionY, actualWidth, actualHeight, spriteWidth*3, spriteHeight, spriteWidth, spriteHeight));
+			newGO->AddComponent(new UggWrongway(newGO, g_NrRows, g_CubesActualWidth, g_CubesActualHeight,
+				spriteWidth, spriteHeight, 28, moveInterval, false, false));
+			newGO->AddComponent(new dae::GraphicsComponent("Ugg Wrongway Spritesheet.png", rightSpawnPositionX, spawnPositionY,
+				actualWidth, actualHeight, spriteWidth*3, spriteHeight, spriteWidth, spriteHeight));
 		}
 	}
+
+	newGO->AddComponent(new JumpingObserver(newGO->GetComponent<UggWrongway>(), newGO->GetComponent<dae::GraphicsComponent>(),
+		g_CubesActualWidth, g_CubesActualHeight));
+	newGO->GetComponent<JumpingObserver>()->Initialize();
 
 	return newGO;
 }

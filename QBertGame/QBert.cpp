@@ -5,12 +5,12 @@
 
 
 QBert::QBert(const std::shared_ptr<dae::GameObject>& gameObject, const std::shared_ptr<dae::GameObject>& cursesGameObject,
-	int nrRows, float cubesWidth, float cubesHeight, float qBertSpriteWidth, float qBertSpriteHeight)
+	int nrRows, float qBertSpriteWidth, float qBertSpriteHeight)
 	: m_GameObject(gameObject)
 	, m_CursesGameObject(cursesGameObject)
 	, m_LastRow(nrRows)
-	, m_CubesWidth(cubesWidth)
-	, m_CubesHeight(cubesHeight)
+	//, m_CubesWidth(cubesWidth)
+	//, m_CubesHeight(cubesHeight)
 	, m_QBertSpriteWidth(qBertSpriteWidth)
 	, m_QBertSpriteHeight(qBertSpriteHeight)
 	, m_QBertInitialPosX()
@@ -80,7 +80,7 @@ void QBert::SetCursesHidden(bool isHidden) const
 
 bool QBert::MoveUpRight()
 {
-	if (m_Frozen == false)
+	if (m_Frozen == false && m_Airborne == false)
 	{
 		// If QBert isn't in the end of any of the pyramid rows
 		if (m_CurrentCubeIdx != m_CurrentRow * (m_CurrentRow + 1) / 2)
@@ -100,7 +100,7 @@ bool QBert::MoveUpRight()
 
 bool QBert::MoveUpLeft()
 {
-	if (m_Frozen == false)
+	if (m_Frozen == false && m_Airborne == false)
 	{
 		// If QBert isn't in the beginning of any of the pyramid rows
 		if (m_CurrentCubeIdx != m_CurrentRow * (m_CurrentRow + 1) / 2 - m_CurrentRow + 1 && m_CurrentCubeIdx != 1)
@@ -120,7 +120,7 @@ bool QBert::MoveUpLeft()
 
 bool QBert::MoveDownLeft()
 {
-	if (m_Frozen == false)
+	if (m_Frozen == false && m_Airborne == false)
 	{
 		// If QBert isn't in the last pyramid row
 		if (m_CurrentRow != m_LastRow)
@@ -140,7 +140,7 @@ bool QBert::MoveDownLeft()
 
 bool QBert::MoveDownRight()
 {
-	if (m_Frozen == false)
+	if (m_Frozen == false && m_Airborne == false)
 	{
 		// If QBert isn't in the last pyramid row
 		if (m_CurrentRow != m_LastRow)

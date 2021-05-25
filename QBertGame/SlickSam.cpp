@@ -36,7 +36,7 @@ void SlickSam::Die() const
 
 bool SlickSam::MoveDownLeft()
 {
-	if (m_Frozen == false)
+	if (m_Frozen == false && m_Airborne == false)
 	{
 		// If Slick/Sam isn't in the last pyramid row
 		if (m_CurrentRow != m_LastRow)
@@ -44,14 +44,14 @@ bool SlickSam::MoveDownLeft()
 			m_CurrentCubeIdx = m_CurrentCubeIdx + m_CurrentRow;
 			m_CurrentRow++;
 			auto* graphics = m_GameObject->GetComponent<dae::GraphicsComponent>();
-			graphics->SetPosition(graphics->GetPosX() - m_CubesWidth / 2.f, graphics->GetPosY() + m_CubesHeight * 0.75f);
 
 			if (m_IsSlick)
 				graphics->SetSrcRectangle(0, 0, m_SpriteWidth, m_SpriteHeight);
 			else
 				graphics->SetSrcRectangle(0, m_SpriteHeight, m_SpriteWidth, m_SpriteHeight);
 
-			m_Subject->Notify(dae::Event::SlickSamLanded);
+			m_Airborne = true;
+			m_Subject->Notify(dae::Event::JumpDownLeft);
 			return true;
 		}
 		else
@@ -75,14 +75,14 @@ bool SlickSam::MoveDownRight()
 			m_CurrentCubeIdx = m_CurrentCubeIdx + m_CurrentRow + 1;
 			m_CurrentRow++;
 			auto* graphics = m_GameObject->GetComponent<dae::GraphicsComponent>();
-			graphics->SetPosition(graphics->GetPosX() + m_CubesWidth / 2.f, graphics->GetPosY() + m_CubesHeight * 0.75f);
 
 			if (m_IsSlick)
 				graphics->SetSrcRectangle(m_SpriteWidth, 0, m_SpriteWidth, m_SpriteHeight);
 			else
 				graphics->SetSrcRectangle(m_SpriteWidth, m_SpriteHeight, m_SpriteWidth, m_SpriteHeight);
 
-			m_Subject->Notify(dae::Event::SlickSamLanded);
+			m_Airborne = true;
+			m_Subject->Notify(dae::Event::JumpDownRight);
 			return true;
 		}
 		else
@@ -94,6 +94,12 @@ bool SlickSam::MoveDownRight()
 		}
 	}
 	return false;
+}
+
+void SlickSam::JumpFinished()
+{
+	m_Airborne = false;
+	m_Subject->Notify(dae::Event::SlickSamLanded);
 }
 
 void SlickSam::Update(const float deltaTime)

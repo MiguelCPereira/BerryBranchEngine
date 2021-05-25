@@ -12,6 +12,7 @@ public:
 	bool GetIsAlive() const { return m_Alive; }
 	bool GetStartedLeft() const { return m_StartingLeft; }
 	int GetCurrentRow() const { return m_CurrentRow; }
+	bool GetAirborne() const { return m_Airborne; }
 
 	void SetFrozen(bool frozen);
 	void Die() const;
@@ -23,11 +24,13 @@ public:
 	bool MoveUpRight();
 	bool MoveLeft();
 	bool MoveRight();
+	void JumpFinished();
 
 	void Update(const float deltaTime) override;
 
 private:
 	std::shared_ptr<dae::GameObject> m_GameObject{};
+	bool m_Airborne{ false };
 	bool m_Frozen{ false };
 	int m_CurrentCubeIdx;
 	int m_CurrentRow;

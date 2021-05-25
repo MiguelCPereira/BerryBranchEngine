@@ -11,7 +11,7 @@ class QBert final : public dae::BaseComponent
 {
 public:
 	explicit QBert(const std::shared_ptr<dae::GameObject>& gameObject, const std::shared_ptr<dae::GameObject>& cursesGameObject,
-		int nrRows, float cubesWidth, float cubesHeight, float qBertSpriteWidth, float qBertSpriteHeight);
+		int nrRows, float qBertSpriteWidth, float qBertSpriteHeight);
 
 	int GetCurrentLives() const { return m_Lives; }
 	int GetPositionIndex() const { return m_CurrentCubeIdx; }
@@ -42,7 +42,7 @@ private:
 	int m_CurrentCubeIdx{ 1 };
 	int m_CurrentRow{ 1 };
 	int m_LastRow;
-	float m_CubesWidth, m_CubesHeight;
+	//float m_CubesWidth, m_CubesHeight;
 	float m_QBertSpriteWidth, m_QBertSpriteHeight;
 	float m_QBertInitialPosX, m_QBertInitialPosY;
 	float m_PosXBeforeHidden, m_PosYBeforeHidden;

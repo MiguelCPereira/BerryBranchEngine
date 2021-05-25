@@ -110,10 +110,8 @@ void LoadLevel01()
 		scene2.Add(cube);
 
 	// Transfer QBert
-	// (we don't add the JumpingObserverGO again, because it's already
-	// taking effect on the qBert component from the first transfer)
-	for(size_t i = 0; i < g_QBertGOs.size() - 1; i++)
-		scene2.Add(g_QBertGOs[i]);
+	for (auto gameObject : g_QBertGOs)
+		scene2.Add(gameObject);
 
 	// Level Section Observer
 	sectionObserverGO = std::make_shared<dae::GameObject>();
@@ -140,10 +138,8 @@ void LoadLevel01()
 		scene3.Add(cube);
 
 	// Transfer QBert
-	// (we don't add the JumpingObserverGO again, because it's already
-	// taking effect on the qBert component from the first transfer)
-	for (size_t i = 0; i < g_QBertGOs.size() - 1; i++)
-		scene3.Add(g_QBertGOs[i]);
+	for (auto gameObject : g_QBertGOs)
+		scene3.Add(gameObject);
 
 	// Level Section Observer
 	sectionObserverGO = std::make_shared<dae::GameObject>();
@@ -170,10 +166,8 @@ void LoadLevel01()
 		scene4.Add(cube);
 
 	// Transfer QBert
-	// (we don't add the JumpingObserverGO again, because it's already
-	// taking effect on the qBert component from the first transfer)
-	for (size_t i = 0; i < g_QBertGOs.size() - 1; i++)
-		scene4.Add(g_QBertGOs[i]);
+	for (auto gameObject : g_QBertGOs)
+		scene4.Add(gameObject);
 
 	// Level Section Observer
 	sectionObserverGO = std::make_shared<dae::GameObject>();
@@ -210,10 +204,8 @@ void LoadLevel02()
 		scene1.Add(cube);
 
 	// Transfer QBert
-	// (we don't add the JumpingObserverGO again, because it's already
-	// taking effect on the qBert component from the first transfer)
-	for (size_t i = 0; i < g_QBertGOs.size() - 1; i++)
-		scene1.Add(g_QBertGOs[i]);
+	for (auto gameObject : g_QBertGOs)
+		scene1.Add(gameObject);
 
 	// Level Section Observer
 	auto sectionObserverGO = std::make_shared<dae::GameObject>();
@@ -240,10 +232,8 @@ void LoadLevel02()
 		scene2.Add(cube);
 
 	// Transfer QBert
-	// (we don't add the JumpingObserverGO again, because it's already
-	// taking effect on the qBert component from the first transfer)
-	for (size_t i = 0; i < g_QBertGOs.size() - 1; i++)
-		scene2.Add(g_QBertGOs[i]);
+	for (auto gameObject : g_QBertGOs)
+		scene2.Add(gameObject);
 
 	// Level Section Observer
 	sectionObserverGO = std::make_shared<dae::GameObject>();
@@ -270,10 +260,8 @@ void LoadLevel02()
 		scene3.Add(cube);
 
 	// Transfer QBert
-	// (we don't add the JumpingObserverGO again, because it's already
-	// taking effect on the qBert component from the first transfer)
-	for (size_t i = 0; i < g_QBertGOs.size() - 1; i++)
-		scene3.Add(g_QBertGOs[i]);
+	for (auto gameObject : g_QBertGOs)
+		scene3.Add(gameObject);
 
 	// Level Section Observer
 	sectionObserverGO = std::make_shared<dae::GameObject>();
@@ -300,10 +288,8 @@ void LoadLevel02()
 		scene4.Add(cube);
 
 	// Transfer QBert
-	// (we don't add the JumpingObserverGO again, because it's already
-	// taking effect on the qBert component from the first transfer)
-	for (size_t i = 0; i < g_QBertGOs.size() - 1; i++)
-		scene4.Add(g_QBertGOs[i]);
+	for (auto gameObject : g_QBertGOs)
+		scene4.Add(gameObject);
 
 	// Level Section Observer
 	sectionObserverGO = std::make_shared<dae::GameObject>();
@@ -340,10 +326,8 @@ void LoadLevel03()
 		scene1.Add(cube);
 
 	// Transfer QBert
-	// (we don't add the JumpingObserverGO again, because it's already
-	// taking effect on the qBert component from the first transfer)
-	for (size_t i = 0; i < g_QBertGOs.size() - 1; i++)
-		scene1.Add(g_QBertGOs[i]);
+	for (auto gameObject : g_QBertGOs)
+		scene1.Add(gameObject);
 
 	// Level Section Observer
 	auto sectionObserverGO = std::make_shared<dae::GameObject>();
@@ -370,10 +354,8 @@ void LoadLevel03()
 		scene2.Add(cube);
 
 	// Transfer QBert
-	// (we don't add the JumpingObserverGO again, because it's already
-	// taking effect on the qBert component from the first transfer)
-	for (size_t i = 0; i < g_QBertGOs.size() - 1; i++)
-		scene2.Add(g_QBertGOs[i]);
+	for (auto gameObject : g_QBertGOs)
+		scene2.Add(gameObject);
 
 	// Level Section Observer
 	sectionObserverGO = std::make_shared<dae::GameObject>();
@@ -400,10 +382,8 @@ void LoadLevel03()
 		scene3.Add(cube);
 
 	// Transfer QBert
-	// (we don't add the JumpingObserverGO again, because it's already
-	// taking effect on the qBert component from the first transfer)
-	for (size_t i = 0; i < g_QBertGOs.size() - 1; i++)
-		scene3.Add(g_QBertGOs[i]);
+	for (auto gameObject : g_QBertGOs)
+		scene3.Add(gameObject);
 
 	// Level Section Observer
 	sectionObserverGO = std::make_shared<dae::GameObject>();
@@ -430,10 +410,8 @@ void LoadLevel03()
 		scene4.Add(cube);
 
 	// Transfer QBert
-	// (we don't add the JumpingObserverGO again, because it's already
-	// taking effect on the qBert component from the first transfer)
-	for (size_t i = 0; i < g_QBertGOs.size() - 1; i++)
-		scene4.Add(g_QBertGOs[i]);
+	for (auto gameObject : g_QBertGOs)
+		scene4.Add(gameObject);
 
 	// Level Section Observer
 	sectionObserverGO = std::make_shared<dae::GameObject>();

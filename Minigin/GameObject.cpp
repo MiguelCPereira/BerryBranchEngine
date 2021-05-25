@@ -64,10 +64,14 @@ void dae::GameObject::AddComponent(BaseComponent* newComponent)
 
 void dae::GameObject::RemoveAllComponents()
 {
-	for(auto component : m_Components)
+	// Remove all components from the end to last to the first idx,
+	// As to not delete an observed component before their observer
+	
+	auto nrComponents = int(m_Components.size());
+	for (auto i = nrComponents - 1; i >= 0; i--)
 	{
+		auto* component = m_Components[i];
 		delete component;
-		component = nullptr;
 	}
 
 	//m_Components.clear();

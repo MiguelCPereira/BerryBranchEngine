@@ -32,7 +32,7 @@ void UggWrongway::Die() const
 
 bool UggWrongway::MoveUpLeft()
 {
-	if (m_Frozen == false)
+	if (m_Frozen == false && m_Airborne == false)
 	{
 		// If Ugg/Wrongway isn't in the beginning of any of the pyramid rows
 		if (m_CurrentCubeIdx != m_CurrentRow * (m_CurrentRow + 1) / 2 - m_CurrentRow + 1 && m_CurrentCubeIdx != 1)
@@ -40,14 +40,14 @@ bool UggWrongway::MoveUpLeft()
 			m_CurrentCubeIdx = m_CurrentCubeIdx - m_CurrentRow;
 			m_CurrentRow--;
 			auto* graphics = m_GameObject->GetComponent<dae::GraphicsComponent>();
-			graphics->SetPosition(graphics->GetPosX() - m_CubesWidth / 2.f, graphics->GetPosY() - m_CubesHeight * 0.75f);
 
 			if (m_IsUgg)
 				graphics->SetSrcRectangle(m_SpriteWidth * 3, 0, m_SpriteWidth, m_SpriteHeight);
 			else
 				graphics->SetSrcRectangle(m_SpriteWidth * 3, m_SpriteHeight, m_SpriteWidth, m_SpriteHeight);
 
-			m_Subject->Notify(dae::Event::UggWrongwayLanded);
+			m_Airborne = true;
+			m_Subject->Notify(dae::Event::JumpUpLeft);
 			return true;
 		}
 		else
@@ -63,7 +63,7 @@ bool UggWrongway::MoveUpLeft()
 
 bool UggWrongway::MoveUpRight()
 {
-	if (m_Frozen == false)
+	if (m_Frozen == false && m_Airborne == false)
 	{
 		// If Ugg/Wrongway isn't in the end of any of the pyramid rows
 		if (m_CurrentCubeIdx != m_CurrentRow * (m_CurrentRow + 1) / 2)
@@ -71,14 +71,14 @@ bool UggWrongway::MoveUpRight()
 			m_CurrentCubeIdx = m_CurrentCubeIdx - m_CurrentRow + 1;
 			m_CurrentRow--;
 			auto* graphics = m_GameObject->GetComponent<dae::GraphicsComponent>();
-			graphics->SetPosition(graphics->GetPosX() + m_CubesWidth / 2.f, graphics->GetPosY() - m_CubesHeight * 0.75f);
 
 			if (m_IsUgg)
 				graphics->SetSrcRectangle(m_SpriteWidth, 0, m_SpriteWidth, m_SpriteHeight);
 			else
 				graphics->SetSrcRectangle(m_SpriteWidth, m_SpriteHeight, m_SpriteWidth, m_SpriteHeight);
 
-			m_Subject->Notify(dae::Event::UggWrongwayLanded);
+			m_Airborne = true;
+			m_Subject->Notify(dae::Event::JumpUpRight);
 			return true;
 		}
 		else
@@ -94,21 +94,21 @@ bool UggWrongway::MoveUpRight()
 
 bool UggWrongway::MoveLeft()
 {
-	if (m_Frozen == false)
+	if (m_Frozen == false && m_Airborne == false)
 	{
 		// If Ugg/Wrongway isn't in the beginning of any of the pyramid rows
 		if (m_CurrentCubeIdx != m_CurrentRow * (m_CurrentRow + 1) / 2 - m_CurrentRow + 1 && m_CurrentCubeIdx != 1)
 		{
 			m_CurrentCubeIdx = m_CurrentCubeIdx - 1;
 			auto* graphics = m_GameObject->GetComponent<dae::GraphicsComponent>();
-			graphics->SetPosition(graphics->GetPosX() - m_CubesWidth, graphics->GetPosY());
 
 			if (m_IsUgg)
 				graphics->SetSrcRectangle(m_SpriteWidth * 2, 0, m_SpriteWidth, m_SpriteHeight);
 			else
 				graphics->SetSrcRectangle(m_SpriteWidth * 2, m_SpriteHeight, m_SpriteWidth, m_SpriteHeight);
 
-			m_Subject->Notify(dae::Event::UggWrongwayLanded);
+			m_Airborne = true;
+			m_Subject->Notify(dae::Event::JumpLeft);
 			return true;
 		}
 		else
@@ -124,21 +124,21 @@ bool UggWrongway::MoveLeft()
 
 bool UggWrongway::MoveRight()
 {
-	if (m_Frozen == false)
+	if (m_Frozen == false && m_Airborne == false)
 	{
 		// If Ugg/Wrongway isn't in the end of any of the pyramid rows
 		if (m_CurrentCubeIdx != m_CurrentRow * (m_CurrentRow + 1) / 2)
 		{
 			m_CurrentCubeIdx = m_CurrentCubeIdx + 1;
 			auto* graphics = m_GameObject->GetComponent<dae::GraphicsComponent>();
-			graphics->SetPosition(graphics->GetPosX() + m_CubesWidth, graphics->GetPosY());
 
 			if (m_IsUgg)
 				graphics->SetSrcRectangle(0, 0, m_SpriteWidth, m_SpriteHeight);
 			else
 				graphics->SetSrcRectangle(0, m_SpriteHeight, m_SpriteWidth, m_SpriteHeight);
 
-			m_Subject->Notify(dae::Event::UggWrongwayLanded);
+			m_Airborne = true;
+			m_Subject->Notify(dae::Event::JumpRight);
 			return true;
 		}
 		else
@@ -150,6 +150,12 @@ bool UggWrongway::MoveRight()
 		}
 	}
 	return false;
+}
+
+void UggWrongway::JumpFinished()
+{
+	m_Airborne = false;
+	m_Subject->Notify(dae::Event::UggWrongwayLanded);
 }
 
 void UggWrongway::Update(const float deltaTime)
