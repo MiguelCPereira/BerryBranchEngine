@@ -54,7 +54,8 @@ bool UggWrongway::MoveUpLeft()
 		{
 			// Make them jump out of the map
 			m_Alive = false;
-			m_Subject->Notify(dae::Event::UggWrongwayFell);
+			m_Airborne = true;
+			m_Subject->Notify(dae::Event::JumpUpLeft);
 			return false;
 		}
 	}
@@ -85,7 +86,8 @@ bool UggWrongway::MoveUpRight()
 		{
 			// Make them jump out of the map
 			m_Alive = false;
-			m_Subject->Notify(dae::Event::UggWrongwayFell);
+			m_Airborne = true;
+			m_Subject->Notify(dae::Event::JumpUpRight);
 			return false;
 		}
 	}
@@ -115,7 +117,8 @@ bool UggWrongway::MoveLeft()
 		{
 			// Make them jump out of the map
 			m_Alive = false;
-			m_Subject->Notify(dae::Event::UggWrongwayFell);
+			m_Airborne = true;
+			m_Subject->Notify(dae::Event::JumpLeft);
 			return false;
 		}
 	}
@@ -145,7 +148,8 @@ bool UggWrongway::MoveRight()
 		{
 			// Make them jump out of the map
 			m_Alive = false;
-			m_Subject->Notify(dae::Event::UggWrongwayFell);
+			m_Airborne = true;
+			m_Subject->Notify(dae::Event::JumpRight);
 			return false;
 		}
 	}
@@ -155,7 +159,12 @@ bool UggWrongway::MoveRight()
 void UggWrongway::JumpFinished()
 {
 	m_Airborne = false;
-	m_Subject->Notify(dae::Event::UggWrongwayLanded);
+	
+	if (m_Alive)
+		m_Subject->Notify(dae::Event::UggWrongwayLanded);
+
+	else
+		m_Subject->Notify(dae::Event::UggWrongwayFell);
 }
 
 void UggWrongway::Update(const float deltaTime)

@@ -58,7 +58,8 @@ bool SlickSam::MoveDownLeft()
 		{
 			// Make them jump out of the map
 			m_Alive = false;
-			m_Subject->Notify(dae::Event::SlickSamFell);
+			m_Airborne = true;
+			m_Subject->Notify(dae::Event::JumpDownLeft);
 			return false;
 		}
 	}
@@ -89,7 +90,8 @@ bool SlickSam::MoveDownRight()
 		{
 			// Make them jump out of the map
 			m_Alive = false;
-			m_Subject->Notify(dae::Event::SlickSamFell);
+			m_Airborne = true;
+			m_Subject->Notify(dae::Event::JumpDownRight);
 			return false;
 		}
 	}
@@ -99,7 +101,11 @@ bool SlickSam::MoveDownRight()
 void SlickSam::JumpFinished()
 {
 	m_Airborne = false;
-	m_Subject->Notify(dae::Event::SlickSamLanded);
+	
+	if (m_Alive)
+		m_Subject->Notify(dae::Event::SlickSamLanded);
+	else
+		m_Subject->Notify(dae::Event::SlickSamFell);
 }
 
 void SlickSam::Update(const float deltaTime)

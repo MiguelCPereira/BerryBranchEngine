@@ -147,6 +147,7 @@ std::shared_ptr<dae::GameObject> MakeUggWrongway(bool isUgg, bool isLeft, float 
 	return newGO;
 }
 
+
 std::shared_ptr<dae::GameObject> MakeLevelTitle(int lvlNr)
 {
 	const auto width = 500.f;

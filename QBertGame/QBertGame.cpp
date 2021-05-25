@@ -4,7 +4,7 @@
 #include<string>
 #include <cstdlib>
 #include <ctime>
-#include <SDL.h>
+#define SDL_MAIN_HANDLED
 #include "Pyramid.h"
 #include "Factory.h"
 #include "Scene.h"
@@ -462,6 +462,30 @@ void SetUpGlobalGOs()
 	moveRightKeyboard->SetButtonPressType(dae::ButtonPress::PressedDown);
 	dae::InputManager::GetInstance().AddCommand(SDLK_d, std::move(moveRightKeyboard));
 
+	auto moveUpController = std::make_unique<QBertMoveUpCommand>();
+	moveUpController->SetActor(g_QBertGOs[0]);
+	moveUpController->SetButtonPressType(dae::ButtonPress::PressedDown);
+	std::pair<unsigned, dae::ControllerButton> controllerKey(0, dae::ControllerButton::DPadUp);
+	dae::InputManager::GetInstance().AddCommand(controllerKey, std::move(moveUpController));
+
+	auto moveDownController = std::make_unique<QBertMoveDownCommand>();
+	moveDownController->SetActor(g_QBertGOs[0]);
+	moveDownController->SetButtonPressType(dae::ButtonPress::PressedDown);
+	controllerKey.second = dae::ControllerButton::DPadDown;
+	dae::InputManager::GetInstance().AddCommand(controllerKey, std::move(moveDownController));
+
+	auto moveLeftController = std::make_unique<QBertMoveLeftCommand>();
+	moveLeftController->SetActor(g_QBertGOs[0]);
+	moveLeftController->SetButtonPressType(dae::ButtonPress::PressedDown);
+	controllerKey.second = dae::ControllerButton::DPadLeft;
+	dae::InputManager::GetInstance().AddCommand(controllerKey, std::move(moveLeftController));
+
+	auto moveRightController = std::make_unique<QBertMoveRightCommand>();
+	moveRightController->SetActor(g_QBertGOs[0]);
+	moveRightController->SetButtonPressType(dae::ButtonPress::PressedDown);
+	controllerKey.second = dae::ControllerButton::DPadRight;
+	dae::InputManager::GetInstance().AddCommand(controllerKey, std::move(moveRightController));
+
 
 	// Game Observer
 	//auto gameObjectGO = std::make_shared<dae::GameObject>();
@@ -472,8 +496,8 @@ void PrintInstructions()
 {
 	std::cout << "Controls:\n";
 	std::cout << "\n";
-	std::cout << "   W   | Move Up/Right\n";
-	std::cout << "   A   | Move Up/Left\n";
-	std::cout << "   S   | Move Down/Left\n";
-	std::cout << "   D   | Move Down/Right\n\n";
+	std::cout << "   W or DPad Up     | Move Up/Right\n";
+	std::cout << "   A or DPad Left   | Move Up/Left\n";
+	std::cout << "   S or DPad Down   | Move Down/Left\n";
+	std::cout << "   D or DPad Right  | Move Down/Right\n\n";
 }
