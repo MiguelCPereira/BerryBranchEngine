@@ -16,12 +16,20 @@ public:
 	int GetCurrentLives() const { return m_Lives; }
 	int GetPositionIndex() const { return m_CurrentCubeIdx; }
 	bool GetAirborne() const { return m_Airborne; }
+	int GetMaxLives() const { return m_MaxLives; }
+	int GetScore() const { return m_Score; }
 		
 	void Die();
 	void ResetPosition();
 	void SetFrozen(bool frozen);
 	void SetHideGraphics(bool isHidden);
 	void SetCursesHidden(bool isHidden) const;
+
+	void ScoreIncrease(int gainedPoints);
+	void SetLevel(int actualLevel);
+	void SetRound(int actualRound);
+	int GetLevel() const { return m_Level; };
+	int GetRound() const { return m_Round; };
 
 	bool MoveUpRight();
 	bool MoveUpLeft();
@@ -33,8 +41,9 @@ public:
 	void Update(const float deltaTime) override;
 
 private:
+	const int m_MaxLives{ 3 };
 	int m_Lives{ 3 };
-	int m_HP{ 100 };
+	int m_Score{ 0 };
 	bool m_Airborne{ false };
 	bool m_Frozen{ true };
 	std::shared_ptr<dae::GameObject> m_GameObject{};
@@ -42,10 +51,11 @@ private:
 	int m_CurrentCubeIdx{ 1 };
 	int m_CurrentRow{ 1 };
 	int m_LastRow;
-	//float m_CubesWidth, m_CubesHeight;
 	float m_QBertSpriteWidth, m_QBertSpriteHeight;
 	float m_QBertInitialPosX, m_QBertInitialPosY;
 	float m_PosXBeforeHidden, m_PosYBeforeHidden;
+	int m_Level{ 0 };
+	int m_Round{ 1 };
 };
 
 

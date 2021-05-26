@@ -1,10 +1,10 @@
 // Project includes
+#define SDL_MAIN_HANDLED
 #include <Minigin.h>
 #include <memory>
 #include<string>
 #include <cstdlib>
 #include <ctime>
-#define SDL_MAIN_HANDLED
 #include "Pyramid.h"
 #include "Factory.h"
 #include "Scene.h"
@@ -62,7 +62,7 @@ void LoadLevel01()
 
 	// Add All Needed Game Objects
 	levelTitleScene.Add(MakeLevelTitle(1));
-	levelTitleScene.Add(MakeLevelTransition());
+	levelTitleScene.Add(MakeLevelTransition(g_QBertGOs[0]->GetComponent<QBert>()));
 
 	// Initialize Scene
 	levelTitleScene.Initialize();
@@ -83,12 +83,15 @@ void LoadLevel01()
 	// Transfer QBert
 	for(auto gameObject : g_QBertGOs)
 		scene1.Add(gameObject);
+
+	// Make Level/Round Display
+	scene1.Add(MakeRoundLevelDisplayGO(g_QBertGOs[0]->GetComponent<QBert>(), false));
 	
 	// Level Section Observer
 	auto sectionObserverGO = std::make_shared<dae::GameObject>();
 	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0]->GetComponent<QBert>(),
 		pyramid, 1, false, false));
-
+	
 	scene1.Add(sectionObserverGO);
 
 	// FPS Counter
@@ -112,6 +115,9 @@ void LoadLevel01()
 	// Transfer QBert
 	for (auto gameObject : g_QBertGOs)
 		scene2.Add(gameObject);
+
+	// Make Level/Round Display
+	scene2.Add(MakeRoundLevelDisplayGO(g_QBertGOs[0]->GetComponent<QBert>(), false));
 
 	// Level Section Observer
 	sectionObserverGO = std::make_shared<dae::GameObject>();
@@ -141,6 +147,9 @@ void LoadLevel01()
 	for (auto gameObject : g_QBertGOs)
 		scene3.Add(gameObject);
 
+	// Make Level/Round Display
+	scene3.Add(MakeRoundLevelDisplayGO(g_QBertGOs[0]->GetComponent<QBert>(), false));
+
 	// Level Section Observer
 	sectionObserverGO = std::make_shared<dae::GameObject>();
 	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0]->GetComponent<QBert>(),
@@ -149,7 +158,6 @@ void LoadLevel01()
 
 	// FPS Counter
 	scene3.Add(MakeFPSCounter());
-
 
 	//////////////////////////
 
@@ -168,6 +176,9 @@ void LoadLevel01()
 	// Transfer QBert
 	for (auto gameObject : g_QBertGOs)
 		scene4.Add(gameObject);
+
+	// Make Level/Round Display
+	scene4.Add(MakeRoundLevelDisplayGO(g_QBertGOs[0]->GetComponent<QBert>(), false));
 
 	// Level Section Observer
 	sectionObserverGO = std::make_shared<dae::GameObject>();
@@ -188,7 +199,7 @@ void LoadLevel02()
 
 	// Add All Needed Game Objects
 	levelTitleScene.Add(MakeLevelTitle(2));
-	levelTitleScene.Add(MakeLevelTransition());
+	levelTitleScene.Add(MakeLevelTransition(g_QBertGOs[0]->GetComponent<QBert>()));
 
 
 
@@ -206,6 +217,9 @@ void LoadLevel02()
 	// Transfer QBert
 	for (auto gameObject : g_QBertGOs)
 		scene1.Add(gameObject);
+
+	// Make Level/Round Display
+	scene1.Add(MakeRoundLevelDisplayGO(g_QBertGOs[0]->GetComponent<QBert>(), false));
 
 	// Level Section Observer
 	auto sectionObserverGO = std::make_shared<dae::GameObject>();
@@ -235,6 +249,9 @@ void LoadLevel02()
 	for (auto gameObject : g_QBertGOs)
 		scene2.Add(gameObject);
 
+	// Make Level/Round Display
+	scene2.Add(MakeRoundLevelDisplayGO(g_QBertGOs[0]->GetComponent<QBert>(), false));
+
 	// Level Section Observer
 	sectionObserverGO = std::make_shared<dae::GameObject>();
 	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0]->GetComponent<QBert>(),
@@ -262,6 +279,9 @@ void LoadLevel02()
 	// Transfer QBert
 	for (auto gameObject : g_QBertGOs)
 		scene3.Add(gameObject);
+
+	// Make Level/Round Display
+	scene3.Add(MakeRoundLevelDisplayGO(g_QBertGOs[0]->GetComponent<QBert>(), false));
 
 	// Level Section Observer
 	sectionObserverGO = std::make_shared<dae::GameObject>();
@@ -291,6 +311,9 @@ void LoadLevel02()
 	for (auto gameObject : g_QBertGOs)
 		scene4.Add(gameObject);
 
+	// Make Level/Round Display
+	scene4.Add(MakeRoundLevelDisplayGO(g_QBertGOs[0]->GetComponent<QBert>(), false));
+
 	// Level Section Observer
 	sectionObserverGO = std::make_shared<dae::GameObject>();
 	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0]->GetComponent<QBert>(),
@@ -310,7 +333,7 @@ void LoadLevel03()
 
 	// Add All Needed Game Objects
 	levelTitleScene.Add(MakeLevelTitle(3));
-	levelTitleScene.Add(MakeLevelTransition());
+	levelTitleScene.Add(MakeLevelTransition(g_QBertGOs[0]->GetComponent<QBert>()));
 
 
 
@@ -328,6 +351,9 @@ void LoadLevel03()
 	// Transfer QBert
 	for (auto gameObject : g_QBertGOs)
 		scene1.Add(gameObject);
+
+	// Make Level/Round Display
+	scene1.Add(MakeRoundLevelDisplayGO(g_QBertGOs[0]->GetComponent<QBert>(), false));
 
 	// Level Section Observer
 	auto sectionObserverGO = std::make_shared<dae::GameObject>();
@@ -357,6 +383,9 @@ void LoadLevel03()
 	for (auto gameObject : g_QBertGOs)
 		scene2.Add(gameObject);
 
+	// Make Level/Round Display
+	scene2.Add(MakeRoundLevelDisplayGO(g_QBertGOs[0]->GetComponent<QBert>(), false));
+
 	// Level Section Observer
 	sectionObserverGO = std::make_shared<dae::GameObject>();
 	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0]->GetComponent<QBert>(),
@@ -385,6 +414,9 @@ void LoadLevel03()
 	for (auto gameObject : g_QBertGOs)
 		scene3.Add(gameObject);
 
+	// Make Level/Round Display
+	scene3.Add(MakeRoundLevelDisplayGO(g_QBertGOs[0]->GetComponent<QBert>(), false));
+
 	// Level Section Observer
 	sectionObserverGO = std::make_shared<dae::GameObject>();
 	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0]->GetComponent<QBert>(),
@@ -412,6 +444,9 @@ void LoadLevel03()
 	// Transfer QBert
 	for (auto gameObject : g_QBertGOs)
 		scene4.Add(gameObject);
+
+	// Make Level/Round Display
+	scene4.Add(MakeRoundLevelDisplayGO(g_QBertGOs[0]->GetComponent<QBert>(), false));
 
 	// Level Section Observer
 	sectionObserverGO = std::make_shared<dae::GameObject>();

@@ -60,6 +60,15 @@
     <ClCompile Include="JumpingObserver.cpp">
       <Filter>Components\Observers</Filter>
     </ClCompile>
+    <ClCompile Include="LivesDisplay.cpp">
+      <Filter>Components\Observers</Filter>
+    </ClCompile>
+    <ClCompile Include="ScoreDisplay.cpp">
+      <Filter>Components\Observers</Filter>
+    </ClCompile>
+    <ClCompile Include="RoundLvlDisplay.cpp">
+      <Filter>Components\Observers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Pyramid.h">
@@ -93,6 +102,15 @@
       <Filter>Components</Filter>
     </ClInclude>
     <ClInclude Include="JumpingObserver.h">
+      <Filter>Components\Observers</Filter>
+    </ClInclude>
+    <ClInclude Include="LivesDisplay.h">
+      <Filter>Components\Observers</Filter>
+    </ClInclude>
+    <ClInclude Include="ScoreDisplay.h">
+      <Filter>Components\Observers</Filter>
+    </ClInclude>
+    <ClInclude Include="RoundLvlDisplay.h">
       <Filter>Components\Observers</Filter>
     </ClInclude>
   </ItemGroup>

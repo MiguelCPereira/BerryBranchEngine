@@ -9,6 +9,8 @@ const int g_EnemiesLeftSpawnPosX = 284;
 const float g_EnemiesRightSpawnPosX = 349;
 const float g_EnemiesSpawnPosY = 110;
 
+class QBert;
+
 namespace dae
 {
 	class GameObject;
@@ -24,7 +26,16 @@ std::shared_ptr<dae::GameObject> MakeLevelTitle(int lvlNr);
 
 std::shared_ptr<dae::GameObject> MakeVictoryTitle();
 
-std::shared_ptr<dae::GameObject> MakeLevelTransition();
+std::shared_ptr<dae::GameObject> MakeLevelTransition(QBert* qBertComp);
 
 std::shared_ptr<dae::GameObject> MakeFPSCounter();
 
+std::shared_ptr<dae::GameObject> MakeHeartForDisplay(bool playerOne, float posY);
+
+std::shared_ptr<dae::GameObject> MakeScoreDisplay(bool playerOne);
+
+std::shared_ptr<dae::GameObject> MakeLevelDisplay(bool coOpOn); // This is used to make the actual RoundLevelDisplay
+
+std::shared_ptr<dae::GameObject> MakeRoundDisplay(bool coOpOn); // This is used to make the actual RoundLevelDisplay
+
+std::shared_ptr<dae::GameObject> MakeRoundLevelDisplayGO(QBert* qBertComp, bool coOpOn);

@@ -9,8 +9,6 @@ QBert::QBert(const std::shared_ptr<dae::GameObject>& gameObject, const std::shar
 	: m_GameObject(gameObject)
 	, m_CursesGameObject(cursesGameObject)
 	, m_LastRow(nrRows)
-	//, m_CubesWidth(cubesWidth)
-	//, m_CubesHeight(cubesHeight)
 	, m_QBertSpriteWidth(qBertSpriteWidth)
 	, m_QBertSpriteHeight(qBertSpriteHeight)
 	, m_QBertInitialPosX()
@@ -27,7 +25,7 @@ void QBert::Die()
 		m_Lives--;
 		std::cout << "Ouch! You now have " << m_Lives << " lives left\n";
 		// Play sound
-		m_Subject->Notify(dae::Event::ActorDeath);
+		m_Subject->Notify(dae::Event::QBertDied);
 	}
 	else
 	{
@@ -76,6 +74,24 @@ void QBert::SetCursesHidden(bool isHidden) const
 	}
 
 	m_CursesGameObject->GetComponent<dae::GraphicsComponent>()->SetPosition(posX, posY);
+}
+
+void QBert::ScoreIncrease(int gainedPoints)
+{
+	m_Score += gainedPoints;
+	m_Subject->Notify(dae::Event::ScoreIncreased);
+}
+
+void QBert::SetLevel(int actualLevel)
+{
+	m_Level = actualLevel;
+	m_Subject->Notify(dae::Event::LevelUpdated);
+}
+
+void QBert::SetRound(int actualRound)
+{
+	m_Round = actualRound;
+	m_Subject->Notify(dae::Event::RoundUpdated);
 }
 
 bool QBert::MoveUpRight()
@@ -164,7 +180,6 @@ void QBert::JumpFinished()
 	m_Subject->Notify(dae::Event::QBertLanded);
 }
 
-
 void QBert::Initialize()
 {
 	auto* graphics = m_GameObject->GetComponent<dae::GraphicsComponent>();
@@ -174,10 +189,5 @@ void QBert::Initialize()
 
 void QBert::Update(const float)
 {
-	//if (changedColor)
-	//	m_Subject->Notify(Event::ColorChange);
-
-	//if (bumpedIntoCoily)
-	//	Die();
 }
 

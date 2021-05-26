@@ -14,7 +14,7 @@ public:
 	Cube& operator=(const Cube& other) = delete;
 	Cube& operator=(Cube&& other) noexcept = delete;
 
-	void TurnCube();
+	bool TurnCube();
 	void SlickSamTurnCube();
 	bool GetIsTurned() const { return m_Turned; }
 

@@ -4,6 +4,12 @@
 #include "TextComponent.h"
 #include "GameObject.h"
 
+
+// This class isn't the one I use in the game for the score display
+// This is just here for the sake of the Engine Demo
+// (the assignments we did throughout the semester)
+
+
 dae::PointsDisplayComponent::PointsDisplayComponent(const std::shared_ptr<GameObject>& gameObject, QBertComponent* qBertComp)
 	: m_QBertComp(qBertComp),
 	m_GameObject(gameObject),

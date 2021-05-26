@@ -25,9 +25,13 @@ void Scene::Initialize()
 
 void Scene::Update(const float deltaTime)
 {
-	for(auto& object : m_Objects)
+	for(size_t i = 0; i < m_Objects.size(); i++)
 	{
-		object->Update(deltaTime);
+		if (m_Objects.size() > i)
+		{
+			if (m_Objects[i] != nullptr)
+				m_Objects[i]->Update(deltaTime);
+		}
 	}
 }
 
@@ -35,7 +39,8 @@ void Scene::Render() const
 {
 	for (const auto& object : m_Objects)
 	{
-		object->Render();
+		if (object != nullptr)
+			object->Render();
 	}
 }
 

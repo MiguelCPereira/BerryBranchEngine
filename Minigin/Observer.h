@@ -8,26 +8,32 @@ namespace dae
 	// Need to make this editable outside of the engine
 	enum class Event
 	{
+		// Only the engine demo uses these
 		ActorHPChange,
 		ActorDeath,
 		PointsIncrease,
-		TileChange,
-		ColorChange,
 		CoilyDeath,
 		SlickSamCaught,
-		
+		TileChange,
+		ColorChange,
+
+
+		// While these are only used in the game
+		ScoreIncreased,
+		QBertDied,
 		QBertLanded,
 		SlickSamLanded,
 		SlickSamFell,
 		UggWrongwayLanded,
 		UggWrongwayFell,
-
 		JumpUpRight,
 		JumpUpLeft,
 		JumpDownRight,
 		JumpDownLeft,
 		JumpLeft,
-		JumpRight
+		JumpRight,
+		LevelUpdated,
+		RoundUpdated
 	};
 
 	class Observer

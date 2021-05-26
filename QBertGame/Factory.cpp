@@ -2,14 +2,16 @@
 #include "GameObject.h"
 #include "GraphicsComponent.h"
 #include "LevelSectionObserver.h"
-#include "SceneManager.h"
 #include "SlickSam.h"
 #include "QBert.h"
 #include "UggWrongway.h"
 #include "ResourceManager.h"
 #include "FPSComponent.h"
 #include "JumpingObserver.h"
+#include "LivesDisplay.h"
+#include "RoundLvlDisplay.h"
 #include "TextComponent.h"
+#include "ScoreDisplay.h"
 
 std::vector<std::shared_ptr<dae::GameObject>> MakeQBert()
 {
@@ -32,10 +34,18 @@ std::vector<std::shared_ptr<dae::GameObject>> MakeQBert()
 		actualWidth, actualHeight, spriteWidth * 2, 0, spriteWidth, spriteHeight));
 	qBertGO->AddComponent(new JumpingObserver(qBertGO->GetComponent<QBert>(), qBertGO->GetComponent<dae::GraphicsComponent>(),
 		g_CubesActualWidth, g_CubesActualHeight));
+
+	auto livesDisplayGO = std::make_shared<dae::GameObject>();
+	livesDisplayGO->AddComponent(new LivesDisplay(qBertGO->GetComponent<QBert>()));
+
+	auto scoreDisplayGO = std::make_shared<dae::GameObject>();
+	scoreDisplayGO->AddComponent(new ScoreDisplay(qBertGO->GetComponent<QBert>()));
 	
 	std::vector< std::shared_ptr<dae::GameObject>> returnVector;
 	returnVector.push_back(std::move(qBertGO));
 	returnVector.push_back(std::move(cursesGO));
+	returnVector.push_back(std::move(livesDisplayGO));
+	returnVector.push_back(std::move(scoreDisplayGO));
 	
 	return returnVector;
 }
@@ -168,12 +178,12 @@ std::shared_ptr<dae::GameObject> MakeLevelTitle(int lvlNr)
 }
 
 
-std::shared_ptr<dae::GameObject> MakeLevelTransition()
+std::shared_ptr<dae::GameObject> MakeLevelTransition(QBert* qBertComp)
 {
 	const float transitionTime = 2.f;
 
 	auto sectionObserverGO = std::make_shared<dae::GameObject>();
-	sectionObserverGO->AddComponent(new LevelSectionObserver(transitionTime));
+	sectionObserverGO->AddComponent(new LevelSectionObserver(transitionTime, qBertComp));
 
 	return sectionObserverGO;
 }
@@ -202,4 +212,107 @@ std::shared_ptr<dae::GameObject> MakeFPSCounter()
 	fpsCounterGO->GetComponent<dae::TextComponent>()->SetPosition(10, 10);
 
 	return fpsCounterGO;
+}
+
+
+std::shared_ptr<dae::GameObject> MakeHeartForDisplay(bool playerOne, float posY)
+{
+	const auto width = 30;
+	const auto height = 28;
+	float posX;
+	
+	if (playerOne)
+		posX = 20.f;
+	else
+		posX = 590.f;
+
+	auto heartGO = std::make_shared<dae::GameObject>();
+	heartGO->AddComponent(new dae::GraphicsComponent("Heart.png", posX, posY, width, height));
+
+	return heartGO;
+}
+
+
+std::shared_ptr<dae::GameObject> MakeScoreDisplay(bool playerOne)
+{
+	const auto titleActualWidth = 195;
+	const auto titleActualHeight = 33;
+	const auto titleSpriteWidth = 65;
+	const auto titleSpriteHeight = 11;
+	const auto posYPlayerTitle = 20.f;
+	const auto posYScore = 80.f;
+	float posX;
+
+	if (playerOne)
+		posX = 20.f;
+	else
+		posX = 420.f;
+
+	auto scoreGO = std::make_shared<dae::GameObject>();
+	auto font = dae::ResourceManager::GetInstance().LoadFont("Minecraft.ttf", 23);
+	scoreGO->AddComponent(new dae::TextComponent("SCORE: FAIL", font, 237, 164, 69));
+	scoreGO->GetComponent<dae::TextComponent>()->SetPosition(posX, posYScore);
+	scoreGO->AddComponent(new dae::GraphicsComponent("Player Titles.png", posX, posYPlayerTitle, 
+		titleActualWidth, titleActualHeight, 0, 0, titleSpriteWidth, titleSpriteHeight));
+
+	return scoreGO;
+}
+
+
+std::shared_ptr<dae::GameObject> MakeLevelDisplay(bool coOpOn)
+{
+	float posY;
+	float posX;
+
+	if (coOpOn)
+	{
+		posX = 230.f;
+		posY = 445.f;
+	}
+	else
+	{
+		posX = 530.f;
+		posY = 80.f;
+	}
+
+	auto levelGO = std::make_shared<dae::GameObject>();
+	auto font = dae::ResourceManager::GetInstance().LoadFont("Minecraft.ttf", 19);
+	levelGO->AddComponent(new dae::TextComponent("LEVEL: 0", font, 237, 164, 69));
+	levelGO->GetComponent<dae::TextComponent>()->SetPosition(posX, posY);
+	
+
+	return levelGO;
+}
+
+
+std::shared_ptr<dae::GameObject> MakeRoundDisplay(bool coOpOn)
+{
+	float posY;
+	float posX;
+
+	if (coOpOn)
+	{
+		posX = 350.f;
+		posY = 445.f;
+	}
+	else
+	{
+		posX = 529.f;
+		posY = 120.f;
+	}
+
+	auto roundGO = std::make_shared<dae::GameObject>();
+	auto font = dae::ResourceManager::GetInstance().LoadFont("Minecraft.ttf", 19);
+	roundGO->AddComponent(new dae::TextComponent("ROUND: 0", font, 237, 164, 69));
+	roundGO->GetComponent<dae::TextComponent>()->SetPosition(posX, posY);
+
+	return roundGO;
+}
+
+
+std::shared_ptr<dae::GameObject> MakeRoundLevelDisplayGO(QBert* qBertComp, bool coOpOn)
+{
+	auto displayGO = std::make_shared<dae::GameObject>();
+	displayGO->AddComponent(new RoundLvlDisplay(qBertComp, coOpOn));
+	return displayGO;
 }

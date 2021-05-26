@@ -12,9 +12,9 @@
 #include "Factory.h"
 #include "UggWrongway.h"
 
-LevelSectionObserver::LevelSectionObserver(float transitionTime)
+LevelSectionObserver::LevelSectionObserver(float transitionTime, QBert* qBertComp)
 	: m_GameObject()
-	, m_QBertComp()
+	, m_QBertComp(qBertComp)
 	, m_Pyramid()
 
 	, m_SpawnSlickSams()
@@ -192,60 +192,70 @@ void LevelSectionObserver::AddUggWrongway(bool isUgg, bool isLeft)
 
 void LevelSectionObserver::OnNotify(const dae::Event& event)
 {
-	switch (event)
+	bool cubeTurned;
+
+	// This if statement will only not run if the instance of this class was created with
+	// the first constructor - which means it's only gonna be used for a level transition
+	if (m_LevelTitleScreenTime == 0.f)
 	{
-		
-	case dae::Event::QBertLanded:
-		// 1 is subtracted from the idx, because the cubes are numbered from 1 to 28
-		// But they're stored counting from 0 in the vector
-		m_Pyramid->m_CubeGOVector[m_QBertComp->GetPositionIndex() - 1]->GetComponent<Cube>()->TurnCube();
-		
-		if (CheckAllCubesTurned())
-			WinSection();
-
-		KillCollidingSlickSam();
-
-		if (CheckCollidingUggWrong())
+		switch (event)
 		{
-			ChangeFreezeEverything(true);
-			m_DeadQbert = true;
-			m_QBertComp->Die();
-			
-			// Make QBert curse
-			m_QBertComp->SetCursesHidden(false);
+
+		case dae::Event::QBertLanded:
+			// 1 is subtracted from the idx, because the cubes are numbered from 1 to 28
+			// But they're stored counting from 0 in the vector
+			cubeTurned = m_Pyramid->m_CubeGOVector[m_QBertComp->GetPositionIndex() - 1]->GetComponent<Cube>()->TurnCube();
+
+			if (cubeTurned)
+				m_QBertComp->ScoreIncrease(25);
+
+			if (CheckAllCubesTurned())
+				WinSection();
+
+			KillCollidingSlickSam();
+
+			if (CheckCollidingUggWrong())
+			{
+				ChangeFreezeEverything(true);
+				m_DeadQbert = true;
+				m_QBertComp->Die();
+
+				// Make QBert curse
+				m_QBertComp->SetCursesHidden(false);
+			}
+			break;
+
+
+		case dae::Event::SlickSamLanded:
+			for (size_t i = 0; i < m_SlickSamCompVector->size(); i++)
+				m_Pyramid->m_CubeGOVector[m_SlickSamCompVector->operator[](i)->GetPositionIndex() - 1]->GetComponent<Cube>()->SlickSamTurnCube();
+
+			KillCollidingSlickSam();
+			break;
+
+
+		case dae::Event::SlickSamFell:
+			KillFallenSlickSam();
+			break;
+
+
+		case dae::Event::UggWrongwayLanded:
+			if (CheckCollidingUggWrong())
+			{
+				ChangeFreezeEverything(true);
+				m_DeadQbert = true;
+				m_QBertComp->Die();
+
+				// Make QBert curse
+				m_QBertComp->SetCursesHidden(false);
+			}
+			break;
+
+
+		case dae::Event::UggWrongwayFell:
+			KillFallenUggWrong();
+			break;
 		}
-		break;
-
-		
-	case dae::Event::SlickSamLanded:
-		for (size_t i = 0; i < m_SlickSamCompVector->size(); i++)
-			m_Pyramid->m_CubeGOVector[m_SlickSamCompVector->operator[](i)->GetPositionIndex() - 1]->GetComponent<Cube>()->SlickSamTurnCube();
-
-		KillCollidingSlickSam();
-		break;
-
-		
-	case dae::Event::SlickSamFell:
-		KillFallenSlickSam();
-		break;
-
-
-	case dae::Event::UggWrongwayLanded:
-		if (CheckCollidingUggWrong())
-		{
-			ChangeFreezeEverything(true);
-			m_DeadQbert = true;
-			m_QBertComp->Die();
-
-			// Make QBert curse
-			m_QBertComp->SetCursesHidden(false);
-		}
-		break;
-
-		
-	case dae::Event::UggWrongwayFell:
-		KillFallenUggWrong();
-		break;
 	}
 }
 
@@ -306,6 +316,7 @@ void LevelSectionObserver::KillCollidingSlickSam() const
 				deadSlickSam->Die();
 				i--;
 				nrSlickSams--;
+				m_QBertComp->ScoreIncrease(300);
 			}
 		}
 	}
@@ -374,7 +385,6 @@ void LevelSectionObserver::WinSection()
 	{
 		ChangeFreezeEverything(true);
 		m_SectionComplete = true;
-		m_Subject->Notify(dae::Event::ColorChange);
 	}
 }
 
@@ -394,8 +404,19 @@ void LevelSectionObserver::ChangeSection() const
 {
 	if (m_QBertComp != nullptr)
 	{
-		m_QBertComp->ResetPosition();
-		m_QBertComp->SetFrozen(true);
+		// This if statement will only run if the instance of this class was created with
+		// the first constructor - which means it's only gonna be used for a level transition
+		if (m_LevelTitleScreenTime > 0.f)
+		{
+			m_QBertComp->SetRound(1);
+			m_QBertComp->SetLevel(m_QBertComp->GetLevel() + 1);
+		}
+		else
+		{
+			m_QBertComp->ResetPosition();
+			m_QBertComp->SetFrozen(true);
+			m_QBertComp->SetRound(m_QBertComp->GetRound() + 1);
+		}
 	}
 	
 	auto& scene = dae::SceneManager::GetInstance();
@@ -477,7 +498,7 @@ void LevelSectionObserver::Update(const float deltaTime)
 						}
 
 						// An extra second is added so the right spawner has a tiny delay compared to the left one
-						if (m_UggWrongSpawnTimer2 >= m_UggWrongSpawnInterval + 1.f)
+						if (m_UggWrongSpawnTimer2 >= m_UggWrongSpawnInterval + 2.f)
 						{
 							bool isUgg = false;
 

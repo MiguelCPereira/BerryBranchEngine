@@ -13,7 +13,7 @@ Cube::Cube(const std::shared_ptr<dae::GameObject>& gameObject, int colorIdx, int
 {
 }
 
-void Cube::TurnCube()
+bool Cube::TurnCube()
 {
 	if (m_Turned == false)
 	{
@@ -44,6 +44,8 @@ void Cube::TurnCube()
 			m_GameObject->GetComponent<dae::GraphicsComponent>()->SetSrcRectangle(float(m_ColorIdx) * m_CubeSpriteWidth, m_CubeSpriteHeight, m_CubeSpriteWidth, m_CubeSpriteHeight);
 			m_Turned = true;
 		}
+		
+		return true;
 	}
 	else
 	{
@@ -53,6 +55,8 @@ void Cube::TurnCube()
 			m_GameObject->GetComponent<dae::GraphicsComponent>()->SetSrcRectangle(float(m_ColorIdx) * m_CubeSpriteWidth, 0, m_CubeSpriteWidth, m_CubeSpriteHeight);
 			m_Turned = false;
 		}
+
+		return false;
 	}
 }
 

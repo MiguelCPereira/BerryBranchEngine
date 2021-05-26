@@ -18,37 +18,46 @@ dae::GameObject::~GameObject()
 
 void dae::GameObject::Initialize()
 {
-	for (BaseComponent* baseComp : m_Components)
+	if (m_ComponentsRemoved == false)
 	{
-		if (m_ComponentsRemoved)
-			break;
+		for (BaseComponent* baseComp : m_Components)
+		{
+			if (m_ComponentsRemoved)
+				break;
 
-		if (baseComp != nullptr)
-			baseComp->Initialize();
+			if (baseComp != nullptr)
+				baseComp->Initialize();
+		}
 	}
 }
 
 void dae::GameObject::Update(const float deltaTime)
 {
-	for (BaseComponent* baseComp : m_Components)
+	if (m_ComponentsRemoved == false)
 	{
-		if(m_ComponentsRemoved)
-			break;
+		for (BaseComponent* baseComp : m_Components)
+		{
+			if (m_ComponentsRemoved)
+				break;
 
-		if (baseComp != nullptr && m_ComponentsRemoved == false)
-			baseComp->Update(deltaTime);
+			if (baseComp != nullptr && m_ComponentsRemoved == false)
+				baseComp->Update(deltaTime);
+		}
 	}
 }
 
 void dae::GameObject::Render() const
 {
-	for (BaseComponent* baseComp : m_Components)
+	if (m_ComponentsRemoved == false)
 	{
-		if (m_ComponentsRemoved)
-			break;
+		for (BaseComponent* baseComp : m_Components)
+		{
+			if (m_ComponentsRemoved)
+				break;
 
-		if (baseComp != nullptr && m_ComponentsRemoved == false)
-			baseComp->Render();
+			if (baseComp != nullptr && m_ComponentsRemoved == false)
+				baseComp->Render();
+		}
 	}
 }
 
