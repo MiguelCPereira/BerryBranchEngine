@@ -5,6 +5,7 @@
 
 
 class QBert;
+class Coily;
 class SlickSam;
 class UggWrongway;
 
@@ -17,11 +18,13 @@ class JumpingObserver final : public dae::BaseComponent, public dae::Observer
 {
 public:
 	explicit JumpingObserver(QBert* qBertComp, dae::GraphicsComponent* graphicsComp, float cubesWidth, float cubesHeight);
+	explicit JumpingObserver(Coily* coilyComp, dae::GraphicsComponent* graphicsComp, float cubesWidth, float cubesHeight);
 	explicit JumpingObserver(SlickSam* slickSamComp, dae::GraphicsComponent* graphicsComp, float cubesWidth, float cubesHeight);
 	explicit JumpingObserver(UggWrongway* uggWrongComp, dae::GraphicsComponent* graphicsComp, float cubesWidth, float cubesHeight);
 	~JumpingObserver() override;
 
 	void SetQBert(QBert* qBertComp);
+	void SetCoily(Coily* coilyComp);
 	void SetSlickSam(SlickSam* slickSamComp);
 	void SetUggWrongway(UggWrongway* uggWrongComp);
 	void SetGraphics(dae::GraphicsComponent* graphicsComp);
@@ -32,6 +35,7 @@ public:
 
 private:
 	QBert* m_QBertComp{};
+	Coily* m_CoilyComp{};
 	SlickSam* m_SlickSamComp{};
 	UggWrongway* m_UggWrongComp{};
 	dae::GraphicsComponent* m_GraphicsComp{};

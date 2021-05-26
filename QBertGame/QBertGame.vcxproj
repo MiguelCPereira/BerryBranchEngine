@@ -377,13 +377,13 @@ xcopy "$(SolutionDir)$(Platform)\$(Configuration)\*.dll" "$(OutputPath)" /R /Y</
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Coily.cpp" />
     <ClCompile Include="Cube.cpp" />
     <ClCompile Include="Factory.cpp" />
     <ClCompile Include="GameCommands.cpp" />
     <ClCompile Include="GameObserver.cpp" />
     <ClCompile Include="JumpingObserver.cpp" />
     <ClCompile Include="LevelSectionObserver.cpp" />
-    <ClCompile Include="LevelTransition.cpp" />
     <ClCompile Include="LivesDisplay.cpp" />
     <ClCompile Include="Pyramid.cpp" />
     <ClCompile Include="QBert.cpp" />
@@ -394,13 +394,13 @@ xcopy "$(SolutionDir)$(Platform)\$(Configuration)\*.dll" "$(OutputPath)" /R /Y</
     <ClCompile Include="UggWrongway.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Coily.h" />
     <ClInclude Include="Cube.h" />
     <ClInclude Include="Factory.h" />
     <ClInclude Include="GameCommands.h" />
     <ClInclude Include="GameObserver.h" />
     <ClInclude Include="JumpingObserver.h" />
     <ClInclude Include="LevelSectionObserver.h" />
-    <ClInclude Include="LevelTransition.h" />
     <ClInclude Include="LivesDisplay.h" />
     <ClInclude Include="Pyramid.h" />
     <ClInclude Include="QBert.h" />

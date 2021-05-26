@@ -12,13 +12,14 @@ namespace dae
 		ActorHPChange,
 		ActorDeath,
 		PointsIncrease,
-		CoilyDeath,
 		SlickSamCaught,
 		TileChange,
 		ColorChange,
 
 
 		// While these are only used in the game
+		CoilyLanded,
+		CoilyFell,
 		ScoreIncreased,
 		QBertDied,
 		QBertLanded,

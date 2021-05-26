@@ -1,5 +1,4 @@
 #include "LevelSectionObserver.h"
-
 #include <iostream>
 #include "Cube.h"
 #include "QBert.h"
@@ -11,11 +10,17 @@
 #include "SlickSam.h"
 #include "Factory.h"
 #include "UggWrongway.h"
+#include "Coily.h"
 
 LevelSectionObserver::LevelSectionObserver(float transitionTime, QBert* qBertComp)
 	: m_GameObject()
 	, m_QBertComp(qBertComp)
 	, m_Pyramid()
+
+	, m_SpawnCoily()
+	, m_CoilySpawnTimer()
+	, m_CoilySpawnDelay()
+	, m_CoilyMoveInterval()
 
 	, m_SpawnSlickSams()
 	, m_SlickSamSpawnTimer()
@@ -54,21 +59,26 @@ LevelSectionObserver::LevelSectionObserver(float transitionTime, QBert* qBertCom
 
 
 LevelSectionObserver::LevelSectionObserver(const std::shared_ptr<dae::GameObject>& gameObject, QBert* qBertComp, Pyramid* pyramid,
-	int level, bool spawnSlickSams, bool spawnUggWrongs, float slickSamSpawnInterval, float slickSamMoveInterval, float uggWrongSpawnInterval, float uggWrongMoveInterval)
+	int level, bool spawnSlickSams, bool spawnUggWrongs, float slickSamSpawnInterval, float uggWrongSpawnInterval)
 	: m_GameObject(gameObject)
 	, m_QBertComp(qBertComp)
 	, m_Pyramid(pyramid)
 
+	, m_SpawnCoily(true)
+	, m_CoilySpawnTimer(5.f) // We start at 5 so the first Coily only takes 3 sec to spawn
+	, m_CoilySpawnDelay(8.f)
+	, m_CoilyMoveInterval(1.f)
+
 	, m_SpawnSlickSams(spawnSlickSams)
 	, m_SlickSamSpawnTimer(0.f)
 	, m_SlickSamSpawnInterval(slickSamSpawnInterval)
-	, m_SlickSamMoveInterval(slickSamMoveInterval)
+	, m_SlickSamMoveInterval(1.f)
 
 	, m_SpawnUggWrongs(spawnUggWrongs)
 	, m_UggWrongSpawnTimer1(0.f)
 	, m_UggWrongSpawnTimer2(0.f)
 	, m_UggWrongSpawnInterval(uggWrongSpawnInterval)
-	, m_UggWrongMoveInterval(uggWrongMoveInterval)
+	, m_UggWrongMoveInterval(1.f)
 
 	, m_SectionComplete(false)
 	, m_AnimationTimer(0.f)
@@ -102,10 +112,14 @@ LevelSectionObserver::LevelSectionObserver(const std::shared_ptr<dae::GameObject
 	m_UggWrongCompVector = new std::vector<UggWrongway*>;
 }
 
+
 LevelSectionObserver::~LevelSectionObserver()
 {
 	if (m_QBertComp != nullptr)
 		m_QBertComp->GetSubject()->RemoveObserver(this);
+
+	if (m_CoilyComp != nullptr)
+		m_CoilyComp->GetSubject()->RemoveObserver(this);
 
 	if (m_SlickSamCompVector->empty() == false)
 	{
@@ -154,6 +168,23 @@ void LevelSectionObserver::SetPyramid(Pyramid* pyramid)
 	delete m_Pyramid;
 	m_Pyramid = nullptr;
 	m_Pyramid = pyramid;
+}
+
+void LevelSectionObserver::AddCoily(bool isLeft)
+{
+	auto newCoilyGO = MakeCoily(isLeft, m_CoilyMoveInterval);
+	dae::SceneManager::GetInstance().GetCurrentScene()->Add(newCoilyGO);
+	auto* newCoilyComp = newCoilyGO->GetComponent<Coily>();
+
+	if (newCoilyComp != nullptr)
+	{
+		newCoilyComp->GetSubject()->AddObserver(this);
+		m_CoilyComp = newCoilyComp;
+	}
+	else
+	{
+		std::cout << "Coily creation failed\n";
+	}
 }
 
 void LevelSectionObserver::AddSlickSam(bool isSlick, bool isLeft)
@@ -214,14 +245,17 @@ void LevelSectionObserver::OnNotify(const dae::Event& event)
 
 			KillCollidingSlickSam();
 
-			if (CheckCollidingUggWrong())
+			if (m_DeadQbert == false)
 			{
-				ChangeFreezeEverything(true);
-				m_DeadQbert = true;
-				m_QBertComp->Die();
+				if (CheckCollidingUggWrong() || CheckCollidingCoily())
+				{
+					ChangeFreezeEverything(true);
+					m_DeadQbert = true;
+					m_QBertComp->Die();
 
-				// Make QBert curse
-				m_QBertComp->SetCursesHidden(false);
+					// Make QBert curse
+					m_QBertComp->SetCursesHidden(false);
+				}
 			}
 			break;
 
@@ -240,20 +274,42 @@ void LevelSectionObserver::OnNotify(const dae::Event& event)
 
 
 		case dae::Event::UggWrongwayLanded:
-			if (CheckCollidingUggWrong())
+			if (m_DeadQbert == false)
 			{
-				ChangeFreezeEverything(true);
-				m_DeadQbert = true;
-				m_QBertComp->Die();
+				if (CheckCollidingUggWrong())
+				{
+					ChangeFreezeEverything(true);
+					m_DeadQbert = true;
+					m_QBertComp->Die();
 
-				// Make QBert curse
-				m_QBertComp->SetCursesHidden(false);
+					// Make QBert curse
+					m_QBertComp->SetCursesHidden(false);
+				}
 			}
 			break;
 
 
 		case dae::Event::UggWrongwayFell:
 			KillFallenUggWrong();
+			break;
+
+		case dae::Event::CoilyLanded:
+			if (m_DeadQbert == false)
+			{
+				if (CheckCollidingCoily())
+				{
+					ChangeFreezeEverything(true);
+					m_DeadQbert = true;
+					m_QBertComp->Die();
+
+					// Make QBert curse
+					m_QBertComp->SetCursesHidden(false);
+				}
+			}
+			break;
+			
+		case dae::Event::CoilyFell:
+			KillCoily();
 			break;
 		}
 	}
@@ -268,6 +324,19 @@ bool LevelSectionObserver::CheckAllCubesTurned() const
 	}
 	
 	return true;
+}
+
+bool LevelSectionObserver::CheckCollidingCoily() const
+{
+	if (m_QBertComp->GetAirborne() == false && m_CoilyComp != nullptr)
+	{
+		if (m_QBertComp->GetPositionIndex() == m_CoilyComp->GetPositionIndex())
+		{
+			return true;
+		}
+	}
+
+	return false;
 }
 
 bool LevelSectionObserver::CheckCollidingUggWrong() const
@@ -354,8 +423,23 @@ void LevelSectionObserver::KillFallenUggWrong() const
 	}
 }
 
+void LevelSectionObserver::KillCoily()
+{
+	auto* deadCoily = m_CoilyComp;
+	m_CoilyComp = nullptr;
+	deadCoily->Die();
+	m_SpawnCoily = true;
+}
+
 void LevelSectionObserver::ClearAllEnemies()
 {
+	if(m_CoilyComp != nullptr)
+	{
+		auto* coily = m_CoilyComp;
+		m_CoilyComp = nullptr;
+		coily->Die();
+	}
+	
 	auto nrComponents = int(m_SlickSamCompVector->size());
 	for (auto i = 0; i < nrComponents; i++)
 	{
@@ -391,12 +475,15 @@ void LevelSectionObserver::WinSection()
 void LevelSectionObserver::ChangeFreezeEverything(bool freeze) const
 {
 	m_QBertComp->SetFrozen(freeze);
+
+	if (m_CoilyComp != nullptr)
+		m_CoilyComp->SetFrozen(freeze);
 	
 	for (size_t i = 0; i < m_SlickSamCompVector->size(); i++)
-		m_SlickSamCompVector->operator[](0)->SetFrozen(freeze);
+		m_SlickSamCompVector->operator[](i)->SetFrozen(freeze);
 
 	for (size_t i = 0; i < m_UggWrongCompVector->size(); i++)
-		m_UggWrongCompVector->operator[](0)->SetFrozen(freeze);
+		m_UggWrongCompVector->operator[](i)->SetFrozen(freeze);
 	
 }
 
@@ -459,6 +546,24 @@ void LevelSectionObserver::Update(const float deltaTime)
 				}
 				else
 				{
+					if (m_SpawnCoily)
+					{
+						m_CoilySpawnTimer += deltaTime;
+						
+						if (m_CoilySpawnTimer >= m_CoilySpawnDelay)
+						{
+							// A random 50/50 chance of spawning either a left or right
+							bool isLeft = false;
+							if ((rand() % 2) + 1 == 1)
+								isLeft = true;
+
+							m_CoilySpawnTimer = 0.f;
+							m_SpawnCoily = false;
+							AddCoily(isLeft);
+						}
+					}
+					
+					
 					if (m_SpawnSlickSams)
 					{
 						m_SlickSamSpawnTimer += deltaTime;

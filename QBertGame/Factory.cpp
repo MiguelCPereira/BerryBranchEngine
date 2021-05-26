@@ -12,6 +12,7 @@
 #include "RoundLvlDisplay.h"
 #include "TextComponent.h"
 #include "ScoreDisplay.h"
+#include "Coily.h"
 
 std::vector<std::shared_ptr<dae::GameObject>> MakeQBert()
 {
@@ -48,6 +49,38 @@ std::vector<std::shared_ptr<dae::GameObject>> MakeQBert()
 	returnVector.push_back(std::move(scoreDisplayGO));
 	
 	return returnVector;
+}
+
+
+std::shared_ptr<dae::GameObject> MakeCoily(bool isLeft, float  moveInterval)
+{
+	const auto spriteWidth = 16.f;
+	const auto spriteHeight = 32.f;
+	const auto actualWidth = 32.f;
+	const auto actualHeight = 64.f;
+
+	auto newGO = std::make_shared<dae::GameObject>();
+
+	if (isLeft)
+	{
+		newGO->AddComponent(new Coily(newGO, g_NrRows, g_CubesActualWidth, g_CubesActualHeight,
+			spriteWidth, spriteHeight, 2, moveInterval));
+		newGO->AddComponent(new dae::GraphicsComponent("Coily Spritesheet.png", g_EnemiesLeftSpawnPosX, g_EnemiesSpawnPosY - 22.f,
+			actualWidth, actualHeight, 0, 0, spriteWidth, spriteHeight));
+	}
+	else
+	{
+		newGO->AddComponent(new Coily(newGO, g_NrRows, g_CubesActualWidth, g_CubesActualHeight,
+			spriteWidth, spriteHeight, 3, moveInterval));
+		newGO->AddComponent(new dae::GraphicsComponent("Coily Spritesheet.png", g_EnemiesRightSpawnPosX, g_EnemiesSpawnPosY - 22.f,
+			actualWidth, actualHeight, 0, 0, spriteWidth, spriteHeight));
+	}
+
+	newGO->AddComponent(new JumpingObserver(newGO->GetComponent<Coily>(), newGO->GetComponent<dae::GraphicsComponent>(),
+		g_CubesActualWidth, g_CubesActualHeight));
+	newGO->GetComponent<JumpingObserver>()->Initialize();
+
+	return newGO;
 }
 
 

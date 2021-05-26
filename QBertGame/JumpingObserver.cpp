@@ -1,4 +1,6 @@
 #include "JumpingObserver.h"
+
+#include "Coily.h"
 #include "GraphicsComponent.h"
 #include "QBert.h"
 #include "SlickSam.h"
@@ -6,13 +8,36 @@
 
 JumpingObserver::JumpingObserver(QBert* qBertComp, dae::GraphicsComponent* graphicsComp, float cubesWidth, float cubesHeight)
 	: m_QBertComp(qBertComp)
+	, m_CoilyComp()
 	, m_SlickSamComp()
 	, m_UggWrongComp()
 	, m_GraphicsComp(graphicsComp)
 	, m_CubesWidth(cubesWidth)
 	, m_CubesHeight(cubesHeight)
 	, m_Jumping(false)
-	, m_JumpingSpeed(500.f)
+	, m_JumpingSpeed(300.f)
+	, m_LiftoffPosX()
+	, m_LiftoffPosY()
+	, m_LandingPosX()
+	, m_LandingPosY()
+	, m_MidFlightPosX()
+	, m_MidFlightPosY()
+	, m_MovingRight()
+	, m_MovingDown()
+	, m_MovementXIncomplete()
+	, m_MovementYIncomplete()
+{}
+
+JumpingObserver::JumpingObserver(Coily* coilyComp, dae::GraphicsComponent* graphicsComp, float cubesWidth, float cubesHeight)
+	: m_QBertComp()
+	, m_CoilyComp(coilyComp)
+	, m_SlickSamComp()
+	, m_UggWrongComp()
+	, m_GraphicsComp(graphicsComp)
+	, m_CubesWidth(cubesWidth)
+	, m_CubesHeight(cubesHeight)
+	, m_Jumping(false)
+	, m_JumpingSpeed(200.f)
 	, m_LiftoffPosX()
 	, m_LiftoffPosY()
 	, m_LandingPosX()
@@ -27,13 +52,14 @@ JumpingObserver::JumpingObserver(QBert* qBertComp, dae::GraphicsComponent* graph
 
 JumpingObserver::JumpingObserver(SlickSam* slickSamComp, dae::GraphicsComponent* graphicsComp, float cubesWidth, float cubesHeight)
 	: m_QBertComp()
+	, m_CoilyComp()
 	, m_SlickSamComp(slickSamComp)
 	, m_UggWrongComp()
 	, m_GraphicsComp(graphicsComp)
 	, m_CubesWidth(cubesWidth)
 	, m_CubesHeight(cubesHeight)
 	, m_Jumping(false)
-	, m_JumpingSpeed(500.f)
+	, m_JumpingSpeed(300.f)
 	, m_LiftoffPosX()
 	, m_LiftoffPosY()
 	, m_LandingPosX()
@@ -48,13 +74,14 @@ JumpingObserver::JumpingObserver(SlickSam* slickSamComp, dae::GraphicsComponent*
 
 JumpingObserver::JumpingObserver(UggWrongway* uggWrongComp, dae::GraphicsComponent* graphicsComp, float cubesWidth, float cubesHeight)
 	: m_QBertComp()
+	, m_CoilyComp()
 	, m_SlickSamComp()
 	, m_UggWrongComp(uggWrongComp)
 	, m_GraphicsComp(graphicsComp)
 	, m_CubesWidth(cubesWidth)
 	, m_CubesHeight(cubesHeight)
 	, m_Jumping(false)
-	, m_JumpingSpeed(500.f)
+	, m_JumpingSpeed(300.f)
 	, m_LiftoffPosX()
 	, m_LiftoffPosY()
 	, m_LandingPosX()
@@ -72,6 +99,9 @@ JumpingObserver::~JumpingObserver()
 	if (m_QBertComp != nullptr)
 		m_QBertComp->GetSubject()->RemoveObserver(this);
 
+	if (m_CoilyComp != nullptr)
+		m_CoilyComp->GetSubject()->RemoveObserver(this);
+
 	if (m_SlickSamComp != nullptr)
 		m_SlickSamComp->GetSubject()->RemoveObserver(this);
 
@@ -85,6 +115,9 @@ void JumpingObserver::Initialize()
 {
 	if (m_QBertComp != nullptr)
 		m_QBertComp->GetSubject()->AddObserver(this);
+	
+	if (m_CoilyComp != nullptr)
+		m_CoilyComp->GetSubject()->AddObserver(this);
 
 	if (m_SlickSamComp != nullptr)
 		m_SlickSamComp->GetSubject()->AddObserver(this);
@@ -102,6 +135,17 @@ void JumpingObserver::SetQBert(QBert* qBertComp)
 
 	if (m_QBertComp != nullptr)
 		m_QBertComp->GetSubject()->AddObserver(this);
+}
+
+void JumpingObserver::SetCoily(Coily* coilyComp)
+{
+	if (m_CoilyComp != nullptr)
+		m_CoilyComp->GetSubject()->RemoveObserver(this);
+
+	m_CoilyComp = coilyComp;
+
+	if (m_CoilyComp != nullptr)
+		m_CoilyComp->GetSubject()->AddObserver(this);
 }
 
 void JumpingObserver::SetSlickSam(SlickSam* slickSamComp)
@@ -290,11 +334,11 @@ void JumpingObserver::Update(const float deltaTime)
 			
 			if (m_QBertComp != nullptr)
 				m_QBertComp->JumpFinished();
-
-			if (m_SlickSamComp != nullptr)
+			else if (m_CoilyComp != nullptr)
+				m_CoilyComp->JumpFinished();
+			else if (m_SlickSamComp != nullptr)
 				m_SlickSamComp->JumpFinished();
-
-			if (m_UggWrongComp != nullptr)
+			else if (m_UggWrongComp != nullptr)
 				m_UggWrongComp->JumpFinished();
 		}
 	}

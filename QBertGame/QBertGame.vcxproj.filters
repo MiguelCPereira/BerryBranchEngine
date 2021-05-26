@@ -54,9 +54,6 @@
     <ClCompile Include="UggWrongway.cpp">
       <Filter>Components\Characters</Filter>
     </ClCompile>
-    <ClCompile Include="LevelTransition.cpp">
-      <Filter>Components</Filter>
-    </ClCompile>
     <ClCompile Include="JumpingObserver.cpp">
       <Filter>Components\Observers</Filter>
     </ClCompile>
@@ -68,6 +65,9 @@
     </ClCompile>
     <ClCompile Include="RoundLvlDisplay.cpp">
       <Filter>Components\Observers</Filter>
+    </ClCompile>
+    <ClCompile Include="Coily.cpp">
+      <Filter>Components\Characters</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -98,9 +98,6 @@
     <ClInclude Include="UggWrongway.h">
       <Filter>Components\Characters</Filter>
     </ClInclude>
-    <ClInclude Include="LevelTransition.h">
-      <Filter>Components</Filter>
-    </ClInclude>
     <ClInclude Include="JumpingObserver.h">
       <Filter>Components\Observers</Filter>
     </ClInclude>
@@ -112,6 +109,9 @@
     </ClInclude>
     <ClInclude Include="RoundLvlDisplay.h">
       <Filter>Components\Observers</Filter>
+    </ClInclude>
+    <ClInclude Include="Coily.h">
+      <Filter>Components\Characters</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -153,7 +153,7 @@ void LoadLevel01()
 	// Level Section Observer
 	sectionObserverGO = std::make_shared<dae::GameObject>();
 	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0]->GetComponent<QBert>(),
-		pyramid, 1, false, true, 0, 0, 10.f, 1.f));
+		pyramid, 1, false, true, 0, 10.f));
 	scene3.Add(sectionObserverGO);
 
 	// FPS Counter
@@ -183,7 +183,7 @@ void LoadLevel01()
 	// Level Section Observer
 	sectionObserverGO = std::make_shared<dae::GameObject>();
 	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0]->GetComponent<QBert>(),
-		pyramid, 1, false, true, 0, 0, 7.f, 1.f));
+		pyramid, 1, false, true, 0, 7.f));
 	scene4.Add(sectionObserverGO);
 
 	// FPS Counter
@@ -224,7 +224,7 @@ void LoadLevel02()
 	// Level Section Observer
 	auto sectionObserverGO = std::make_shared<dae::GameObject>();
 	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0]->GetComponent<QBert>(),
-		pyramid, 2, true, true, 20.f, 1.f, 15.f, 1.f));
+		pyramid, 2, true, true, 20.f, 15.f));
 	scene1.Add(sectionObserverGO);
 
 	// FPS Counter
@@ -255,7 +255,7 @@ void LoadLevel02()
 	// Level Section Observer
 	sectionObserverGO = std::make_shared<dae::GameObject>();
 	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0]->GetComponent<QBert>(),
-		pyramid, 2, true, true, 15.f, 1.f, 10.f, 1.f));
+		pyramid, 2, true, true, 15.f, 10.f));
 	scene2.Add(sectionObserverGO);
 
 	// FPS Counter
@@ -286,7 +286,7 @@ void LoadLevel02()
 	// Level Section Observer
 	sectionObserverGO = std::make_shared<dae::GameObject>();
 	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0]->GetComponent<QBert>(),
-		pyramid, 2, true, true, 10.f, 1.f, 7.f, 1.f));
+		pyramid, 2, true, true, 10.f, 7.f));
 	scene3.Add(sectionObserverGO);
 
 	// FPS Counter
@@ -317,7 +317,7 @@ void LoadLevel02()
 	// Level Section Observer
 	sectionObserverGO = std::make_shared<dae::GameObject>();
 	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0]->GetComponent<QBert>(),
-		pyramid, 2, true, true, 5.f, 1.f, 5.f, 1.f));
+		pyramid, 2, true, true, 5.f, 5.f));
 	scene4.Add(sectionObserverGO);
 
 	// FPS Counter
@@ -358,7 +358,7 @@ void LoadLevel03()
 	// Level Section Observer
 	auto sectionObserverGO = std::make_shared<dae::GameObject>();
 	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0]->GetComponent<QBert>(),
-		pyramid, 3, true, true, 25.f, 1.f, 15.f, 1.f));
+		pyramid, 3, true, true, 25.f, 15.f));
 	scene1.Add(sectionObserverGO);
 
 	// FPS Counter
@@ -389,7 +389,7 @@ void LoadLevel03()
 	// Level Section Observer
 	sectionObserverGO = std::make_shared<dae::GameObject>();
 	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0]->GetComponent<QBert>(),
-		pyramid, 3, true, true, 20.f, 1.f, 10.f, 1.f));
+		pyramid, 3, true, true, 20.f, 10.f));
 	scene2.Add(sectionObserverGO);
 
 	// FPS Counter
@@ -420,7 +420,7 @@ void LoadLevel03()
 	// Level Section Observer
 	sectionObserverGO = std::make_shared<dae::GameObject>();
 	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0]->GetComponent<QBert>(),
-		pyramid, 3, true, true, 15.f, 1.f, 7.f, 1.f));
+		pyramid, 3, true, true, 15.f, 7.f));
 	scene3.Add(sectionObserverGO);
 
 	// FPS Counter
@@ -451,7 +451,7 @@ void LoadLevel03()
 	// Level Section Observer
 	sectionObserverGO = std::make_shared<dae::GameObject>();
 	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0]->GetComponent<QBert>(),
-		pyramid, 3, true, true, 10.f, 1.f, 5.f ,1.f));
+		pyramid, 3, true, true, 10.f, 5.f));
 	scene4.Add(sectionObserverGO);
 
 	// FPS Counter

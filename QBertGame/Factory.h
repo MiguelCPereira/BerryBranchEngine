@@ -18,6 +18,8 @@ namespace dae
 
 std::vector<std::shared_ptr<dae::GameObject>> MakeQBert();
 
+std::shared_ptr<dae::GameObject> MakeCoily(bool isLeft, float  moveInterval);
+
 std::shared_ptr<dae::GameObject> MakeSlickSam(bool isSlick, bool isLeft, float  moveInterval);
 
 std::shared_ptr<dae::GameObject> MakeUggWrongway(bool isUgg, bool isLeft, float  moveInterval);

@@ -24,13 +24,7 @@ void SlickSam::SetFrozen(bool frozen)
 
 void SlickSam::Die() const
 {	
-	if (m_IsSlick)
-		std::cout << "Slick died\n";
-	else
-		std::cout << "Sam died\n";
-	
-	//Play Animation and Sound
-	
+	//Play Sound
 	m_GameObject->RemoveAllComponents();
 }
 
@@ -38,30 +32,31 @@ bool SlickSam::MoveDownLeft()
 {
 	if (m_Frozen == false && m_Airborne == false)
 	{
-		// If Slick/Sam isn't in the last pyramid row
+		// If Slick/Sam isn't in the last pyramid row, change the pos index
 		if (m_CurrentRow != m_LastRow)
 		{
 			m_CurrentCubeIdx = m_CurrentCubeIdx + m_CurrentRow;
 			m_CurrentRow++;
-			auto* graphics = m_GameObject->GetComponent<dae::GraphicsComponent>();
-
-			if (m_IsSlick)
-				graphics->SetSrcRectangle(0, 0, m_SpriteWidth, m_SpriteHeight);
-			else
-				graphics->SetSrcRectangle(0, m_SpriteHeight, m_SpriteWidth, m_SpriteHeight);
-
-			m_Airborne = true;
-			m_Subject->Notify(dae::Event::JumpDownLeft);
-			return true;
 		}
-		else
+		else // Else, make them jump out of the map
 		{
-			// Make them jump out of the map
 			m_Alive = false;
-			m_Airborne = true;
-			m_Subject->Notify(dae::Event::JumpDownLeft);
-			return false;
 		}
+
+		auto* graphics = m_GameObject->GetComponent<dae::GraphicsComponent>();
+
+		if (m_IsSlick)
+			graphics->SetSrcRectangle(0, 0, m_SpriteWidth, m_SpriteHeight);
+		else
+			graphics->SetSrcRectangle(0, m_SpriteHeight, m_SpriteWidth, m_SpriteHeight);
+
+		m_Airborne = true;
+		m_Subject->Notify(dae::Event::JumpDownLeft);
+
+		if (m_Alive)
+			return true;
+		else
+			return false;
 	}
 	return false;
 }
@@ -70,30 +65,31 @@ bool SlickSam::MoveDownRight()
 {
 	if (m_Frozen == false)
 	{
-		// If Slick/Sam isn't in the last pyramid row
+		// If Slick/Sam isn't in the last pyramid row, change the pos index
 		if (m_CurrentRow != m_LastRow)
 		{
 			m_CurrentCubeIdx = m_CurrentCubeIdx + m_CurrentRow + 1;
 			m_CurrentRow++;
-			auto* graphics = m_GameObject->GetComponent<dae::GraphicsComponent>();
-
-			if (m_IsSlick)
-				graphics->SetSrcRectangle(m_SpriteWidth, 0, m_SpriteWidth, m_SpriteHeight);
-			else
-				graphics->SetSrcRectangle(m_SpriteWidth, m_SpriteHeight, m_SpriteWidth, m_SpriteHeight);
-
-			m_Airborne = true;
-			m_Subject->Notify(dae::Event::JumpDownRight);
-			return true;
 		}
-		else
+		else // Else, make them jump out of the map
 		{
-			// Make them jump out of the map
 			m_Alive = false;
-			m_Airborne = true;
-			m_Subject->Notify(dae::Event::JumpDownRight);
-			return false;
 		}
+
+		auto* graphics = m_GameObject->GetComponent<dae::GraphicsComponent>();
+
+		if (m_IsSlick)
+			graphics->SetSrcRectangle(m_SpriteWidth, 0, m_SpriteWidth, m_SpriteHeight);
+		else
+			graphics->SetSrcRectangle(m_SpriteWidth, m_SpriteHeight, m_SpriteWidth, m_SpriteHeight);
+
+		m_Airborne = true;
+		m_Subject->Notify(dae::Event::JumpDownRight);
+
+		if (m_Alive)
+			return true;
+		else
+			return false;
 	}
 	return false;
 }
