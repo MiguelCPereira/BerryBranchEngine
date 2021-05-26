@@ -3,11 +3,13 @@
 #include "BaseComponent.h"
 
 
+class QBert;
+
 class Coily final : public dae::BaseComponent
 {
 public:
-	explicit Coily(const std::shared_ptr<dae::GameObject>& gameObject, int nrRows, float cubesWidth, float cubesHeight,
-		float spriteWidth, float spriteHeight, int startingCube, float jumpInterval);
+	explicit Coily(const std::shared_ptr<dae::GameObject>& gameObject, QBert* qBertComp, int nrRows, float cubesWidth,
+		float cubesHeight, float spriteWidth, float spriteHeight, int startingCube, float jumpInterval);
 
 	int GetPositionIndex() const { return m_CurrentCubeIdx; }
 	bool GetIsAlive() const { return m_Alive; }
@@ -26,6 +28,7 @@ public:
 
 private:
 	std::shared_ptr<dae::GameObject> m_GameObject{};
+	QBert* m_QBertComp;
 	bool m_Airborne{ false };
 	bool m_Frozen{ false };
 	int m_CurrentCubeIdx;

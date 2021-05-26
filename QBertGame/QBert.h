@@ -15,6 +15,7 @@ public:
 
 	int GetCurrentLives() const { return m_Lives; }
 	int GetPositionIndex() const { return m_CurrentCubeIdx; }
+	int GetCurrentRow() const { return m_CurrentRow; }
 	bool GetAirborne() const { return m_Airborne; }
 	int GetMaxLives() const { return m_MaxLives; }
 	int GetScore() const { return m_Score; }

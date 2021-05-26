@@ -2,10 +2,12 @@
 #include "GameObject.h"
 #include "GraphicsComponent.h"
 #include <iostream>
+#include "QBert.h"
 
-Coily::Coily(const std::shared_ptr<dae::GameObject>& gameObject, int nrRows, float cubesWidth, float cubesHeight,
-	float spriteWidth, float spriteHeight, int startingCube, float jumpInterval)
-	:m_GameObject(gameObject)
+Coily::Coily(const std::shared_ptr<dae::GameObject>& gameObject, QBert* qBertComp, int nrRows, float cubesWidth,
+             float cubesHeight, float spriteWidth, float spriteHeight, int startingCube, float jumpInterval)
+	: m_GameObject(gameObject)
+	, m_QBertComp(qBertComp)
 	, m_CurrentCubeIdx(startingCube)
 	, m_LastRow(nrRows)
 	, m_CubesWidth(cubesWidth)
@@ -246,11 +248,48 @@ void Coily::Update(const float deltaTime)
 				}
 				else
 				{
-					// A random 50/50 chance of Coily moving to the right or left
-					if ((rand() % 2) + 1 == 1)
-						MoveUpRight();
+					int qBertNrInRow;
+					int coilyNrInRow;
+					const int qBertCubeIdx = m_QBertComp->GetPositionIndex();
+					const int qBertRow = m_QBertComp->GetCurrentRow();
+					
+					
+					if (qBertCubeIdx != 1)
+						qBertNrInRow = qBertCubeIdx - (qBertRow * (qBertRow + 1) / 2 - qBertRow);
 					else
-						MoveUpLeft();
+						qBertNrInRow = 0;
+
+
+					if (m_CurrentCubeIdx != 1)
+						coilyNrInRow = m_CurrentCubeIdx - (m_CurrentRow * (m_CurrentRow + 1) / 2 - m_CurrentRow);
+					else
+						coilyNrInRow = 0;
+
+					
+					if (qBertRow > m_CurrentRow) // QBert is bellow Coily
+					{
+						if (qBertRow - qBertNrInRow > m_CurrentRow - coilyNrInRow) // Qbert is to Coily's Left
+							MoveDownLeft();
+						else // Qbert is either to Coily's Left or exactly bellow
+							MoveDownRight();
+					}
+					else if (qBertRow < m_CurrentRow) // QBert is above Coily
+					{
+						if (qBertRow - qBertNrInRow > m_CurrentRow - coilyNrInRow) // Qbert is to Coily's Left
+							MoveUpLeft();
+						else // Qbert is either to Coily's Left or exactly above
+							MoveUpRight();
+					}
+					else // They're both in the same row
+					{
+						// Coily will always move up in these situations
+						// because if they went down and they happened to be in the last row
+						// they would jump to their death
+						if(qBertNrInRow > coilyNrInRow) // QBert is to Coily's Right
+							MoveUpRight();
+						else // QBert's to Coily's Left
+							MoveUpLeft();
+					}
 					
 				}
 

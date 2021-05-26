@@ -177,7 +177,7 @@ void LevelSectionObserver::SetPyramid(Pyramid* pyramid)
 
 void LevelSectionObserver::AddCoily(bool isLeft)
 {
-	auto newCoilyGO = MakeCoily(isLeft, m_CoilyMoveInterval);
+	auto newCoilyGO = MakeCoily(m_QBertComp, isLeft, m_CoilyMoveInterval);
 	dae::SceneManager::GetInstance().GetCurrentScene()->Add(newCoilyGO);
 	auto* newCoilyComp = newCoilyGO->GetComponent<Coily>();
 
@@ -458,6 +458,7 @@ void LevelSectionObserver::ClearAllEnemies()
 		auto* coily = m_CoilyComp;
 		m_CoilyComp = nullptr;
 		coily->Die();
+		m_SpawnCoily = true;
 	}
 	
 	auto nrComponents = int(m_SlickSamCompVector->size());
@@ -576,7 +577,9 @@ void LevelSectionObserver::Update(const float deltaTime)
 				m_DeadQbertTimer += deltaTime;
 				if (m_DeadQbertTimer >= m_DeadQbertMaxTime)
 				{
-					m_QBertComp->RevertToLastPosition();
+					if(m_QBertJustFell)
+						m_QBertComp->RevertToLastPosition();
+					
 					m_QBertComp->SetHideGraphics(true);
 					m_QBertComp->SetCursesHidden(true);
 					ClearAllEnemies();
