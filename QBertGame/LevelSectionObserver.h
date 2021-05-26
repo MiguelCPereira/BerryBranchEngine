@@ -36,13 +36,13 @@ public:
 	void KillCollidingSlickSam() const;
 	void KillFallenSlickSam() const;
 	void KillFallenUggWrong() const;
-	void KillCoily();
+	void KillFallenCoily();
 	void ClearAllEnemies();
 
 	void WinSection();
 	void LevelWonAnimation(const float deltaTime);
 	void ChangeFreezeEverything(bool freeze) const;
-	void ChangeSection() const;
+	void ChangeSection();
 
 	void AddCoily(bool isLeft);
 	void AddSlickSam(bool isSlick, bool isLeft);
@@ -50,8 +50,11 @@ public:
 
 private:
 	std::shared_ptr<dae::GameObject> m_GameObject{};
+	Observer* m_ThisObserver{};
 	QBert* m_QBertComp{};
 	Pyramid* m_Pyramid;
+
+	bool m_QBertJustFell;
 	
 	Coily* m_CoilyComp{};
 	bool m_SpawnCoily;

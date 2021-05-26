@@ -38,22 +38,27 @@ bool Coily::MoveDownLeft()
 			m_CurrentCubeIdx = m_CurrentCubeIdx + m_CurrentRow;
 			m_CurrentRow++;
 		}
-		else // Else, make them jump out of the map
+		else // Else, make them start hatching (but if they have already, make them jump out of the map)
 		{
-			//m_IsEgg = false
-			m_Alive = false;
+			if (m_IsEgg)
+				m_IsTransforming = true;
+			else
+				m_Alive = false;
 		}
 
-		auto* graphics = m_GameObject->GetComponent<dae::GraphicsComponent>();
+		if (m_IsTransforming == false)
+		{
+			auto* graphics = m_GameObject->GetComponent<dae::GraphicsComponent>();
 
-		if (m_IsEgg)
-			graphics->SetSrcRectangle(m_SpriteWidth, 0, m_SpriteWidth, m_SpriteHeight);
-		else
-			graphics->SetSrcRectangle(m_SpriteWidth * 9, 0, m_SpriteWidth, m_SpriteHeight);
+			if (m_IsEgg)
+				graphics->SetSrcRectangle(m_SpriteWidth, 0, m_SpriteWidth, m_SpriteHeight);
+			else
+				graphics->SetSrcRectangle(m_SpriteWidth * 9, 0, m_SpriteWidth, m_SpriteHeight);
 
-		m_Airborne = true;
-		m_Direction = 1;
-		m_Subject->Notify(dae::Event::JumpDownLeft);
+			m_Airborne = true;
+			m_Direction = 1;
+			m_Subject->Notify(dae::Event::JumpDownLeft);
+		}
 
 		if(m_Alive)
 			return true;
@@ -73,22 +78,27 @@ bool Coily::MoveDownRight()
 			m_CurrentCubeIdx = m_CurrentCubeIdx + m_CurrentRow + 1;
 			m_CurrentRow++;
 		}
-		else // Else, make them jump out of the map
+		else // Else, make them start hatching (but if they have already, make them jump out of the map)
 		{
-			//m_IsEgg = false
-			m_Alive = false;
+			if (m_IsEgg)
+				m_IsTransforming = true;
+			else
+				m_Alive = false;
 		}
 
-		auto* graphics = m_GameObject->GetComponent<dae::GraphicsComponent>();
+		if (m_IsTransforming == false)
+		{
+			auto* graphics = m_GameObject->GetComponent<dae::GraphicsComponent>();
 
-		if (m_IsEgg)
-			graphics->SetSrcRectangle(m_SpriteWidth, 0, m_SpriteWidth, m_SpriteHeight);
-		else
-			graphics->SetSrcRectangle(m_SpriteWidth * 7, 0, m_SpriteWidth, m_SpriteHeight);
+			if (m_IsEgg)
+				graphics->SetSrcRectangle(m_SpriteWidth, 0, m_SpriteWidth, m_SpriteHeight);
+			else
+				graphics->SetSrcRectangle(m_SpriteWidth * 7, 0, m_SpriteWidth, m_SpriteHeight);
 
-		m_Airborne = true;
-		m_Direction = 2;
-		m_Subject->Notify(dae::Event::JumpDownRight);
+			m_Airborne = true;
+			m_Direction = 2;
+			m_Subject->Notify(dae::Event::JumpDownRight);
+		}
 
 		if (m_Alive)
 			return true;
@@ -108,22 +118,27 @@ bool Coily::MoveUpLeft()
 			m_CurrentCubeIdx = m_CurrentCubeIdx - m_CurrentRow;
 			m_CurrentRow--;
 		}
-		else // Else, make them jump out of the map
+		else // Else, make them start hatching (but if they have already, make them jump out of the map)
 		{
-			//m_IsEgg = false
-			m_Alive = false;
+			if (m_IsEgg)
+				m_IsTransforming = true;
+			else
+				m_Alive = false;
 		}
 
-		auto* graphics = m_GameObject->GetComponent<dae::GraphicsComponent>();
+		if (m_IsTransforming == false)
+		{
+			auto* graphics = m_GameObject->GetComponent<dae::GraphicsComponent>();
 
-		if (m_IsEgg)
-			graphics->SetSrcRectangle(m_SpriteWidth, 0, m_SpriteWidth, m_SpriteHeight);
-		else
-			graphics->SetSrcRectangle(m_SpriteWidth * 5, 0, m_SpriteWidth, m_SpriteHeight);
+			if (m_IsEgg)
+				graphics->SetSrcRectangle(m_SpriteWidth, 0, m_SpriteWidth, m_SpriteHeight);
+			else
+				graphics->SetSrcRectangle(m_SpriteWidth * 5, 0, m_SpriteWidth, m_SpriteHeight);
 
-		m_Airborne = true;
-		m_Direction = 3;
-		m_Subject->Notify(dae::Event::JumpUpLeft);
+			m_Airborne = true;
+			m_Direction = 3;
+			m_Subject->Notify(dae::Event::JumpUpLeft);
+		}
 
 		if (m_Alive)
 			return true;
@@ -143,22 +158,27 @@ bool Coily::MoveUpRight()
 			m_CurrentCubeIdx = m_CurrentCubeIdx - m_CurrentRow + 1;
 			m_CurrentRow--;
 		}
-		else // Else, make them jump out of the map
+		else // Else, make them start hatching (but if they have already, make them jump out of the map)
 		{
-			//m_IsEgg = false
-			m_Alive = false;
+			if (m_IsEgg)
+				m_IsTransforming = true;
+			else
+				m_Alive = false;
 		}
 
-		auto* graphics = m_GameObject->GetComponent<dae::GraphicsComponent>();
+		if (m_IsTransforming == false)
+		{
+			auto* graphics = m_GameObject->GetComponent<dae::GraphicsComponent>();
 
-		if (m_IsEgg)
-			graphics->SetSrcRectangle(m_SpriteWidth, 0, m_SpriteWidth, m_SpriteHeight);
-		else
-			graphics->SetSrcRectangle(m_SpriteWidth * 3, 0, m_SpriteWidth, m_SpriteHeight);
+			if (m_IsEgg)
+				graphics->SetSrcRectangle(m_SpriteWidth, 0, m_SpriteWidth, m_SpriteHeight);
+			else
+				graphics->SetSrcRectangle(m_SpriteWidth * 3, 0, m_SpriteWidth, m_SpriteHeight);
 
-		m_Airborne = true;
-		m_Direction = 4;
-		m_Subject->Notify(dae::Event::JumpUpRight);
+			m_Airborne = true;
+			m_Direction = 4;
+			m_Subject->Notify(dae::Event::JumpUpRight);
+		}
 
 		if (m_Alive)
 			return true;
@@ -199,20 +219,43 @@ void Coily::Update(const float deltaTime)
 {
 	if (m_Alive == true && m_Frozen == false)
 	{
-		m_JumpTimer += deltaTime;
-
-		if (m_JumpTimer >= m_JumpInterval)
+		if(m_IsTransforming)
 		{
-			if (m_IsEgg)
-			{
-				// A random 50/50 chance of Coily's egg falling to the right or left
-				if ((rand() % 2) + 1 == 1)
-					MoveDownRight();
-				else
-					MoveDownLeft();
-			}
+			m_TransformTimer += deltaTime;
 
-			m_JumpTimer -= m_JumpInterval;
+			if(m_TransformTimer >= m_TransformationTime)
+			{
+				m_IsEgg = false;
+				m_IsTransforming = false;
+				m_TransformTimer = 0.f;
+			}
+		}
+		else
+		{
+			m_JumpTimer += deltaTime;
+
+			if (m_JumpTimer >= m_JumpInterval)
+			{
+				if (m_IsEgg)
+				{
+					// A random 50/50 chance of Coily's egg falling to the right or left
+					if ((rand() % 2) + 1 == 1)
+						MoveDownRight();
+					else
+						MoveDownLeft();
+				}
+				else
+				{
+					// A random 50/50 chance of Coily moving to the right or left
+					if ((rand() % 2) + 1 == 1)
+						MoveUpRight();
+					else
+						MoveUpLeft();
+					
+				}
+
+				m_JumpTimer -= m_JumpInterval;
+			}
 		}
 	}
 }

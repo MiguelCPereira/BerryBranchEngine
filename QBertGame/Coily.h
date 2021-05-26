@@ -37,6 +37,9 @@ private:
 	const float m_JumpInterval;
 	bool m_Alive{ true };
 	bool m_IsEgg{ true };
+	bool m_IsTransforming{ false };
+	float m_TransformTimer{ 0.f };
+	const float m_TransformationTime{ 1.f} ;
 	int m_Direction; // 1 is left/down, 2 is right/down, 3 is left/up and 4 is right/up
 };
 

@@ -23,6 +23,7 @@ namespace dae
 		ScoreIncreased,
 		QBertDied,
 		QBertLanded,
+		QBertFell,
 		SlickSamLanded,
 		SlickSamFell,
 		UggWrongwayLanded,

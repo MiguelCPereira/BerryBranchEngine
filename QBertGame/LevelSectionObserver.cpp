@@ -17,6 +17,8 @@ LevelSectionObserver::LevelSectionObserver(float transitionTime, QBert* qBertCom
 	, m_QBertComp(qBertComp)
 	, m_Pyramid()
 
+	, m_QBertJustFell()
+
 	, m_SpawnCoily()
 	, m_CoilySpawnTimer()
 	, m_CoilySpawnDelay()
@@ -63,6 +65,8 @@ LevelSectionObserver::LevelSectionObserver(const std::shared_ptr<dae::GameObject
 	: m_GameObject(gameObject)
 	, m_QBertComp(qBertComp)
 	, m_Pyramid(pyramid)
+
+	, m_QBertJustFell(false)
 
 	, m_SpawnCoily(true)
 	, m_CoilySpawnTimer(5.f) // We start at 5 so the first Coily only takes 3 sec to spawn
@@ -145,6 +149,7 @@ LevelSectionObserver::~LevelSectionObserver()
 
 void LevelSectionObserver::Initialize()
 {
+	m_ThisObserver = this;
 	if (m_QBertComp != nullptr)
 	{
 		m_QBertComp->GetSubject()->AddObserver(this);
@@ -259,7 +264,21 @@ void LevelSectionObserver::OnNotify(const dae::Event& event)
 			}
 			break;
 
+			
+		case dae::Event::QBertFell:
+			if (m_QBertJustFell == false)
+			{
+				ChangeFreezeEverything(true);
+				m_DeadQbert = true;
+				m_QBertComp->Die();
+				m_QBertJustFell = true;
 
+				// Make QBert curse
+				m_QBertComp->SetCursesHidden(false);
+				break;
+			}
+
+			
 		case dae::Event::SlickSamLanded:
 			for (size_t i = 0; i < m_SlickSamCompVector->size(); i++)
 				m_Pyramid->m_CubeGOVector[m_SlickSamCompVector->operator[](i)->GetPositionIndex() - 1]->GetComponent<Cube>()->SlickSamTurnCube();
@@ -309,7 +328,7 @@ void LevelSectionObserver::OnNotify(const dae::Event& event)
 			break;
 			
 		case dae::Event::CoilyFell:
-			KillCoily();
+			KillFallenCoily();
 			break;
 		}
 	}
@@ -423,12 +442,13 @@ void LevelSectionObserver::KillFallenUggWrong() const
 	}
 }
 
-void LevelSectionObserver::KillCoily()
+void LevelSectionObserver::KillFallenCoily()
 {
 	auto* deadCoily = m_CoilyComp;
 	m_CoilyComp = nullptr;
 	deadCoily->Die();
 	m_SpawnCoily = true;
+	m_QBertComp->ScoreIncrease(500);
 }
 
 void LevelSectionObserver::ClearAllEnemies()
@@ -487,7 +507,7 @@ void LevelSectionObserver::ChangeFreezeEverything(bool freeze) const
 	
 }
 
-void LevelSectionObserver::ChangeSection() const
+void LevelSectionObserver::ChangeSection()
 {
 	if (m_QBertComp != nullptr)
 	{
@@ -503,6 +523,39 @@ void LevelSectionObserver::ChangeSection() const
 			m_QBertComp->ResetPosition();
 			m_QBertComp->SetFrozen(true);
 			m_QBertComp->SetRound(m_QBertComp->GetRound() + 1);
+
+
+
+
+			// Delete everything from this observer, as it will still be active after
+			// The round transition, as QBert is stored as a global
+			
+			if (m_QBertComp != nullptr)
+				m_QBertComp->GetSubject()->RemoveObserver(m_ThisObserver);
+
+			if (m_CoilyComp != nullptr)
+				m_CoilyComp->GetSubject()->RemoveObserver(m_ThisObserver);
+
+			if (m_SlickSamCompVector->empty() == false)
+			{
+				for (size_t i = 0; i < m_SlickSamCompVector->size(); i++)
+				{
+					if (m_SlickSamCompVector->operator[](i) != nullptr)
+						m_SlickSamCompVector->operator[](i)->GetSubject()->RemoveObserver(m_ThisObserver);
+				}
+			}
+
+			if (m_UggWrongCompVector->empty() == false)
+			{
+				for (size_t i = 0; i < m_UggWrongCompVector->size(); i++)
+				{
+					if (m_UggWrongCompVector->operator[](i) != nullptr)
+						m_UggWrongCompVector->operator[](i)->GetSubject()->RemoveObserver(m_ThisObserver);
+				}
+			}
+
+			delete m_Pyramid;
+			m_Pyramid = nullptr;
 		}
 	}
 	
@@ -523,6 +576,7 @@ void LevelSectionObserver::Update(const float deltaTime)
 				m_DeadQbertTimer += deltaTime;
 				if (m_DeadQbertTimer >= m_DeadQbertMaxTime)
 				{
+					m_QBertComp->RevertToLastPosition();
 					m_QBertComp->SetHideGraphics(true);
 					m_QBertComp->SetCursesHidden(true);
 					ClearAllEnemies();
@@ -538,6 +592,9 @@ void LevelSectionObserver::Update(const float deltaTime)
 					m_DeathEmptySceneTimer += deltaTime;
 					if(m_DeathEmptySceneTimer >= m_DeathEmptySceneMaxTime)
 					{
+						if (m_QBertJustFell)
+							m_QBertJustFell = false;
+
 						m_QBertComp->SetHideGraphics(false);
 						m_QBertComp->SetFrozen(false);
 						m_DeathEmptySceneTimer = 0.f;

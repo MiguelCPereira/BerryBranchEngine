@@ -43,6 +43,12 @@ void QBert::ResetPosition()
 
 }
 
+void QBert::RevertToLastPosition()
+{
+	m_JumpedOff = false;
+	m_GameObject->GetComponent<dae::GraphicsComponent>()->SetPosition(m_PosXBeforeFalling, m_PosYBeforeFalling);
+}
+
 void QBert::SetFrozen(bool frozen)
 {
 	m_Frozen = frozen;
@@ -98,18 +104,29 @@ bool QBert::MoveUpRight()
 {
 	if (m_Frozen == false && m_Airborne == false)
 	{
+		auto* graphics = m_GameObject->GetComponent<dae::GraphicsComponent>();
+		
 		// If QBert isn't in the end of any of the pyramid rows
 		if (m_CurrentCubeIdx != m_CurrentRow * (m_CurrentRow + 1) / 2)
 		{
 			m_CurrentCubeIdx = m_CurrentCubeIdx - m_CurrentRow + 1;
 			m_CurrentRow--;
-			auto* graphics = m_GameObject->GetComponent<dae::GraphicsComponent>();
-			graphics->SetSrcRectangle(0, 0, m_QBertSpriteWidth, m_QBertSpriteHeight);
-			m_Airborne = true;
-			m_Subject->Notify(dae::Event::JumpUpRight);
-			return true;
 		}
-		return false;
+		else
+		{
+			m_PosXBeforeFalling = graphics->GetPosX();
+			m_PosYBeforeFalling = graphics->GetPosY();
+			m_JumpedOff = true;
+		}
+
+		graphics->SetSrcRectangle(0, 0, m_QBertSpriteWidth, m_QBertSpriteHeight);
+		m_Airborne = true;
+		m_Subject->Notify(dae::Event::JumpUpRight);
+		
+		if (m_JumpedOff)
+			return true;
+		else
+			return false;
 	}
 	return false;
 }
@@ -118,18 +135,29 @@ bool QBert::MoveUpLeft()
 {
 	if (m_Frozen == false && m_Airborne == false)
 	{
+		auto* graphics = m_GameObject->GetComponent<dae::GraphicsComponent>();
+		
 		// If QBert isn't in the beginning of any of the pyramid rows
 		if (m_CurrentCubeIdx != m_CurrentRow * (m_CurrentRow + 1) / 2 - m_CurrentRow + 1 && m_CurrentCubeIdx != 1)
 		{
 			m_CurrentCubeIdx = m_CurrentCubeIdx - m_CurrentRow;
 			m_CurrentRow--;
-			auto* graphics = m_GameObject->GetComponent<dae::GraphicsComponent>();
-			graphics->SetSrcRectangle(m_QBertSpriteWidth, 0, m_QBertSpriteWidth, m_QBertSpriteHeight);
-			m_Airborne = true;
-			m_Subject->Notify(dae::Event::JumpUpLeft);
-			return true;
 		}
-		return false;
+		else
+		{
+			m_PosXBeforeFalling = graphics->GetPosX();
+			m_PosYBeforeFalling = graphics->GetPosY();
+			m_JumpedOff = true;
+		}
+
+		graphics->SetSrcRectangle(m_QBertSpriteWidth, 0, m_QBertSpriteWidth, m_QBertSpriteHeight);
+		m_Airborne = true;
+		m_Subject->Notify(dae::Event::JumpUpLeft);
+		
+		if (m_JumpedOff)
+			return true;
+		else
+			return false;
 	}
 	return false;
 }
@@ -138,18 +166,29 @@ bool QBert::MoveDownLeft()
 {
 	if (m_Frozen == false && m_Airborne == false)
 	{
+		auto* graphics = m_GameObject->GetComponent<dae::GraphicsComponent>();
+		
 		// If QBert isn't in the last pyramid row
 		if (m_CurrentRow != m_LastRow)
 		{
 			m_CurrentCubeIdx = m_CurrentCubeIdx + m_CurrentRow;
 			m_CurrentRow++;
-			auto* graphics = m_GameObject->GetComponent<dae::GraphicsComponent>();
-			graphics->SetSrcRectangle(m_QBertSpriteWidth * 3, 0, m_QBertSpriteWidth, m_QBertSpriteHeight);
-			m_Airborne = true;
-			m_Subject->Notify(dae::Event::JumpDownLeft);
-			return true;
 		}
-		return false;
+		else
+		{
+			m_PosXBeforeFalling = graphics->GetPosX();
+			m_PosYBeforeFalling = graphics->GetPosY();
+			m_JumpedOff = true;
+		}
+
+		graphics->SetSrcRectangle(m_QBertSpriteWidth * 3, 0, m_QBertSpriteWidth, m_QBertSpriteHeight);
+		m_Airborne = true;
+		m_Subject->Notify(dae::Event::JumpDownLeft);
+
+		if (m_JumpedOff)
+			return true;
+		else
+			return false;
 	}
 	return false;
 }
@@ -158,18 +197,29 @@ bool QBert::MoveDownRight()
 {
 	if (m_Frozen == false && m_Airborne == false)
 	{
+		auto* graphics = m_GameObject->GetComponent<dae::GraphicsComponent>();
+		
 		// If QBert isn't in the last pyramid row
 		if (m_CurrentRow != m_LastRow)
 		{
 			m_CurrentCubeIdx = m_CurrentCubeIdx + m_CurrentRow + 1;
 			m_CurrentRow++;
-			auto* graphics = m_GameObject->GetComponent<dae::GraphicsComponent>();
-			graphics->SetSrcRectangle(m_QBertSpriteWidth * 2, 0, m_QBertSpriteWidth, m_QBertSpriteHeight);
-			m_Airborne = true;
-			m_Subject->Notify(dae::Event::JumpDownRight);
-			return true;
 		}
-		return false;
+		else
+		{
+			m_PosXBeforeFalling = graphics->GetPosX();
+			m_PosYBeforeFalling = graphics->GetPosY();
+			m_JumpedOff = true;
+		}
+
+		graphics->SetSrcRectangle(m_QBertSpriteWidth * 2, 0, m_QBertSpriteWidth, m_QBertSpriteHeight);
+		m_Airborne = true;
+		m_Subject->Notify(dae::Event::JumpDownRight);
+		
+		if (m_JumpedOff)
+			return true;
+		else
+			return false;
 	}
 	return false;
 }
@@ -177,7 +227,11 @@ bool QBert::MoveDownRight()
 void QBert::JumpFinished()
 {
 	m_Airborne = false;
-	m_Subject->Notify(dae::Event::QBertLanded);
+
+	if (m_JumpedOff)
+		m_Subject->Notify(dae::Event::QBertFell);
+	else
+		m_Subject->Notify(dae::Event::QBertLanded);
 }
 
 void QBert::Initialize()
