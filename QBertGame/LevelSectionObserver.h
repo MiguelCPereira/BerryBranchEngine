@@ -41,6 +41,7 @@ public:
 	void KillFallenUggWrong() const;
 	void KillFallenCoily();
 	void ClearAllEnemies();
+	void ClearRemainingDisks() const;
 
 	void WinSection();
 	void LevelWonAnimation(const float deltaTime);
@@ -77,6 +78,8 @@ private:
 	bool m_SectionComplete;
 	float m_AnimationTimer, m_FullAnimationTime;
 	float m_FlashingTimer, m_FlashingColorTime;
+	float m_ClearDisksTimer, m_ClearDisksPause;
+	bool m_StartPostAnimationPause;
 	float m_PostAnimationTimer, m_PostAnimationPause;
 	int m_CurrentFlashingColor;
 	bool m_EverythingClear;

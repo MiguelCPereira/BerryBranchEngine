@@ -120,27 +120,17 @@ bool Coily::MoveUpLeft()
 			m_CurrentCubeIdx = m_CurrentCubeIdx - m_CurrentRow;
 			m_CurrentRow--;
 		}
-		else // Else, make them start hatching (but if they have already, make them jump out of the map)
+		else // Else, make them jump out of the map
 		{
-			if (m_IsEgg)
-				m_IsTransforming = true;
-			else
-				m_Alive = false;
+			m_Alive = false;
 		}
 
-		if (m_IsTransforming == false)
-		{
-			auto* graphics = m_GameObject->GetComponent<dae::GraphicsComponent>();
+		auto* graphics = m_GameObject->GetComponent<dae::GraphicsComponent>();
+		graphics->SetSrcRectangle(m_SpriteWidth * 5, 0, m_SpriteWidth, m_SpriteHeight);
 
-			if (m_IsEgg)
-				graphics->SetSrcRectangle(m_SpriteWidth, 0, m_SpriteWidth, m_SpriteHeight);
-			else
-				graphics->SetSrcRectangle(m_SpriteWidth * 5, 0, m_SpriteWidth, m_SpriteHeight);
-
-			m_Airborne = true;
-			m_Direction = 3;
-			m_Subject->Notify(dae::Event::JumpUpLeft);
-		}
+		m_Airborne = true;
+		m_Direction = 3;
+		m_Subject->Notify(dae::Event::JumpUpLeft);
 
 		if (m_Alive)
 			return true;
@@ -160,27 +150,17 @@ bool Coily::MoveUpRight()
 			m_CurrentCubeIdx = m_CurrentCubeIdx - m_CurrentRow + 1;
 			m_CurrentRow--;
 		}
-		else // Else, make them start hatching (but if they have already, make them jump out of the map)
+		else // Else, make them jump out of the map
 		{
-			if (m_IsEgg)
-				m_IsTransforming = true;
-			else
-				m_Alive = false;
+			m_Alive = false;
 		}
 
-		if (m_IsTransforming == false)
-		{
-			auto* graphics = m_GameObject->GetComponent<dae::GraphicsComponent>();
+		auto* graphics = m_GameObject->GetComponent<dae::GraphicsComponent>();
+		graphics->SetSrcRectangle(m_SpriteWidth * 3, 0, m_SpriteWidth, m_SpriteHeight);
 
-			if (m_IsEgg)
-				graphics->SetSrcRectangle(m_SpriteWidth, 0, m_SpriteWidth, m_SpriteHeight);
-			else
-				graphics->SetSrcRectangle(m_SpriteWidth * 3, 0, m_SpriteWidth, m_SpriteHeight);
-
-			m_Airborne = true;
-			m_Direction = 4;
-			m_Subject->Notify(dae::Event::JumpUpRight);
-		}
+		m_Airborne = true;
+		m_Direction = 4;
+		m_Subject->Notify(dae::Event::JumpUpRight);
 
 		if (m_Alive)
 			return true;
@@ -248,37 +228,37 @@ void Coily::Update(const float deltaTime)
 				}
 				else
 				{
-					int qBertNrInRow;
-					int coilyNrInRow;
+					int qBertNrInRow; // Counting from the right
+					int coilyNrInRow; // Counting from the right
 					const int qBertCubeIdx = m_QBertComp->GetPositionIndex();
 					const int qBertRow = m_QBertComp->GetCurrentRow();
 					
 					
 					if (qBertCubeIdx != 1)
-						qBertNrInRow = qBertCubeIdx - (qBertRow * (qBertRow + 1) / 2 - qBertRow);
+						qBertNrInRow = (qBertRow * (qBertRow + 1) / 2) - qBertCubeIdx;
 					else
 						qBertNrInRow = 0;
 
 
 					if (m_CurrentCubeIdx != 1)
-						coilyNrInRow = m_CurrentCubeIdx - (m_CurrentRow * (m_CurrentRow + 1) / 2 - m_CurrentRow);
+						coilyNrInRow = (m_CurrentRow * (m_CurrentRow + 1) / 2) - m_CurrentCubeIdx;
 					else
 						coilyNrInRow = 0;
 
 					
 					if (qBertRow > m_CurrentRow) // QBert is bellow Coily
 					{
-						if (qBertRow - qBertNrInRow > m_CurrentRow - coilyNrInRow) // Qbert is to Coily's Left
+						if (qBertNrInRow > coilyNrInRow) // Qbert is to Coily's Left
 							MoveDownLeft();
-						else // Qbert is either to Coily's Left or exactly bellow
+						else // Qbert is either to Coily's Right or exactly bellow
 							MoveDownRight();
 					}
 					else if (qBertRow < m_CurrentRow) // QBert is above Coily
 					{
-						if (qBertRow - qBertNrInRow > m_CurrentRow - coilyNrInRow) // Qbert is to Coily's Left
-							MoveUpLeft();
-						else // Qbert is either to Coily's Left or exactly above
+						if (qBertNrInRow < coilyNrInRow) // Qbert is to Coily's Right
 							MoveUpRight();
+						else // Qbert is either to Coily's Right or exactly above
+							MoveUpLeft();
 					}
 					else // They're both in the same row
 					{
@@ -287,9 +267,9 @@ void Coily::Update(const float deltaTime)
 						// because if they went down and they happened to be in the last row
 						// they would jump to their death
 						
-						if(qBertNrInRow > coilyNrInRow) // QBert is to Coily's Right
+						if(qBertNrInRow < coilyNrInRow) // QBert is to Coily's Right
 							MoveUpRight();
-						else if (qBertNrInRow < coilyNrInRow)// QBert's to Coily's Left
+						else if (qBertNrInRow > coilyNrInRow)// QBert's to Coily's Left
 							MoveUpLeft();
 						else // QBert has taken a disk, because Coily's in the same cube has Qbert's last index
 						{

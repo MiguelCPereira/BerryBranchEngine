@@ -12,8 +12,8 @@ class QBert;
 class Disk final : public dae::BaseComponent
 {
 public:
-	explicit Disk(const std::shared_ptr<dae::GameObject>& gameObject, int rowIdx, bool isLeft,
-		float finalPosX, float finalPosY, float finalQbertPosY);
+	explicit Disk(const std::shared_ptr<dae::GameObject>& gameObject, int rowIdx, bool isLeft, int colorIdx,
+		float finalPosX, float finalPosY, float finalQbertPosY, float spriteWidth, float spriteHeight);
 	~Disk();
 
 	Disk(const Disk& other) = delete;
@@ -36,6 +36,7 @@ private:
 	dae::GraphicsComponent* m_QBertGraphics;
 	const int m_RowIdx;
 	const bool m_IsLeft;
+	const int m_ColorIdx;
 	bool m_Activated;
 	const float m_MovingSpeed;
 	const float m_InitialPosX, m_InitialPosY;
@@ -43,6 +44,11 @@ private:
 	float m_MidFlightPosX, m_MidFlightPosY;
 	float m_QBertGraphAdjustmentX, m_QBertGraphAdjustmentY;
 	bool m_MovementXIncomplete, m_MovementYIncomplete;
+	bool m_FinalPositionReached;
 	bool m_HasBeenUsed;
+
+	float m_TimeSinceLastFrame;
+	int m_CurrentFrame, m_NrFrames, m_FPS;
+	float m_SpriteWidth, m_SpriteHeight;
 };
 

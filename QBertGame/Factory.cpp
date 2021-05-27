@@ -351,7 +351,7 @@ std::shared_ptr<dae::GameObject> MakeRoundLevelDisplayGO(QBert* qBertComp, bool 
 }
 
 
-std::shared_ptr<dae::GameObject> MakeDiskGO(int row, bool isLeft)
+std::shared_ptr<dae::GameObject> MakeDiskGO(int row, bool isLeft, int colorIdx)
 {
 	const auto actualWidth = 32.f;
 	const auto actualHeight = 20.f;
@@ -370,11 +370,11 @@ std::shared_ptr<dae::GameObject> MakeDiskGO(int row, bool isLeft)
 	auto diskGO = std::make_shared<dae::GameObject>();
 	diskGO->AddComponent(new dae::GraphicsComponent("Disk Spritesheet.png", posX, posY,
 		actualWidth, actualHeight, 0, 0, spriteWidth, spriteHeight));
-	diskGO->AddComponent(new Disk(diskGO, row, isLeft, topFinalPosX, topFinalPosY, g_InitialQbertPosY));
+	diskGO->AddComponent(new Disk(diskGO, row, isLeft, colorIdx, topFinalPosX, topFinalPosY, g_InitialQbertPosY, spriteWidth, spriteHeight));
 	return diskGO;
 }
 
-std::vector<std::shared_ptr<dae::GameObject>>* MakeDiskGOsVector(int level)
+std::vector<std::shared_ptr<dae::GameObject>>* MakeDiskGOsVector(int level, int colorIdx)
 {
 	auto* diskGOsVector = new std::vector<std::shared_ptr<dae::GameObject>>();
 
@@ -389,13 +389,13 @@ std::vector<std::shared_ptr<dae::GameObject>>* MakeDiskGOsVector(int level)
 	
 	// Make left disk
 	int row = freeRowsLeft[rand() % int(freeRowsLeft.size())];
-	auto diskGO = MakeDiskGO(row, true);
+	auto diskGO = MakeDiskGO(row, true, colorIdx);
 	diskGOsVector->push_back(std::move(diskGO));
 	freeRowsLeft.erase(std::find(freeRowsLeft.begin(), freeRowsLeft.end(), row));
 
 	// Make right disk
 	row = freeRowsRight[rand() % int(freeRowsRight.size())];
-	diskGO = MakeDiskGO(row, false);
+	diskGO = MakeDiskGO(row, false, colorIdx);
 	diskGOsVector->push_back(std::move(diskGO));
 	freeRowsRight.erase(std::find(freeRowsRight.begin(), freeRowsRight.end(), row));
 
@@ -403,7 +403,7 @@ std::vector<std::shared_ptr<dae::GameObject>>* MakeDiskGOsVector(int level)
 	{
 		// Make one more right disk
 		row = freeRowsRight[rand() % int(freeRowsRight.size())];
-		diskGO = MakeDiskGO(row, false);
+		diskGO = MakeDiskGO(row, false, colorIdx);
 		diskGOsVector->push_back(std::move(diskGO));
 		// No need to erase from the vector, as it is certain no more disks are gonna be created on the right
 
@@ -411,7 +411,7 @@ std::vector<std::shared_ptr<dae::GameObject>>* MakeDiskGOsVector(int level)
 		{
 			// Make one more left disk
 			row = freeRowsLeft[rand() % int(freeRowsLeft.size())];
-			diskGO = MakeDiskGO(row, true);
+			diskGO = MakeDiskGO(row, true, colorIdx);
 			diskGOsVector->push_back(std::move(diskGO));
 			// No need to erase from the vector, as it is certain no more disks are gonna be created on the left
 		}

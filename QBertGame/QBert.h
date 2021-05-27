@@ -27,6 +27,7 @@ public:
 	void SetFrozen(bool frozen);
 	void SetHideGraphics(bool isHidden);
 	void SetCursesHidden(bool isHidden) const;
+	void SetAirborne(bool airborne);
 
 	void SetNewPositionIndexes(int cubeIdx, int rowNr);
 	void ScoreIncrease(int gainedPoints);

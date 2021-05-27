@@ -23,13 +23,11 @@ void QBert::Die()
 	if (m_Lives - 1 >= 0)
 	{
 		m_Lives--;
-		std::cout << "Ouch! You now have " << m_Lives << " lives left\n";
 		// Play sound
 		m_Subject->Notify(dae::Event::QBertDied);
 	}
 	else
 	{
-		std::cout << "You just lost your last life, game over\n";
 		// Game over
 	}
 }
@@ -80,6 +78,11 @@ void QBert::SetCursesHidden(bool isHidden) const
 	}
 
 	m_CursesGameObject->GetComponent<dae::GraphicsComponent>()->SetPosition(posX, posY);
+}
+
+void QBert::SetAirborne(bool airborne)
+{
+	m_Airborne = airborne;
 }
 
 void QBert::SetNewPositionIndexes(int cubeIdx, int rowNr)
@@ -180,7 +183,6 @@ bool QBert::MoveUpLeft()
 
 bool QBert::MoveDownLeft()
 {
-	std::cout << m_CurrentCubeIdx << '\n';
 	if (m_Frozen == false && m_Airborne == false)
 	{
 		auto* graphics = m_GameObject->GetComponent<dae::GraphicsComponent>();
@@ -245,12 +247,15 @@ bool QBert::MoveDownRight()
 
 void QBert::JumpFinished()
 {
-	m_Airborne = false;
-
 	if (m_JumpedOff)
+	{
 		m_Subject->Notify(dae::Event::QBertFell);
+	}
 	else
+	{
+		m_Airborne = false;
 		m_Subject->Notify(dae::Event::QBertLanded);
+	}
 }
 
 void QBert::Initialize()

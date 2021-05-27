@@ -43,6 +43,9 @@ LevelSectionObserver::LevelSectionObserver(float transitionTime, QBert* qBertCom
 	, m_FullAnimationTime()
 	, m_FlashingTimer()
 	, m_FlashingColorTime()
+	, m_ClearDisksTimer()
+	, m_ClearDisksPause()
+	, m_StartPostAnimationPause()
 	, m_PostAnimationTimer()
 	, m_PostAnimationPause()
 	, m_CurrentFlashingColor()
@@ -95,6 +98,9 @@ LevelSectionObserver::LevelSectionObserver(const std::shared_ptr<dae::GameObject
 	, m_FullAnimationTime(2.f)
 	, m_FlashingTimer(0.1f)
 	, m_FlashingColorTime(0.1f)
+	, m_ClearDisksTimer(0.f)
+	, m_ClearDisksPause(1.f)
+	, m_StartPostAnimationPause(false)
 	, m_PostAnimationTimer(0.f)
 	, m_PostAnimationPause(1.f)
 	, m_CurrentFlashingColor(3)
@@ -180,12 +186,15 @@ void LevelSectionObserver::Initialize()
 		m_QBertComp->SetFrozen(false);
 	}
 
-	if (m_DisksVector->empty() == false)
+	if (m_DisksVector != nullptr)
 	{
-		for (size_t i = 0; i < m_DisksVector->size(); i++)
+		if (m_DisksVector->empty() == false)
 		{
-			if (m_DisksVector->operator[](i) != nullptr)
-				m_DisksVector->operator[](i)->GetSubject()->AddObserver(this);
+			for (size_t i = 0; i < m_DisksVector->size(); i++)
+			{
+				if (m_DisksVector->operator[](i) != nullptr)
+					m_DisksVector->operator[](i)->GetSubject()->AddObserver(this);
+			}
 		}
 	}
 }
@@ -300,6 +309,7 @@ void LevelSectionObserver::OnNotify(const dae::Event& event)
 			
 		case dae::Event::DiskFlightEnded:
 			DestroyUsedDisk();
+			m_QBertComp->SetAirborne(false);
 			m_QBertComp->SetNewPositionIndexes(1, 1);
 			m_QBertComp->SetFrozen(false);
 			cubeTurned = m_Pyramid->m_CubeGOVector[m_QBertComp->GetPositionIndex() - 1]->GetComponent<Cube>()->TurnCube();
@@ -569,6 +579,19 @@ void LevelSectionObserver::ClearAllEnemies()
 	m_UggWrongSpawnTimer2 = -2.f;
 }
 
+void LevelSectionObserver::ClearRemainingDisks() const
+{
+	auto nrComponents = int(m_DisksVector->size());
+	for (auto i = 0; i < nrComponents; i++)
+	{
+		auto* disk = m_DisksVector->operator[](0);		
+		m_DisksVector->erase(m_DisksVector->begin());
+		disk->GetDeleted();
+	}
+
+	m_QBertComp->ScoreIncrease(nrComponents * 50);
+}
+
 void LevelSectionObserver::WinSection()
 {
 	if (m_SectionComplete == false)
@@ -700,6 +723,7 @@ void LevelSectionObserver::Update(const float deltaTime)
 						if (m_QBertJustFell)
 							m_QBertJustFell = false;
 
+						m_QBertComp->SetAirborne(false);
 						m_QBertComp->SetHideGraphics(false);
 						m_QBertComp->SetFrozen(false);
 						m_DeathEmptySceneTimer = 0.f;
@@ -848,12 +872,22 @@ void LevelSectionObserver::LevelWonAnimation(const float deltaTime)
 					cube->GetComponent<Cube>()->MakeCube2ndColor();
 			}
 		}
-		
-		m_PostAnimationTimer += deltaTime;
-		if (m_PostAnimationTimer >= m_PostAnimationPause)
+
+		m_ClearDisksTimer += deltaTime;
+		if(m_ClearDisksTimer >= m_ClearDisksPause && m_StartPostAnimationPause == false)
 		{
-			m_QBertComp->SetFrozen(false);
-			ChangeSection();
+			ClearRemainingDisks();
+			m_StartPostAnimationPause = true;
+		}
+
+		if (m_StartPostAnimationPause)
+		{
+			m_PostAnimationTimer += deltaTime;
+			if (m_PostAnimationTimer >= m_PostAnimationPause)
+			{
+				m_QBertComp->SetFrozen(false);
+				ChangeSection();
+			}
 		}
 	}
 }

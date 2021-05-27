@@ -42,8 +42,8 @@ int main(int, char* [])
 
 	SetUpGlobalGOs();
 	LoadLevel01();
-	//LoadLevel02();
-	//LoadLevel03();
+	LoadLevel02();
+	LoadLevel03();
 	PrintInstructions();
 	
 	engine.Run();
@@ -59,14 +59,14 @@ void LoadLevel01()
 	//// Level Title Screen
 
 	// Create Scene
-	//auto& levelTitleScene = dae::SceneManager::GetInstance().CreateScene("Level01Title");
+	auto& levelTitleScene = dae::SceneManager::GetInstance().CreateScene("Level01Title");
 
 	// Add All Needed Game Objects
-	//levelTitleScene.Add(MakeLevelTitle(1));
-	//levelTitleScene.Add(MakeLevelTransition(g_QBertGOs[0]->GetComponent<QBert>()));
+	levelTitleScene.Add(MakeLevelTitle(1));
+	levelTitleScene.Add(MakeLevelTransition(g_QBertGOs[0]->GetComponent<QBert>()));
 
 	// Initialize Scene
-	//levelTitleScene.Initialize();
+	levelTitleScene.Initialize();
 	
 	
 	
@@ -82,7 +82,7 @@ void LoadLevel01()
 		scene1.Add(cube);
 
 	// Disks
-	auto* diskGOsVector = MakeDiskGOsVector(1);
+	auto* diskGOsVector = MakeDiskGOsVector(1, 0);
 	auto* disksVector = new std::vector<Disk*>();
 	for(size_t i = 0; i < diskGOsVector->size(); i++)
 	{
@@ -107,8 +107,6 @@ void LoadLevel01()
 	// FPS Counter
 	scene1.Add(MakeFPSCounter());
 
-	scene1.Initialize();
-
 	
 	//////////////////////////
 
@@ -125,7 +123,7 @@ void LoadLevel01()
 		scene2.Add(cube);
 
 	// Disks
-	diskGOsVector = MakeDiskGOsVector(1);
+	diskGOsVector = MakeDiskGOsVector(1, 1);
 	disksVector = new std::vector<Disk*>();
 	for (size_t i = 0; i < diskGOsVector->size(); i++)
 	{
@@ -165,7 +163,7 @@ void LoadLevel01()
 		scene3.Add(cube);
 
 	// Disks
-	diskGOsVector = MakeDiskGOsVector(1);
+	diskGOsVector = MakeDiskGOsVector(1, 2);
 	disksVector = new std::vector<Disk*>();
 	for (size_t i = 0; i < diskGOsVector->size(); i++)
 	{
@@ -204,7 +202,7 @@ void LoadLevel01()
 		scene4.Add(cube);
 
 	// Disks
-	diskGOsVector = MakeDiskGOsVector(1);
+	diskGOsVector = MakeDiskGOsVector(1, 3);
 	disksVector = new std::vector<Disk*>();
 	for (size_t i = 0; i < diskGOsVector->size(); i++)
 	{
@@ -254,7 +252,7 @@ void LoadLevel02()
 		scene1.Add(cube);
 
 	// Disks
-	auto* diskGOsVector = MakeDiskGOsVector(2);
+	auto* diskGOsVector = MakeDiskGOsVector(2, 1);
 	auto* disksVector = new std::vector<Disk*>();
 	for (size_t i = 0; i < diskGOsVector->size(); i++)
 	{
@@ -294,7 +292,7 @@ void LoadLevel02()
 		scene2.Add(cube);
 
 	// Disks
-	diskGOsVector = MakeDiskGOsVector(2);
+	diskGOsVector = MakeDiskGOsVector(2, 3);
 	disksVector = new std::vector<Disk*>();
 	for (size_t i = 0; i < diskGOsVector->size(); i++)
 	{
@@ -334,7 +332,7 @@ void LoadLevel02()
 		scene3.Add(cube);
 
 	// Disks
-	diskGOsVector = MakeDiskGOsVector(2);
+	diskGOsVector = MakeDiskGOsVector(2, 0);
 	disksVector = new std::vector<Disk*>();
 	for (size_t i = 0; i < diskGOsVector->size(); i++)
 	{
@@ -374,7 +372,7 @@ void LoadLevel02()
 		scene4.Add(cube);
 
 	// Disks
-	diskGOsVector = MakeDiskGOsVector(2);
+	diskGOsVector = MakeDiskGOsVector(2, 4);
 	disksVector = new std::vector<Disk*>();
 	for (size_t i = 0; i < diskGOsVector->size(); i++)
 	{
@@ -428,7 +426,7 @@ void LoadLevel03()
 		scene1.Add(gameObject);
 
 	// Disks
-	auto* diskGOsVector = MakeDiskGOsVector(3);
+	auto* diskGOsVector = MakeDiskGOsVector(3, 5);
 	auto* disksVector = new std::vector<Disk*>();
 	for (size_t i = 0; i < diskGOsVector->size(); i++)
 	{
@@ -468,7 +466,7 @@ void LoadLevel03()
 		scene2.Add(gameObject);
 
 	// Disks
-	diskGOsVector = MakeDiskGOsVector(3);
+	diskGOsVector = MakeDiskGOsVector(3, 2);
 	disksVector = new std::vector<Disk*>();
 	for (size_t i = 0; i < diskGOsVector->size(); i++)
 	{
@@ -508,7 +506,7 @@ void LoadLevel03()
 		scene3.Add(gameObject);
 
 	// Disks
-	diskGOsVector = MakeDiskGOsVector(3);
+	diskGOsVector = MakeDiskGOsVector(3, 1);
 	disksVector = new std::vector<Disk*>();
 	for (size_t i = 0; i < diskGOsVector->size(); i++)
 	{
@@ -548,7 +546,7 @@ void LoadLevel03()
 		scene4.Add(gameObject);
 
 	// Disks
-	diskGOsVector = MakeDiskGOsVector(3);
+	diskGOsVector = MakeDiskGOsVector(3, 0);
 	disksVector = new std::vector<Disk*>();
 	for (size_t i = 0; i < diskGOsVector->size(); i++)
 	{

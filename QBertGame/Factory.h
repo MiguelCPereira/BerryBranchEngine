@@ -46,6 +46,6 @@ std::shared_ptr<dae::GameObject> MakeRoundDisplay(bool coOpOn); // This is used 
 
 std::shared_ptr<dae::GameObject> MakeRoundLevelDisplayGO(QBert* qBertComp, bool coOpOn);
 
-std::shared_ptr<dae::GameObject> MakeDiskGO(int row, bool isLeft);
+std::shared_ptr<dae::GameObject> MakeDiskGO(int row, bool isLeft, int colorIdx);
 
-std::vector<std::shared_ptr<dae::GameObject>>* MakeDiskGOsVector(int level);
+std::vector<std::shared_ptr<dae::GameObject>>* MakeDiskGOsVector(int level, int colorIdx);
