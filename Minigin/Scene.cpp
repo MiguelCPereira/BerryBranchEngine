@@ -17,9 +17,13 @@ void Scene::Add(const std::shared_ptr<GameObject>& object)
 
 void Scene::Initialize()
 {
-	for (auto& object : m_Objects)
+	for (size_t i = 0; i < m_Objects.size(); i++)
 	{
-		object->Initialize();
+		if (m_Objects.size() > i)
+		{
+			if (m_Objects[i] != nullptr)
+				m_Objects[i]->Initialize();
+		}
 	}
 }
 

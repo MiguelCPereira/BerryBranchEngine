@@ -11,13 +11,16 @@
 #include "Factory.h"
 #include "UggWrongway.h"
 #include "Coily.h"
+#include "Disk.h"
 
 LevelSectionObserver::LevelSectionObserver(float transitionTime, QBert* qBertComp)
 	: m_GameObject()
 	, m_QBertComp(qBertComp)
+	, m_QBertGraphics()
 	, m_Pyramid()
 
 	, m_QBertJustFell()
+	, m_QBertJustTookDisk()
 
 	, m_SpawnCoily()
 	, m_CoilySpawnTimer()
@@ -60,13 +63,16 @@ LevelSectionObserver::LevelSectionObserver(float transitionTime, QBert* qBertCom
 
 
 
-LevelSectionObserver::LevelSectionObserver(const std::shared_ptr<dae::GameObject>& gameObject, QBert* qBertComp, Pyramid* pyramid,
-	int level, bool spawnSlickSams, bool spawnUggWrongs, float slickSamSpawnInterval, float uggWrongSpawnInterval)
+LevelSectionObserver::LevelSectionObserver(const std::shared_ptr<dae::GameObject>& gameObject, const std::shared_ptr<dae::GameObject>& qBertGO, Pyramid* pyramid,
+	std::vector<Disk*>* disksVector, int level, bool spawnSlickSams, bool spawnUggWrongs, float slickSamSpawnInterval, float uggWrongSpawnInterval)
 	: m_GameObject(gameObject)
-	, m_QBertComp(qBertComp)
+	, m_QBertComp(qBertGO->GetComponent<QBert>())
+	, m_QBertGraphics(qBertGO->GetComponent<dae::GraphicsComponent>())
 	, m_Pyramid(pyramid)
+	, m_DisksVector(disksVector)
 
 	, m_QBertJustFell(false)
+	, m_QBertJustTookDisk(false)
 
 	, m_SpawnCoily(true)
 	, m_CoilySpawnTimer(5.f) // We start at 5 so the first Coily only takes 3 sec to spawn
@@ -122,6 +128,8 @@ LevelSectionObserver::~LevelSectionObserver()
 	if (m_QBertComp != nullptr)
 		m_QBertComp->GetSubject()->RemoveObserver(this);
 
+	m_QBertGraphics = nullptr;
+
 	if (m_CoilyComp != nullptr)
 		m_CoilyComp->GetSubject()->RemoveObserver(this);
 
@@ -143,6 +151,21 @@ LevelSectionObserver::~LevelSectionObserver()
 		}
 	}
 
+	if (m_DisksVector->empty() == false)
+	{
+		for (size_t i = 0; i < m_DisksVector->size(); i++)
+		{
+			if (m_DisksVector->operator[](i) != nullptr)
+			{
+				m_DisksVector->operator[](i)->GetSubject()->RemoveObserver(this);
+				delete m_DisksVector->operator[](i);
+				m_DisksVector->operator[](i) = nullptr;
+			}
+		}
+	}
+	delete m_DisksVector;
+	m_DisksVector = nullptr;
+
 	delete m_Pyramid;
 	m_Pyramid = nullptr;
 }
@@ -150,10 +173,20 @@ LevelSectionObserver::~LevelSectionObserver()
 void LevelSectionObserver::Initialize()
 {
 	m_ThisObserver = this;
+	
 	if (m_QBertComp != nullptr)
 	{
 		m_QBertComp->GetSubject()->AddObserver(this);
 		m_QBertComp->SetFrozen(false);
+	}
+
+	if (m_DisksVector->empty() == false)
+	{
+		for (size_t i = 0; i < m_DisksVector->size(); i++)
+		{
+			if (m_DisksVector->operator[](i) != nullptr)
+				m_DisksVector->operator[](i)->GetSubject()->AddObserver(this);
+		}
 	}
 }
 
@@ -265,8 +298,45 @@ void LevelSectionObserver::OnNotify(const dae::Event& event)
 			break;
 
 			
+		case dae::Event::DiskFlightEnded:
+			DestroyUsedDisk();
+			m_QBertComp->SetNewPositionIndexes(1, 1);
+			m_QBertComp->SetFrozen(false);
+			cubeTurned = m_Pyramid->m_CubeGOVector[m_QBertComp->GetPositionIndex() - 1]->GetComponent<Cube>()->TurnCube();
+
+			if (cubeTurned)
+				m_QBertComp->ScoreIncrease(25);
+
+			if (CheckAllCubesTurned())
+				WinSection();
+
+			break;
+
+			
 		case dae::Event::QBertFell:
-			if (m_QBertJustFell == false)
+			for(size_t i = 0; i < m_DisksVector->size(); i++)
+			{
+				auto* disk = m_DisksVector->operator[](i);
+				if(disk->GetRow() == m_QBertComp->GetCurrentRow())
+				{
+					if (disk->GetIsLeft() && m_QBertComp->IsInLeftBorder())
+					{
+						m_QBertJustTookDisk = true;
+						disk->Activate(m_QBertComp, m_QBertGraphics);
+						break;
+					}
+					if (disk->GetIsLeft() == false && m_QBertComp->IsInRightBorder())
+					{
+						m_QBertJustTookDisk = true;
+						disk->Activate(m_QBertComp, m_QBertGraphics);
+						break;
+					}
+				}
+				
+				m_QBertJustTookDisk = false;
+			}
+			
+			if (m_QBertJustFell == false && m_QBertJustTookDisk == false)
 			{
 				ChangeFreezeEverything(true);
 				m_DeadQbert = true;
@@ -386,6 +456,21 @@ bool LevelSectionObserver::CheckCollidingUggWrong() const
 	}
 
 	return false;
+}
+
+void LevelSectionObserver::DestroyUsedDisk() const
+{
+	for (size_t i = 0; i < m_DisksVector->size(); i++)
+	{
+		auto* disk = m_DisksVector->operator[](i);
+		if (disk->GetHasBeenUsed())
+		{
+			disk->GetDeleted();
+			m_DisksVector->erase(std::find(m_DisksVector->begin(), m_DisksVector->end(), disk));
+			break;
+		}
+
+	}
 }
 
 void LevelSectionObserver::KillCollidingSlickSam() const
@@ -528,11 +613,13 @@ void LevelSectionObserver::ChangeSection()
 
 
 
-			// Delete everything from this observer, as it will still be active after
-			// The round transition, as QBert is stored as a global
+			// Delete everything from this observer, as otherwise it would still be
+			// active after the round transition, as QBert is stored as a global
 			
 			if (m_QBertComp != nullptr)
 				m_QBertComp->GetSubject()->RemoveObserver(m_ThisObserver);
+
+			m_QBertGraphics = nullptr;
 
 			if (m_CoilyComp != nullptr)
 				m_CoilyComp->GetSubject()->RemoveObserver(m_ThisObserver);
@@ -554,6 +641,21 @@ void LevelSectionObserver::ChangeSection()
 						m_UggWrongCompVector->operator[](i)->GetSubject()->RemoveObserver(m_ThisObserver);
 				}
 			}
+
+			if (m_DisksVector->empty() == false)
+			{
+				for (size_t i = 0; i < m_DisksVector->size(); i++)
+				{
+					if (m_DisksVector->operator[](i) != nullptr)
+					{
+						m_DisksVector->operator[](i)->GetSubject()->RemoveObserver(m_ThisObserver);
+						delete m_DisksVector->operator[](i);
+						m_DisksVector->operator[](i) = nullptr;
+					}
+				}
+			}
+			delete m_DisksVector;
+			m_DisksVector = nullptr;
 
 			delete m_Pyramid;
 			m_Pyramid = nullptr;

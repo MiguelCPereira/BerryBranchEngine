@@ -82,6 +82,12 @@ void QBert::SetCursesHidden(bool isHidden) const
 	m_CursesGameObject->GetComponent<dae::GraphicsComponent>()->SetPosition(posX, posY);
 }
 
+void QBert::SetNewPositionIndexes(int cubeIdx, int rowNr)
+{
+	m_CurrentCubeIdx = cubeIdx;
+	m_CurrentRow = rowNr;
+}
+
 void QBert::ScoreIncrease(int gainedPoints)
 {
 	m_Score += gainedPoints;
@@ -100,17 +106,27 @@ void QBert::SetRound(int actualRound)
 	m_Subject->Notify(dae::Event::RoundUpdated);
 }
 
+bool QBert::IsInLeftBorder() const
+{
+	return m_CurrentCubeIdx == m_CurrentRow * (m_CurrentRow + 1) / 2 - m_CurrentRow + 1 && m_CurrentCubeIdx != 1;
+}
+
+bool QBert::IsInRightBorder() const
+{
+	return m_CurrentCubeIdx == m_CurrentRow * (m_CurrentRow + 1) / 2;
+}
+
 bool QBert::MoveUpRight()
 {
 	if (m_Frozen == false && m_Airborne == false)
 	{
 		auto* graphics = m_GameObject->GetComponent<dae::GraphicsComponent>();
 		
-		// If QBert isn't in the end of any of the pyramid rows
-		if (m_CurrentCubeIdx != m_CurrentRow * (m_CurrentRow + 1) / 2)
+		if (IsInRightBorder() == false)
 		{
 			m_CurrentCubeIdx = m_CurrentCubeIdx - m_CurrentRow + 1;
 			m_CurrentRow--;
+			m_JumpedOff = false;
 		}
 		else
 		{
@@ -137,11 +153,11 @@ bool QBert::MoveUpLeft()
 	{
 		auto* graphics = m_GameObject->GetComponent<dae::GraphicsComponent>();
 		
-		// If QBert isn't in the beginning of any of the pyramid rows
-		if (m_CurrentCubeIdx != m_CurrentRow * (m_CurrentRow + 1) / 2 - m_CurrentRow + 1 && m_CurrentCubeIdx != 1)
+		if (IsInLeftBorder() == false)
 		{
 			m_CurrentCubeIdx = m_CurrentCubeIdx - m_CurrentRow;
 			m_CurrentRow--;
+			m_JumpedOff = false;
 		}
 		else
 		{
@@ -164,6 +180,7 @@ bool QBert::MoveUpLeft()
 
 bool QBert::MoveDownLeft()
 {
+	std::cout << m_CurrentCubeIdx << '\n';
 	if (m_Frozen == false && m_Airborne == false)
 	{
 		auto* graphics = m_GameObject->GetComponent<dae::GraphicsComponent>();
@@ -173,6 +190,7 @@ bool QBert::MoveDownLeft()
 		{
 			m_CurrentCubeIdx = m_CurrentCubeIdx + m_CurrentRow;
 			m_CurrentRow++;
+			m_JumpedOff = false;
 		}
 		else
 		{
@@ -204,6 +222,7 @@ bool QBert::MoveDownRight()
 		{
 			m_CurrentCubeIdx = m_CurrentCubeIdx + m_CurrentRow + 1;
 			m_CurrentRow++;
+			m_JumpedOff = false;
 		}
 		else
 		{

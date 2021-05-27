@@ -35,7 +35,8 @@ namespace dae
 		JumpLeft,
 		JumpRight,
 		LevelUpdated,
-		RoundUpdated
+		RoundUpdated,
+		DiskFlightEnded
 	};
 
 	class Observer

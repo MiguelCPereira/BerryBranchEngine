@@ -2,12 +2,16 @@
 #include <memory>
 #include <vector>
 
+class Disk;
 const int g_NrRows = 7;
 const float g_CubesActualWidth = 64.f;
 const float g_CubesActualHeight = 64.f;
 const int g_EnemiesLeftSpawnPosX = 284;
 const float g_EnemiesRightSpawnPosX = 349;
 const float g_EnemiesSpawnPosY = 110;
+const float g_MapCenterX = 332.f;
+const float g_DiskTopRowY = 40;
+const auto g_InitialQbertPosY = 60.f;
 
 class QBert;
 
@@ -41,3 +45,7 @@ std::shared_ptr<dae::GameObject> MakeLevelDisplay(bool coOpOn); // This is used 
 std::shared_ptr<dae::GameObject> MakeRoundDisplay(bool coOpOn); // This is used to make the actual RoundLevelDisplay
 
 std::shared_ptr<dae::GameObject> MakeRoundLevelDisplayGO(QBert* qBertComp, bool coOpOn);
+
+std::shared_ptr<dae::GameObject> MakeDiskGO(int row, bool isLeft);
+
+std::vector<std::shared_ptr<dae::GameObject>>* MakeDiskGOsVector(int level);

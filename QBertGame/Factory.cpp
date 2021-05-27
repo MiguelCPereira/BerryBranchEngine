@@ -13,25 +13,25 @@
 #include "TextComponent.h"
 #include "ScoreDisplay.h"
 #include "Coily.h"
+#include "Disk.h"
 
 std::vector<std::shared_ptr<dae::GameObject>> MakeQBert()
 {
-	auto actualWidth = 55.f;
-	auto actualHeight = 29.f;
+	const auto cursesWidth = 55.f;
+	const auto cursesHeight = 29.f;
+	
+	const auto actualWidth = 40.f;
+	const auto actualHeight = 39.f;
 	const auto spriteWidth = 17.f;
 	const auto spriteHeight = 16.f;
-	const auto initialPosX = 308.f;
-	const auto initialPosY = 50.f;
+	const auto initialPosX = g_MapCenterX - actualWidth / 2.f;
 
 	auto cursesGO = std::make_shared<dae::GameObject>();
-	cursesGO->AddComponent(new dae::GraphicsComponent("QBert Curses.png", -50, -50, actualWidth, actualHeight));
+	cursesGO->AddComponent(new dae::GraphicsComponent("QBert Curses.png", -50, -50, cursesWidth, cursesHeight));
 
-	actualWidth = 49.f;
-	actualHeight = 48.f;
-	
 	auto qBertGO = std::make_shared<dae::GameObject>();
 	qBertGO->AddComponent(new QBert(qBertGO, cursesGO, g_NrRows, spriteWidth, spriteHeight));
-	qBertGO->AddComponent(new dae::GraphicsComponent("QBert Spritesheet.png", initialPosX, initialPosY,
+	qBertGO->AddComponent(new dae::GraphicsComponent("QBert Spritesheet.png", initialPosX, g_InitialQbertPosY,
 		actualWidth, actualHeight, spriteWidth * 2, 0, spriteWidth, spriteHeight));
 	qBertGO->AddComponent(new JumpingObserver(qBertGO->GetComponent<QBert>(), qBertGO->GetComponent<dae::GraphicsComponent>(),
 		g_CubesActualWidth, g_CubesActualHeight));
@@ -348,4 +348,74 @@ std::shared_ptr<dae::GameObject> MakeRoundLevelDisplayGO(QBert* qBertComp, bool 
 	auto displayGO = std::make_shared<dae::GameObject>();
 	displayGO->AddComponent(new RoundLvlDisplay(qBertComp, coOpOn));
 	return displayGO;
+}
+
+
+std::shared_ptr<dae::GameObject> MakeDiskGO(int row, bool isLeft)
+{
+	const auto actualWidth = 32.f;
+	const auto actualHeight = 20.f;
+	const auto spriteWidth = 16.f;
+	const auto spriteHeight = 10.f;
+	const auto topFinalPosY = g_DiskTopRowY;
+	const auto topFinalPosX = g_MapCenterX - actualWidth / 2.f;
+	const auto posY = g_DiskTopRowY + g_CubesActualHeight * 0.75f * float(row - 1);
+	float posX = g_MapCenterX;
+
+	if (isLeft)
+		posX -= g_CubesActualWidth / 2.f * float(row) + actualWidth / 2.f;
+	else
+		posX += g_CubesActualWidth / 2.f * float(row) - actualWidth / 2.f;
+	
+	auto diskGO = std::make_shared<dae::GameObject>();
+	diskGO->AddComponent(new dae::GraphicsComponent("Disk Spritesheet.png", posX, posY,
+		actualWidth, actualHeight, 0, 0, spriteWidth, spriteHeight));
+	diskGO->AddComponent(new Disk(diskGO, row, isLeft, topFinalPosX, topFinalPosY, g_InitialQbertPosY));
+	return diskGO;
+}
+
+std::vector<std::shared_ptr<dae::GameObject>>* MakeDiskGOsVector(int level)
+{
+	auto* diskGOsVector = new std::vector<std::shared_ptr<dae::GameObject>>();
+
+	std::vector<int> freeRowsLeft;
+	std::vector<int> freeRowsRight;
+
+	for(auto i = 0; i < g_NrRows; i++)
+	{
+		freeRowsLeft.push_back(i + 1);
+		freeRowsRight.push_back(i + 1);
+	}
+	
+	// Make left disk
+	int row = freeRowsLeft[rand() % int(freeRowsLeft.size())];
+	auto diskGO = MakeDiskGO(row, true);
+	diskGOsVector->push_back(std::move(diskGO));
+	freeRowsLeft.erase(std::find(freeRowsLeft.begin(), freeRowsLeft.end(), row));
+
+	// Make right disk
+	row = freeRowsRight[rand() % int(freeRowsRight.size())];
+	diskGO = MakeDiskGO(row, false);
+	diskGOsVector->push_back(std::move(diskGO));
+	freeRowsRight.erase(std::find(freeRowsRight.begin(), freeRowsRight.end(), row));
+
+	if(level != 1)
+	{
+		// Make one more right disk
+		row = freeRowsRight[rand() % int(freeRowsRight.size())];
+		diskGO = MakeDiskGO(row, false);
+		diskGOsVector->push_back(std::move(diskGO));
+		// No need to erase from the vector, as it is certain no more disks are gonna be created on the right
+
+		if (level == 3)
+		{
+			// Make one more left disk
+			row = freeRowsLeft[rand() % int(freeRowsLeft.size())];
+			diskGO = MakeDiskGO(row, true);
+			diskGOsVector->push_back(std::move(diskGO));
+			// No need to erase from the vector, as it is certain no more disks are gonna be created on the left
+		}
+	}
+
+	return diskGOsVector;
 }

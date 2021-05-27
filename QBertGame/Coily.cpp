@@ -283,12 +283,23 @@ void Coily::Update(const float deltaTime)
 					else // They're both in the same row
 					{
 						// Coily will always move up in these situations
+						// (unless QBert has taken a disk)
 						// because if they went down and they happened to be in the last row
 						// they would jump to their death
+						
 						if(qBertNrInRow > coilyNrInRow) // QBert is to Coily's Right
 							MoveUpRight();
-						else // QBert's to Coily's Left
+						else if (qBertNrInRow < coilyNrInRow)// QBert's to Coily's Left
 							MoveUpLeft();
+						else // QBert has taken a disk, because Coily's in the same cube has Qbert's last index
+						{
+							// Make Coily jump to their death, depending on which pyramid border they are at
+							if (m_CurrentCubeIdx == m_CurrentRow * (m_CurrentRow + 1) / 2) // The right border
+								MoveUpRight();
+							else // The left border
+								MoveUpLeft();
+						}
+
 					}
 					
 				}

@@ -28,12 +28,15 @@ public:
 	void SetHideGraphics(bool isHidden);
 	void SetCursesHidden(bool isHidden) const;
 
+	void SetNewPositionIndexes(int cubeIdx, int rowNr);
 	void ScoreIncrease(int gainedPoints);
 	void SetLevel(int actualLevel);
 	void SetRound(int actualRound);
 	int GetLevel() const { return m_Level; };
 	int GetRound() const { return m_Round; };
 
+	bool IsInLeftBorder() const;
+	bool IsInRightBorder() const;
 	bool MoveUpRight();
 	bool MoveUpLeft();
 	bool MoveDownLeft();

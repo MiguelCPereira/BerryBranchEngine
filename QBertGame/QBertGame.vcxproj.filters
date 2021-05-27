@@ -69,6 +69,9 @@
     <ClCompile Include="Coily.cpp">
       <Filter>Components\Characters</Filter>
     </ClCompile>
+    <ClCompile Include="Disk.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Pyramid.h">
@@ -112,6 +115,9 @@
     </ClInclude>
     <ClInclude Include="Coily.h">
       <Filter>Components\Characters</Filter>
+    </ClInclude>
+    <ClInclude Include="Disk.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

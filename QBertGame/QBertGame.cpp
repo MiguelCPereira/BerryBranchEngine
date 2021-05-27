@@ -13,6 +13,7 @@
 #include "InputManager.h"
 #include "GameCommands.h"
 #include "LevelSectionObserver.h"
+#include "Disk.h"
 
 
 // Global Variables
@@ -41,8 +42,8 @@ int main(int, char* [])
 
 	SetUpGlobalGOs();
 	LoadLevel01();
-	LoadLevel02();
-	LoadLevel03();
+	//LoadLevel02();
+	//LoadLevel03();
 	PrintInstructions();
 	
 	engine.Run();
@@ -58,14 +59,14 @@ void LoadLevel01()
 	//// Level Title Screen
 
 	// Create Scene
-	auto& levelTitleScene = dae::SceneManager::GetInstance().CreateScene("Level01Title");
+	//auto& levelTitleScene = dae::SceneManager::GetInstance().CreateScene("Level01Title");
 
 	// Add All Needed Game Objects
-	levelTitleScene.Add(MakeLevelTitle(1));
-	levelTitleScene.Add(MakeLevelTransition(g_QBertGOs[0]->GetComponent<QBert>()));
+	//levelTitleScene.Add(MakeLevelTitle(1));
+	//levelTitleScene.Add(MakeLevelTransition(g_QBertGOs[0]->GetComponent<QBert>()));
 
 	// Initialize Scene
-	levelTitleScene.Initialize();
+	//levelTitleScene.Initialize();
 	
 	
 	
@@ -80,8 +81,17 @@ void LoadLevel01()
 	for (const std::shared_ptr<dae::GameObject>& cube : pyramid->m_CubeGOVector)
 		scene1.Add(cube);
 
+	// Disks
+	auto* diskGOsVector = MakeDiskGOsVector(1);
+	auto* disksVector = new std::vector<Disk*>();
+	for(size_t i = 0; i < diskGOsVector->size(); i++)
+	{
+		disksVector->push_back(diskGOsVector->operator[](i)->GetComponent<Disk>());
+		scene1.Add(diskGOsVector->operator[](i));
+	}
+	
 	// Transfer QBert
-	for(auto gameObject : g_QBertGOs)
+	for(const auto& gameObject : g_QBertGOs)
 		scene1.Add(gameObject);
 
 	// Make Level/Round Display
@@ -89,13 +99,15 @@ void LoadLevel01()
 	
 	// Level Section Observer
 	auto sectionObserverGO = std::make_shared<dae::GameObject>();
-	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0]->GetComponent<QBert>(),
-		pyramid, 1, false, false));
+	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0],
+		pyramid, disksVector, 1, false, false));
 	
 	scene1.Add(sectionObserverGO);
 
 	// FPS Counter
 	scene1.Add(MakeFPSCounter());
+
+	scene1.Initialize();
 
 	
 	//////////////////////////
@@ -112,8 +124,17 @@ void LoadLevel01()
 	for (const std::shared_ptr<dae::GameObject>& cube : pyramid->m_CubeGOVector)
 		scene2.Add(cube);
 
+	// Disks
+	diskGOsVector = MakeDiskGOsVector(1);
+	disksVector = new std::vector<Disk*>();
+	for (size_t i = 0; i < diskGOsVector->size(); i++)
+	{
+		disksVector->push_back(diskGOsVector->operator[](i)->GetComponent<Disk>());
+		scene2.Add(diskGOsVector->operator[](i));
+	}
+	
 	// Transfer QBert
-	for (auto gameObject : g_QBertGOs)
+	for (const auto& gameObject : g_QBertGOs)
 		scene2.Add(gameObject);
 
 	// Make Level/Round Display
@@ -121,8 +142,8 @@ void LoadLevel01()
 
 	// Level Section Observer
 	sectionObserverGO = std::make_shared<dae::GameObject>();
-	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0]->GetComponent<QBert>(),
-		pyramid, 1, false, false));
+	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0],
+		pyramid, disksVector, 1, false, false));
 	scene2.Add(sectionObserverGO);
 
 	// FPS Counter
@@ -143,8 +164,17 @@ void LoadLevel01()
 	for (const std::shared_ptr<dae::GameObject>& cube : pyramid->m_CubeGOVector)
 		scene3.Add(cube);
 
+	// Disks
+	diskGOsVector = MakeDiskGOsVector(1);
+	disksVector = new std::vector<Disk*>();
+	for (size_t i = 0; i < diskGOsVector->size(); i++)
+	{
+		disksVector->push_back(diskGOsVector->operator[](i)->GetComponent<Disk>());
+		scene3.Add(diskGOsVector->operator[](i));
+	}
+
 	// Transfer QBert
-	for (auto gameObject : g_QBertGOs)
+	for (const auto& gameObject : g_QBertGOs)
 		scene3.Add(gameObject);
 
 	// Make Level/Round Display
@@ -152,8 +182,8 @@ void LoadLevel01()
 
 	// Level Section Observer
 	sectionObserverGO = std::make_shared<dae::GameObject>();
-	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0]->GetComponent<QBert>(),
-		pyramid, 1, false, true, 0, 10.f));
+	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0],
+		pyramid, disksVector, 1, false, true, 0, 10.f));
 	scene3.Add(sectionObserverGO);
 
 	// FPS Counter
@@ -173,8 +203,17 @@ void LoadLevel01()
 	for (const std::shared_ptr<dae::GameObject>& cube : pyramid->m_CubeGOVector)
 		scene4.Add(cube);
 
+	// Disks
+	diskGOsVector = MakeDiskGOsVector(1);
+	disksVector = new std::vector<Disk*>();
+	for (size_t i = 0; i < diskGOsVector->size(); i++)
+	{
+		disksVector->push_back(diskGOsVector->operator[](i)->GetComponent<Disk>());
+		scene4.Add(diskGOsVector->operator[](i));
+	}
+	
 	// Transfer QBert
-	for (auto gameObject : g_QBertGOs)
+	for (const auto& gameObject : g_QBertGOs)
 		scene4.Add(gameObject);
 
 	// Make Level/Round Display
@@ -182,8 +221,8 @@ void LoadLevel01()
 
 	// Level Section Observer
 	sectionObserverGO = std::make_shared<dae::GameObject>();
-	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0]->GetComponent<QBert>(),
-		pyramid, 1, false, true, 0, 7.f));
+	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0],
+		pyramid, disksVector, 1, false, true, 0, 7.f));
 	scene4.Add(sectionObserverGO);
 
 	// FPS Counter
@@ -214,8 +253,17 @@ void LoadLevel02()
 	for (const std::shared_ptr<dae::GameObject>& cube : pyramid->m_CubeGOVector)
 		scene1.Add(cube);
 
+	// Disks
+	auto* diskGOsVector = MakeDiskGOsVector(2);
+	auto* disksVector = new std::vector<Disk*>();
+	for (size_t i = 0; i < diskGOsVector->size(); i++)
+	{
+		disksVector->push_back(diskGOsVector->operator[](i)->GetComponent<Disk>());
+		scene1.Add(diskGOsVector->operator[](i));
+	}
+
 	// Transfer QBert
-	for (auto gameObject : g_QBertGOs)
+	for (const auto& gameObject : g_QBertGOs)
 		scene1.Add(gameObject);
 
 	// Make Level/Round Display
@@ -223,8 +271,8 @@ void LoadLevel02()
 
 	// Level Section Observer
 	auto sectionObserverGO = std::make_shared<dae::GameObject>();
-	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0]->GetComponent<QBert>(),
-		pyramid, 2, true, true, 20.f, 15.f));
+	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0],
+		pyramid, disksVector, 2, true, true, 20.f, 15.f));
 	scene1.Add(sectionObserverGO);
 
 	// FPS Counter
@@ -245,8 +293,17 @@ void LoadLevel02()
 	for (const std::shared_ptr<dae::GameObject>& cube : pyramid->m_CubeGOVector)
 		scene2.Add(cube);
 
+	// Disks
+	diskGOsVector = MakeDiskGOsVector(2);
+	disksVector = new std::vector<Disk*>();
+	for (size_t i = 0; i < diskGOsVector->size(); i++)
+	{
+		disksVector->push_back(diskGOsVector->operator[](i)->GetComponent<Disk>());
+		scene2.Add(diskGOsVector->operator[](i));
+	}
+
 	// Transfer QBert
-	for (auto gameObject : g_QBertGOs)
+	for (const auto& gameObject : g_QBertGOs)
 		scene2.Add(gameObject);
 
 	// Make Level/Round Display
@@ -254,8 +311,8 @@ void LoadLevel02()
 
 	// Level Section Observer
 	sectionObserverGO = std::make_shared<dae::GameObject>();
-	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0]->GetComponent<QBert>(),
-		pyramid, 2, true, true, 15.f, 10.f));
+	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0],
+		pyramid, disksVector, 2, true, true, 15.f, 10.f));
 	scene2.Add(sectionObserverGO);
 
 	// FPS Counter
@@ -276,8 +333,17 @@ void LoadLevel02()
 	for (const std::shared_ptr<dae::GameObject>& cube : pyramid->m_CubeGOVector)
 		scene3.Add(cube);
 
+	// Disks
+	diskGOsVector = MakeDiskGOsVector(2);
+	disksVector = new std::vector<Disk*>();
+	for (size_t i = 0; i < diskGOsVector->size(); i++)
+	{
+		disksVector->push_back(diskGOsVector->operator[](i)->GetComponent<Disk>());
+		scene3.Add(diskGOsVector->operator[](i));
+	}
+
 	// Transfer QBert
-	for (auto gameObject : g_QBertGOs)
+	for (const auto& gameObject : g_QBertGOs)
 		scene3.Add(gameObject);
 
 	// Make Level/Round Display
@@ -285,8 +351,8 @@ void LoadLevel02()
 
 	// Level Section Observer
 	sectionObserverGO = std::make_shared<dae::GameObject>();
-	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0]->GetComponent<QBert>(),
-		pyramid, 2, true, true, 10.f, 7.f));
+	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0],
+		pyramid, disksVector, 2, true, true, 10.f, 7.f));
 	scene3.Add(sectionObserverGO);
 
 	// FPS Counter
@@ -307,8 +373,17 @@ void LoadLevel02()
 	for (const std::shared_ptr<dae::GameObject>& cube : pyramid->m_CubeGOVector)
 		scene4.Add(cube);
 
+	// Disks
+	diskGOsVector = MakeDiskGOsVector(2);
+	disksVector = new std::vector<Disk*>();
+	for (size_t i = 0; i < diskGOsVector->size(); i++)
+	{
+		disksVector->push_back(diskGOsVector->operator[](i)->GetComponent<Disk>());
+		scene4.Add(diskGOsVector->operator[](i));
+	}
+
 	// Transfer QBert
-	for (auto gameObject : g_QBertGOs)
+	for (const auto& gameObject : g_QBertGOs)
 		scene4.Add(gameObject);
 
 	// Make Level/Round Display
@@ -316,8 +391,8 @@ void LoadLevel02()
 
 	// Level Section Observer
 	sectionObserverGO = std::make_shared<dae::GameObject>();
-	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0]->GetComponent<QBert>(),
-		pyramid, 2, true, true, 5.f, 5.f));
+	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0],
+		pyramid, disksVector, 2, true, true, 5.f, 5.f));
 	scene4.Add(sectionObserverGO);
 
 	// FPS Counter
@@ -349,16 +424,25 @@ void LoadLevel03()
 		scene1.Add(cube);
 
 	// Transfer QBert
-	for (auto gameObject : g_QBertGOs)
+	for (const auto& gameObject : g_QBertGOs)
 		scene1.Add(gameObject);
+
+	// Disks
+	auto* diskGOsVector = MakeDiskGOsVector(3);
+	auto* disksVector = new std::vector<Disk*>();
+	for (size_t i = 0; i < diskGOsVector->size(); i++)
+	{
+		disksVector->push_back(diskGOsVector->operator[](i)->GetComponent<Disk>());
+		scene1.Add(diskGOsVector->operator[](i));
+	}
 
 	// Make Level/Round Display
 	scene1.Add(MakeRoundLevelDisplayGO(g_QBertGOs[0]->GetComponent<QBert>(), false));
 
 	// Level Section Observer
 	auto sectionObserverGO = std::make_shared<dae::GameObject>();
-	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0]->GetComponent<QBert>(),
-		pyramid, 3, true, true, 25.f, 15.f));
+	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0],
+		pyramid, disksVector, 3, true, true, 25.f, 15.f));
 	scene1.Add(sectionObserverGO);
 
 	// FPS Counter
@@ -380,16 +464,25 @@ void LoadLevel03()
 		scene2.Add(cube);
 
 	// Transfer QBert
-	for (auto gameObject : g_QBertGOs)
+	for (const auto& gameObject : g_QBertGOs)
 		scene2.Add(gameObject);
+
+	// Disks
+	diskGOsVector = MakeDiskGOsVector(3);
+	disksVector = new std::vector<Disk*>();
+	for (size_t i = 0; i < diskGOsVector->size(); i++)
+	{
+		disksVector->push_back(diskGOsVector->operator[](i)->GetComponent<Disk>());
+		scene2.Add(diskGOsVector->operator[](i));
+	}
 
 	// Make Level/Round Display
 	scene2.Add(MakeRoundLevelDisplayGO(g_QBertGOs[0]->GetComponent<QBert>(), false));
 
 	// Level Section Observer
 	sectionObserverGO = std::make_shared<dae::GameObject>();
-	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0]->GetComponent<QBert>(),
-		pyramid, 3, true, true, 20.f, 10.f));
+	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0],
+		pyramid, disksVector, 3, true, true, 20.f, 10.f));
 	scene2.Add(sectionObserverGO);
 
 	// FPS Counter
@@ -411,16 +504,25 @@ void LoadLevel03()
 		scene3.Add(cube);
 
 	// Transfer QBert
-	for (auto gameObject : g_QBertGOs)
+	for (const auto& gameObject : g_QBertGOs)
 		scene3.Add(gameObject);
+
+	// Disks
+	diskGOsVector = MakeDiskGOsVector(3);
+	disksVector = new std::vector<Disk*>();
+	for (size_t i = 0; i < diskGOsVector->size(); i++)
+	{
+		disksVector->push_back(diskGOsVector->operator[](i)->GetComponent<Disk>());
+		scene3.Add(diskGOsVector->operator[](i));
+	}
 
 	// Make Level/Round Display
 	scene3.Add(MakeRoundLevelDisplayGO(g_QBertGOs[0]->GetComponent<QBert>(), false));
 
 	// Level Section Observer
 	sectionObserverGO = std::make_shared<dae::GameObject>();
-	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0]->GetComponent<QBert>(),
-		pyramid, 3, true, true, 15.f, 7.f));
+	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0],
+		pyramid, disksVector, 3, true, true, 15.f, 7.f));
 	scene3.Add(sectionObserverGO);
 
 	// FPS Counter
@@ -442,16 +544,25 @@ void LoadLevel03()
 		scene4.Add(cube);
 
 	// Transfer QBert
-	for (auto gameObject : g_QBertGOs)
+	for (const auto& gameObject : g_QBertGOs)
 		scene4.Add(gameObject);
+
+	// Disks
+	diskGOsVector = MakeDiskGOsVector(3);
+	disksVector = new std::vector<Disk*>();
+	for (size_t i = 0; i < diskGOsVector->size(); i++)
+	{
+		disksVector->push_back(diskGOsVector->operator[](i)->GetComponent<Disk>());
+		scene4.Add(diskGOsVector->operator[](i));
+	}
 
 	// Make Level/Round Display
 	scene4.Add(MakeRoundLevelDisplayGO(g_QBertGOs[0]->GetComponent<QBert>(), false));
 
 	// Level Section Observer
 	sectionObserverGO = std::make_shared<dae::GameObject>();
-	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0]->GetComponent<QBert>(),
-		pyramid, 3, true, true, 10.f, 5.f));
+	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0],
+		pyramid, disksVector, 3, true, true, 10.f, 5.f));
 	scene4.Add(sectionObserverGO);
 
 	// FPS Counter

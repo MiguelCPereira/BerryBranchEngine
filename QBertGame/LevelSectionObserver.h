@@ -4,6 +4,7 @@
 #include "BaseComponent.h"
 
 
+class Disk;
 class Coily;
 class UggWrongway;
 class SlickSam;
@@ -19,8 +20,9 @@ class LevelSectionObserver final : public dae::BaseComponent, public dae::Observ
 {
 public:
 	explicit LevelSectionObserver(float transitionTime, QBert* qBertComp); // An empty observer just for the level title scenes
-	explicit LevelSectionObserver(const std::shared_ptr<dae::GameObject>& gameObject, QBert* qBertComp, Pyramid* pyramid,
-		int level, bool spawnSlickSams, bool spawnUggWrongs, float slickSamSpawnInterval = 0, float uggWrongSpawnInterval = 0);
+	explicit LevelSectionObserver(const std::shared_ptr<dae::GameObject>& gameObject, const std::shared_ptr<dae::GameObject>& qBertGO, Pyramid* pyramid,
+		std::vector<Disk*>* disksVector, int level, bool spawnSlickSams, bool spawnUggWrongs, float slickSamSpawnInterval = 0, float uggWrongSpawnInterval = 0);
+
 	~LevelSectionObserver() override;
 
 	void SetQBert(QBert* qBertComp);
@@ -33,6 +35,7 @@ public:
 	bool CheckAllCubesTurned() const;
 	bool CheckCollidingCoily() const;
 	bool CheckCollidingUggWrong() const;
+	void DestroyUsedDisk() const;
 	void KillCollidingSlickSam() const;
 	void KillFallenSlickSam() const;
 	void KillFallenUggWrong() const;
@@ -52,9 +55,12 @@ private:
 	std::shared_ptr<dae::GameObject> m_GameObject{};
 	Observer* m_ThisObserver{};
 	QBert* m_QBertComp{};
+	dae::GraphicsComponent* m_QBertGraphics{};
 	Pyramid* m_Pyramid;
+	std::vector<Disk*>* m_DisksVector;
 
 	bool m_QBertJustFell;
+	bool m_QBertJustTookDisk;
 	
 	Coily* m_CoilyComp{};
 	bool m_SpawnCoily;
