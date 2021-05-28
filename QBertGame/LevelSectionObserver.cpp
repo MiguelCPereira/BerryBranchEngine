@@ -186,6 +186,7 @@ void LevelSectionObserver::Initialize()
 	{
 		m_QBertComp->GetSubject()->AddObserver(this);
 		m_QBertComp->SetFrozen(false);
+
 	}
 
 	if (m_DisksVector != nullptr)

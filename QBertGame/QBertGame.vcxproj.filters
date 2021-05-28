@@ -22,6 +22,9 @@
     <Filter Include="Components\Observers">
       <UniqueIdentifier>{07939d27-f063-4f2b-b6a2-3cb27dff5035}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Components\Menu Screens">
+      <UniqueIdentifier>{0d83fce5-b819-47c8-a1f0-480355db330a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="QBertGame.cpp">
@@ -72,6 +75,15 @@
     <ClCompile Include="Disk.cpp">
       <Filter>Components</Filter>
     </ClCompile>
+    <ClCompile Include="StartScreen.cpp">
+      <Filter>Components\Menu Screens</Filter>
+    </ClCompile>
+    <ClCompile Include="VictoryDeathScreen.cpp">
+      <Filter>Components\Menu Screens</Filter>
+    </ClCompile>
+    <ClCompile Include="MenuScoreDisplay.cpp">
+      <Filter>Components\Menu Screens</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Pyramid.h">
@@ -118,6 +130,15 @@
     </ClInclude>
     <ClInclude Include="Disk.h">
       <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="StartScreen.h">
+      <Filter>Components\Menu Screens</Filter>
+    </ClInclude>
+    <ClInclude Include="VictoryDeathScreen.h">
+      <Filter>Components\Menu Screens</Filter>
+    </ClInclude>
+    <ClInclude Include="MenuScoreDisplay.h">
+      <Filter>Components\Menu Screens</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

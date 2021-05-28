@@ -24,6 +24,7 @@ std::vector<std::shared_ptr<dae::GameObject>> g_QBertGOs;
 
 // Global Functions
 void SetUpGlobalGOs();
+void LoadStartScreen();
 void LoadLevel01();
 void LoadLevel02();
 void LoadLevel03();
@@ -43,6 +44,7 @@ int main(int, char* [])
 	//engine.LoadDemo();
 	
 	SetUpGlobalGOs();
+	LoadStartScreen();
 	LoadLevel01();
 	LoadLevel02();
 	LoadLevel03();
@@ -56,6 +58,37 @@ int main(int, char* [])
 
 
 
+void LoadStartScreen()
+{
+	// Create Scene
+	auto& startScreenScene = dae::SceneManager::GetInstance().CreateScene("StartScreen");
+
+	// Add All Needed Game Objects
+	startScreenScene.Add(MakeStartScreenVisuals());
+	const auto startScreenGO = MakeStartScreenLogic(1, 1, 1);
+	startScreenScene.Add(startScreenGO);
+
+	// Initialize Scene
+	startScreenScene.Initialize();
+
+	
+	// Player Input
+	auto selectKeyboard = std::make_unique<SelectMenuCommand>();
+	selectKeyboard->SetActor(startScreenGO);
+	selectKeyboard->SetButtonPressType(dae::ButtonPress::PressedDown);
+	dae::InputManager::GetInstance().AddCommand(SDLK_SPACE, std::move(selectKeyboard));
+
+	auto moveUpMenuKeyboard = std::make_unique<MoveUpMenuCommand>();
+	moveUpMenuKeyboard->SetActor(startScreenGO);
+	moveUpMenuKeyboard->SetButtonPressType(dae::ButtonPress::PressedDown);
+	dae::InputManager::GetInstance().AddCommand(SDLK_UP, std::move(moveUpMenuKeyboard));
+
+	auto moveDownMenuKeyboard = std::make_unique<MoveDownMenuCommand>();
+	moveDownMenuKeyboard->SetActor(startScreenGO);
+	moveDownMenuKeyboard->SetButtonPressType(dae::ButtonPress::PressedDown);
+	dae::InputManager::GetInstance().AddCommand(SDLK_DOWN, std::move(moveDownMenuKeyboard));
+}
+
 void LoadLevel01()
 {
 	//// Level Title Screen
@@ -66,9 +99,6 @@ void LoadLevel01()
 	// Add All Needed Game Objects
 	levelTitleScene.Add(MakeLevelTitle(1));
 	levelTitleScene.Add(MakeLevelTransition(g_QBertGOs[0]->GetComponent<QBert>()));
-
-	// Initialize Scene
-	levelTitleScene.Initialize();
 	
 	
 	
@@ -111,8 +141,27 @@ void LoadLevel01()
 
 	
 	//////////////////////////
+	////
 
 
+	//// Victory Screen
+
+	// Create Scene
+	auto& victoryScene = dae::SceneManager::GetInstance().CreateScene("VictoryScene");
+
+	// Add All Needed Game Objects
+	victoryScene.Add(MakeVictoryScreenVisuals());
+	const auto victoryScreenGO = MakeVictoryDeathScreenLogic(0, g_QBertGOs[0]->GetComponent<QBert>());
+	victoryScene.Add(victoryScreenGO);
+
+	// Player Input
+	auto goBackKeyboard = std::make_unique<GoBackMenuCommand>();
+	goBackKeyboard->SetActor(victoryScreenGO);
+	goBackKeyboard->SetButtonPressType(dae::ButtonPress::PressedDown);
+	dae::InputManager::GetInstance().AddCommand(SDLK_ESCAPE, std::move(goBackKeyboard));
+	
+	
+	////
 	//// Section 02
 	
 	// Create Scene
@@ -578,7 +627,15 @@ void LoadLevel03()
 	auto& victoryScene = dae::SceneManager::GetInstance().CreateScene("VictoryScene");
 
 	// Add All Needed Game Objects
-	victoryScene.Add(MakeVictoryTitle());
+	victoryScene.Add(MakeVictoryScreenVisuals());
+	const auto victoryScreenGO = MakeVictoryDeathScreenLogic(0, g_QBertGOs[0]->GetComponent<QBert>());
+	victoryScene.Add(victoryScreenGO);
+
+	// Player Input
+	auto goBackKeyboard = std::make_unique<GoBackMenuCommand>();
+	goBackKeyboard->SetActor(victoryScreenGO);
+	goBackKeyboard->SetButtonPressType(dae::ButtonPress::PressedDown);
+	dae::InputManager::GetInstance().AddCommand(SDLK_ESCAPE, std::move(goBackKeyboard));
 }
 
 void SetUpGlobalGOs()
@@ -586,7 +643,7 @@ void SetUpGlobalGOs()
 	// QBert
 	g_QBertGOs = MakeQBert();
 	
-	 
+
 	// Player Input
 	auto moveUpKeyboard = std::make_unique<QBertMoveUpCommand>();
 	moveUpKeyboard->SetActor(g_QBertGOs[0]);
@@ -631,11 +688,6 @@ void SetUpGlobalGOs()
 	moveRightController->SetButtonPressType(dae::ButtonPress::PressedDown);
 	controllerKey.second = dae::ControllerButton::DPadRight;
 	dae::InputManager::GetInstance().AddCommand(controllerKey, std::move(moveRightController));
-
-
-	// Game Observer
-	//auto gameObjectGO = std::make_shared<dae::GameObject>();
-	//g_GameObserverGO = std::move(gameObjectGO);
 }
 
 void PrintInstructions()

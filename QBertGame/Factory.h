@@ -17,6 +17,7 @@ class QBert;
 
 namespace dae
 {
+	class GraphicsComponent;
 	class GameObject;
 }
 
@@ -29,8 +30,6 @@ std::shared_ptr<dae::GameObject> MakeSlickSam(bool isSlick, bool isLeft, float  
 std::shared_ptr<dae::GameObject> MakeUggWrongway(bool isUgg, bool isLeft, float  moveInterval);
 
 std::shared_ptr<dae::GameObject> MakeLevelTitle(int lvlNr);
-
-std::shared_ptr<dae::GameObject> MakeVictoryTitle();
 
 std::shared_ptr<dae::GameObject> MakeLevelTransition(QBert* qBertComp);
 
@@ -49,3 +48,11 @@ std::shared_ptr<dae::GameObject> MakeRoundLevelDisplayGO(QBert* qBertComp, bool 
 std::shared_ptr<dae::GameObject> MakeDiskGO(int row, bool isLeft, int colorIdx);
 
 std::vector<std::shared_ptr<dae::GameObject>>* MakeDiskGOsVector(int level, int colorIdx);
+
+std::shared_ptr<dae::GameObject> MakeStartScreenVisuals();
+
+std::shared_ptr<dae::GameObject> MakeStartScreenLogic(int soloModeSceneIdx, int coopModeSceneIdx, int versusModeSceneIdx);
+
+std::shared_ptr<dae::GameObject> MakeVictoryScreenVisuals();
+
+std::shared_ptr<dae::GameObject> MakeVictoryDeathScreenLogic(int startScreenSceneIdx, QBert* qBertComp);

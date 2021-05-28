@@ -14,6 +14,9 @@
 #include "ScoreDisplay.h"
 #include "Coily.h"
 #include "Disk.h"
+#include "MenuScoreDisplay.h"
+#include "StartScreen.h"
+#include "VictoryDeathScreen.h"
 
 std::vector<std::shared_ptr<dae::GameObject>> MakeQBert()
 {
@@ -222,20 +225,6 @@ std::shared_ptr<dae::GameObject> MakeLevelTransition(QBert* qBertComp)
 }
 
 
-std::shared_ptr<dae::GameObject> MakeVictoryTitle()
-{
-	const auto width = 474.f;
-	const auto height = 263.f;
-	const auto positionX = 86.f;
-	const auto positionY = 90.f;
-
-	auto newGO = std::make_shared<dae::GameObject>();
-	newGO->AddComponent(new dae::GraphicsComponent("Victory Title.png", positionX, positionY, width, height));
-
-	return newGO;
-}
-
-
 std::shared_ptr<dae::GameObject> MakeFPSCounter()
 {
 	auto font = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 19);
@@ -374,6 +363,7 @@ std::shared_ptr<dae::GameObject> MakeDiskGO(int row, bool isLeft, int colorIdx)
 	return diskGO;
 }
 
+
 std::vector<std::shared_ptr<dae::GameObject>>* MakeDiskGOsVector(int level, int colorIdx)
 {
 	auto* diskGOsVector = new std::vector<std::shared_ptr<dae::GameObject>>();
@@ -418,4 +408,101 @@ std::vector<std::shared_ptr<dae::GameObject>>* MakeDiskGOsVector(int level, int 
 	}
 
 	return diskGOsVector;
+}
+
+
+std::shared_ptr<dae::GameObject> MakeStartScreenVisuals()
+{
+	const auto titlePosX = 75.f;
+	const auto titlePosY = 80.f;
+	const auto buttonDistance = 40.f;
+	const auto buttonsPosY = 300.f;
+	const auto buttonsPosX = 235.f;
+
+
+	auto buttonsGO = std::make_shared<dae::GameObject>();
+	auto font = dae::ResourceManager::GetInstance().LoadFont("Minecraft.ttf", 30);
+	
+	auto soloButtonComp = new dae::TextComponent("Solo Mode", font, 255, 216, 102);
+	soloButtonComp->SetPosition(buttonsPosX + 20, buttonsPosY);
+	buttonsGO->AddComponent(soloButtonComp);
+
+	auto coopButtonComp = new dae::TextComponent("Co-op Mode", font, 255, 216, 102);
+	coopButtonComp->SetPosition(buttonsPosX + 6, buttonsPosY + buttonDistance);
+	buttonsGO->AddComponent(coopButtonComp);
+
+	auto versusButtonComp = new dae::TextComponent("Versus Mode", font, 255, 216, 102);
+	versusButtonComp->SetPosition(buttonsPosX, buttonsPosY + buttonDistance * 2);
+	buttonsGO->AddComponent(versusButtonComp);
+	
+	auto titleComp = new dae::GraphicsComponent("Game Title.png", titlePosX, titlePosY);
+	buttonsGO->AddComponent(titleComp);
+	
+	return buttonsGO;
+}
+
+
+std::shared_ptr<dae::GameObject> MakeStartScreenLogic(int soloModeSceneIdx, int coopModeSceneIdx, int versusModeSceneIdx)
+{
+	const auto actualWidth = 18.f;
+	const auto actualHeight = 27.f;
+	const auto posX = 205.f;
+	const auto posY = 298.f;
+	const auto buttonDistance = 40.f;
+
+	auto startScreenGO = std::make_shared<dae::GameObject>();
+	const auto selectionGraphics = new dae::GraphicsComponent("Selection Arrow.png", posX, posY, actualWidth, actualHeight);
+	startScreenGO->AddComponent(selectionGraphics);
+	startScreenGO->AddComponent(new StartScreen(soloModeSceneIdx, coopModeSceneIdx, versusModeSceneIdx, selectionGraphics, buttonDistance));
+
+	return startScreenGO;
+}
+
+
+std::shared_ptr<dae::GameObject> MakeVictoryScreenVisuals()
+{
+	const auto width = 270.f;
+	const auto height = 149.f;
+	const auto titlePosX = 180.f;
+	const auto titlePosY = 30.f;
+	const auto scoreTextPosX = 245.f;
+	const auto scoreTextPosY = 240.f;
+	const auto goBackPosX = 160.f;
+	const auto goBackPosY = 400.f;
+
+	auto newGO = std::make_shared<dae::GameObject>();
+
+	newGO->AddComponent(new dae::GraphicsComponent("Victory Title.png", titlePosX, titlePosY, width, height));
+
+	auto font = dae::ResourceManager::GetInstance().LoadFont("Minecraft.ttf", 38);
+	auto* scoreComp = new dae::TextComponent("SCORE", font);
+	scoreComp->SetPosition(scoreTextPosX, scoreTextPosY);
+	newGO->AddComponent(scoreComp);
+
+	font = dae::ResourceManager::GetInstance().LoadFont("Minecraft.ttf", 16);
+	auto* goBackComp = new dae::TextComponent("Press ESC to go back to the main menu", font);
+	goBackComp->SetPosition(goBackPosX, goBackPosY);
+	newGO->AddComponent(goBackComp);
+
+	return newGO;
+}
+
+
+std::shared_ptr<dae::GameObject> MakeVictoryDeathScreenLogic(int startScreenSceneIdx, QBert* qBertComp)
+{
+	const auto scorePosX = 255.f;
+	const auto scorePosY = 290.f;
+
+	auto victoryDeathScreenGO = std::make_shared<dae::GameObject>();
+
+	victoryDeathScreenGO->AddComponent(new VictoryDeathScreen(startScreenSceneIdx));
+	
+	const auto font = dae::ResourceManager::GetInstance().LoadFont("Minecraft.ttf", 38);
+	auto* scoreComp = new dae::TextComponent("10250", font);
+	scoreComp->SetPosition(scorePosX, scorePosY);
+	victoryDeathScreenGO->AddComponent(scoreComp);
+
+	victoryDeathScreenGO->AddComponent(new MenuScoreDisplay(qBertComp, scoreComp));
+
+	return victoryDeathScreenGO;
 }
