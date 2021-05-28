@@ -309,7 +309,7 @@ void LevelSectionObserver::OnNotify(const dae::Event& event)
 			
 		case dae::Event::DiskFlightEnded:
 			DestroyUsedDisk();
-			m_QBertComp->SetAirborne(false);
+			m_QBertComp->BackToGround();
 			m_QBertComp->SetNewPositionIndexes(1, 1);
 			m_QBertComp->SetFrozen(false);
 			cubeTurned = m_Pyramid->m_CubeGOVector[m_QBertComp->GetPositionIndex() - 1]->GetComponent<Cube>()->TurnCube();
@@ -324,26 +324,25 @@ void LevelSectionObserver::OnNotify(const dae::Event& event)
 
 			
 		case dae::Event::QBertFell:
+			m_QBertJustTookDisk = false;
 			for(size_t i = 0; i < m_DisksVector->size(); i++)
 			{
 				auto* disk = m_DisksVector->operator[](i);
 				if(disk->GetRow() == m_QBertComp->GetCurrentRow())
 				{
-					if (disk->GetIsLeft() && m_QBertComp->IsInLeftBorder())
+					if (disk->GetIsLeft() && m_QBertComp->GetLastJumpedOffLeft())
 					{
 						m_QBertJustTookDisk = true;
 						disk->Activate(m_QBertComp, m_QBertGraphics);
 						break;
 					}
-					if (disk->GetIsLeft() == false && m_QBertComp->IsInRightBorder())
+					if (disk->GetIsLeft() == false && m_QBertComp->GetLastJumpedOffLeft() == false)
 					{
 						m_QBertJustTookDisk = true;
 						disk->Activate(m_QBertComp, m_QBertGraphics);
 						break;
 					}
 				}
-				
-				m_QBertJustTookDisk = false;
 			}
 			
 			if (m_QBertJustFell == false && m_QBertJustTookDisk == false)
@@ -723,7 +722,7 @@ void LevelSectionObserver::Update(const float deltaTime)
 						if (m_QBertJustFell)
 							m_QBertJustFell = false;
 
-						m_QBertComp->SetAirborne(false);
+						m_QBertComp->BackToGround();
 						m_QBertComp->SetHideGraphics(false);
 						m_QBertComp->SetFrozen(false);
 						m_DeathEmptySceneTimer = 0.f;

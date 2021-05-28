@@ -38,17 +38,21 @@ private:
 	const bool m_IsLeft;
 	const int m_ColorIdx;
 	bool m_Activated;
-	const float m_MovingSpeed;
+	
+	const float m_FlightTime;
+	const float m_QBertFallSpeed;
 	const float m_InitialPosX, m_InitialPosY;
 	const float m_FinalPosX, m_FinalPosY, m_FinalQBertPosY;
 	float m_MidFlightPosX, m_MidFlightPosY;
 	float m_QBertGraphAdjustmentX, m_QBertGraphAdjustmentY;
-	bool m_MovementXIncomplete, m_MovementYIncomplete;
 	bool m_FinalPositionReached;
 	bool m_HasBeenUsed;
 
-	float m_TimeSinceLastFrame;
-	int m_CurrentFrame, m_NrFrames, m_FPS;
+	const int m_FPSIdle, m_FPSFlight;
+	float m_MidFlightTime;
+	float m_TimeSinceLastFrameFlight;
+	float m_TimeSinceLastFrameIdle;
+	int m_CurrentFrame, m_NrFrames;
 	float m_SpriteWidth, m_SpriteHeight;
 };
 

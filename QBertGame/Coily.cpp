@@ -273,11 +273,11 @@ void Coily::Update(const float deltaTime)
 							MoveUpLeft();
 						else // QBert has taken a disk, because Coily's in the same cube has Qbert's last index
 						{
-							// Make Coily jump to their death, depending on which pyramid border they are at
-							if (m_CurrentCubeIdx == m_CurrentRow * (m_CurrentRow + 1) / 2) // The right border
-								MoveUpRight();
-							else // The left border
+							// Make Coily jump to their death, depending on which direction QBert jumped to last
+							if (m_QBertComp->GetLastJumpedOffLeft())
 								MoveUpLeft();
+							else
+								MoveUpRight();
 						}
 
 					}

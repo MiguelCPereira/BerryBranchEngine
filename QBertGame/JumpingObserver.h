@@ -42,11 +42,11 @@ private:
 	const float m_CubesWidth, m_CubesHeight;
 
 	bool m_Jumping;
-	const float m_JumpingSpeed;
 	float m_LiftoffPosX, m_LiftoffPosY;
 	float m_LandingPosX, m_LandingPosY;
 	float m_MidFlightPosX, m_MidFlightPosY;
-	bool m_MovingRight, m_MovingDown;
-	bool m_MovementXIncomplete, m_MovementYIncomplete;
+	const int m_FPS;
+	const float m_JumpTime;
+	float m_MidFlightTime, m_TimeSinceLastFrame;
 };
 

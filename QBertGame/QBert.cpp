@@ -80,9 +80,10 @@ void QBert::SetCursesHidden(bool isHidden) const
 	m_CursesGameObject->GetComponent<dae::GraphicsComponent>()->SetPosition(posX, posY);
 }
 
-void QBert::SetAirborne(bool airborne)
+void QBert::BackToGround()
 {
-	m_Airborne = airborne;
+	m_Airborne = false;
+	m_JumpedOff = false;
 }
 
 void QBert::SetNewPositionIndexes(int cubeIdx, int rowNr)
@@ -111,7 +112,8 @@ void QBert::SetRound(int actualRound)
 
 bool QBert::IsInLeftBorder() const
 {
-	return m_CurrentCubeIdx == m_CurrentRow * (m_CurrentRow + 1) / 2 - m_CurrentRow + 1 && m_CurrentCubeIdx != 1;
+	
+	return m_CurrentCubeIdx == m_CurrentRow * (m_CurrentRow + 1) / 2 - m_CurrentRow + 1 || m_CurrentCubeIdx == 1;
 }
 
 bool QBert::IsInRightBorder() const
@@ -135,6 +137,7 @@ bool QBert::MoveUpRight()
 		{
 			m_PosXBeforeFalling = graphics->GetPosX();
 			m_PosYBeforeFalling = graphics->GetPosY();
+			m_LastJumpedOffLeft = false;
 			m_JumpedOff = true;
 		}
 
@@ -166,6 +169,7 @@ bool QBert::MoveUpLeft()
 		{
 			m_PosXBeforeFalling = graphics->GetPosX();
 			m_PosYBeforeFalling = graphics->GetPosY();
+			m_LastJumpedOffLeft = true;
 			m_JumpedOff = true;
 		}
 

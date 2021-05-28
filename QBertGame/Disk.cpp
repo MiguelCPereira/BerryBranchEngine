@@ -16,7 +16,8 @@ Disk::Disk(const std::shared_ptr<dae::GameObject>& gameObject, int rowIdx, bool 
 	, m_IsLeft(isLeft)
 	, m_ColorIdx(colorIdx)
 	, m_Activated(false)
-	, m_MovingSpeed(100.f)
+	, m_FlightTime(1.1f)
+	, m_QBertFallSpeed(200.f)
 	, m_InitialPosX(gameObject->GetComponent<dae::GraphicsComponent>()->GetPosX())
 	, m_InitialPosY(gameObject->GetComponent<dae::GraphicsComponent>()->GetPosY())
 	, m_FinalPosX(finalPosX)
@@ -26,15 +27,16 @@ Disk::Disk(const std::shared_ptr<dae::GameObject>& gameObject, int rowIdx, bool 
 	, m_MidFlightPosY()
 	, m_QBertGraphAdjustmentX()
 	, m_QBertGraphAdjustmentY()
-	, m_MovementXIncomplete(true)
-	, m_MovementYIncomplete(true)
 	, m_FinalPositionReached(false)
 	, m_HasBeenUsed(false)
 
-	, m_TimeSinceLastFrame(0.f)
+	, m_FPSIdle(9)
+	, m_FPSFlight(50)
+	, m_MidFlightTime(0.f)
+	, m_TimeSinceLastFrameFlight(0.f)
+	, m_TimeSinceLastFrameIdle(0.f)
 	, m_CurrentFrame(0)
 	, m_NrFrames(4)
-	, m_FPS(9)
 	, m_SpriteWidth(spriteWidth)
 	, m_SpriteHeight(spriteHeight)
 {
@@ -71,11 +73,11 @@ void Disk::Update(const float deltaTime)
 	if (m_HasBeenUsed == false)
 	{
 		// Idle Spinning Animation
-		m_TimeSinceLastFrame += deltaTime;
+		m_TimeSinceLastFrameIdle += deltaTime;
 
-		if (m_TimeSinceLastFrame >= 1.f / float(m_FPS))
+		if (m_TimeSinceLastFrameIdle >= 1.f / float(m_FPSIdle))
 		{
-			m_TimeSinceLastFrame -= 1.f / float(m_FPS);
+			m_TimeSinceLastFrameIdle -= 1.f / float(m_FPSIdle);
 
 			m_GameObject->GetComponent<dae::GraphicsComponent>()->SetSrcRectangle(float(m_ColorIdx * 5) * m_SpriteWidth + m_CurrentFrame * m_SpriteWidth, 0, m_SpriteWidth, m_SpriteHeight);
 			m_CurrentFrame++;
@@ -90,42 +92,17 @@ void Disk::Update(const float deltaTime)
 		{
 			if (m_FinalPositionReached == false)
 			{
-				// Movement in the X-Axis
-				if (m_MovementXIncomplete)
-				{
-					if (m_InitialPosX < m_FinalPosX) // If it needs to move right
-					{
-						if (m_MidFlightPosX < m_FinalPosX)
-							m_MidFlightPosX += m_MovingSpeed * deltaTime;
-						else
-						{
-							m_MidFlightPosX = m_FinalPosX;
-							m_MovementXIncomplete = false;
-						}
-					}
-					else // If it needs to move left
-					{
-						if (m_MidFlightPosX > m_FinalPosX)
-							m_MidFlightPosX -= m_MovingSpeed * deltaTime;
-						else
-						{
-							m_MidFlightPosX = m_FinalPosX;
-							m_MovementXIncomplete = false;
-						}
-					}
-				}
+				const auto toTravelInSecX = (m_FinalPosX - m_InitialPosX) / m_FlightTime;
+				const auto toTravelInSecY = (m_FinalPosY - m_InitialPosY) / m_FlightTime;
 
+				m_TimeSinceLastFrameFlight += deltaTime;
+				m_MidFlightTime += deltaTime;
 
-				// Movement in the Y-Axis
-				if (m_MovementYIncomplete)
+				if (m_TimeSinceLastFrameFlight >= 1.f / float(m_FPSFlight) && m_MidFlightTime < m_FlightTime)
 				{
-					if (m_MidFlightPosY > m_FinalPosY)
-						m_MidFlightPosY -= m_MovingSpeed * deltaTime;
-					else
-					{
-						m_MidFlightPosY = m_FinalPosY;
-						m_MovementYIncomplete = false;
-					}
+					m_TimeSinceLastFrameFlight -= 1.f / float(m_FPSFlight);
+					m_MidFlightPosX += toTravelInSecX / float(m_FPSFlight);
+					m_MidFlightPosY += toTravelInSecY / float(m_FPSFlight);
 				}
 
 
@@ -136,7 +113,7 @@ void Disk::Update(const float deltaTime)
 
 
 				// Stop the animation if the movement is complete
-				if (m_MovementXIncomplete == false && m_MovementYIncomplete == false)
+				if (m_MidFlightTime >= m_FlightTime)
 				{
 					m_GameObject->GetComponent<dae::GraphicsComponent>()->SetPosition(-50.f, -50.f);
 					m_FinalPositionReached = true;
@@ -146,7 +123,7 @@ void Disk::Update(const float deltaTime)
 			{
 				if (m_QBertGraphics->GetPosY() < m_FinalQBertPosY) // Falling
 				{
-					m_MidFlightPosY += m_MovingSpeed * deltaTime;
+					m_MidFlightPosY += m_QBertFallSpeed * deltaTime;
 					m_QBertGraphics->SetPosition(m_MidFlightPosX + m_QBertGraphAdjustmentX, m_MidFlightPosY + m_QBertGraphAdjustmentY);
 				}
 				else // Reached the 1st cube

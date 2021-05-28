@@ -15,17 +15,16 @@ JumpingObserver::JumpingObserver(QBert* qBertComp, dae::GraphicsComponent* graph
 	, m_CubesWidth(cubesWidth)
 	, m_CubesHeight(cubesHeight)
 	, m_Jumping(false)
-	, m_JumpingSpeed(250.f)
 	, m_LiftoffPosX()
 	, m_LiftoffPosY()
 	, m_LandingPosX()
 	, m_LandingPosY()
 	, m_MidFlightPosX()
 	, m_MidFlightPosY()
-	, m_MovingRight()
-	, m_MovingDown()
-	, m_MovementXIncomplete()
-	, m_MovementYIncomplete()
+	, m_FPS(50)
+	, m_JumpTime(0.3f)
+	, m_MidFlightTime(0.f)
+	, m_TimeSinceLastFrame(0.f)
 {}
 
 JumpingObserver::JumpingObserver(Coily* coilyComp, dae::GraphicsComponent* graphicsComp, float cubesWidth, float cubesHeight)
@@ -37,17 +36,16 @@ JumpingObserver::JumpingObserver(Coily* coilyComp, dae::GraphicsComponent* graph
 	, m_CubesWidth(cubesWidth)
 	, m_CubesHeight(cubesHeight)
 	, m_Jumping(false)
-	, m_JumpingSpeed(200.f)
 	, m_LiftoffPosX()
 	, m_LiftoffPosY()
 	, m_LandingPosX()
 	, m_LandingPosY()
 	, m_MidFlightPosX()
 	, m_MidFlightPosY()
-	, m_MovingRight()
-	, m_MovingDown()
-	, m_MovementXIncomplete()
-	, m_MovementYIncomplete()
+	, m_FPS(50)
+	, m_JumpTime(0.3f)
+	, m_MidFlightTime(0.f)
+	, m_TimeSinceLastFrame(0.f)
 {}
 
 JumpingObserver::JumpingObserver(SlickSam* slickSamComp, dae::GraphicsComponent* graphicsComp, float cubesWidth, float cubesHeight)
@@ -59,17 +57,16 @@ JumpingObserver::JumpingObserver(SlickSam* slickSamComp, dae::GraphicsComponent*
 	, m_CubesWidth(cubesWidth)
 	, m_CubesHeight(cubesHeight)
 	, m_Jumping(false)
-	, m_JumpingSpeed(250.f)
 	, m_LiftoffPosX()
 	, m_LiftoffPosY()
 	, m_LandingPosX()
 	, m_LandingPosY()
 	, m_MidFlightPosX()
 	, m_MidFlightPosY()
-	, m_MovingRight()
-	, m_MovingDown()
-	, m_MovementXIncomplete()
-	, m_MovementYIncomplete()
+	, m_FPS(50)
+	, m_JumpTime(0.3f)
+	, m_MidFlightTime(0.f)
+	, m_TimeSinceLastFrame(0.f)
 {}
 
 JumpingObserver::JumpingObserver(UggWrongway* uggWrongComp, dae::GraphicsComponent* graphicsComp, float cubesWidth, float cubesHeight)
@@ -81,17 +78,16 @@ JumpingObserver::JumpingObserver(UggWrongway* uggWrongComp, dae::GraphicsCompone
 	, m_CubesWidth(cubesWidth)
 	, m_CubesHeight(cubesHeight)
 	, m_Jumping(false)
-	, m_JumpingSpeed(250.f)
 	, m_LiftoffPosX()
 	, m_LiftoffPosY()
 	, m_LandingPosX()
 	, m_LandingPosY()
 	, m_MidFlightPosX()
 	, m_MidFlightPosY()
-	, m_MovingRight()
-	, m_MovingDown()
-	, m_MovementXIncomplete()
-	, m_MovementYIncomplete()
+	, m_FPS(50)
+	, m_JumpTime(0.3f)
+	, m_MidFlightTime(0.f)
+	, m_TimeSinceLastFrame(0.f)
 {}
 
 JumpingObserver::~JumpingObserver()
@@ -186,10 +182,6 @@ void JumpingObserver::OnNotify(const dae::Event& event)
 		m_MidFlightPosY = m_LiftoffPosY;
 		m_LandingPosX = m_LiftoffPosX + m_CubesWidth / 2.f;
 		m_LandingPosY = m_LiftoffPosY - m_CubesHeight * 0.75f;
-		m_MovementXIncomplete = true;
-		m_MovementYIncomplete = true;
-		m_MovingRight = true;
-		m_MovingDown = false;
 		m_Jumping = true;
 		break;
 
@@ -201,10 +193,6 @@ void JumpingObserver::OnNotify(const dae::Event& event)
 		m_MidFlightPosY = m_LiftoffPosY;
 		m_LandingPosX = m_LiftoffPosX - m_CubesWidth / 2.f;
 		m_LandingPosY = m_LiftoffPosY - m_CubesHeight * 0.75f;
-		m_MovementXIncomplete = true;
-		m_MovementYIncomplete = true;
-		m_MovingRight = false;
-		m_MovingDown = false;
 		m_Jumping = true;
 		break;
 
@@ -216,10 +204,6 @@ void JumpingObserver::OnNotify(const dae::Event& event)
 		m_MidFlightPosY = m_LiftoffPosY;
 		m_LandingPosX = m_LiftoffPosX + m_CubesWidth / 2.f;
 		m_LandingPosY = m_LiftoffPosY + m_CubesHeight * 0.75f;
-		m_MovementXIncomplete = true;
-		m_MovementYIncomplete = true;
-		m_MovingRight = true;
-		m_MovingDown = true;
 		m_Jumping = true;
 		break;
 
@@ -231,10 +215,6 @@ void JumpingObserver::OnNotify(const dae::Event& event)
 		m_MidFlightPosY = m_LiftoffPosY;
 		m_LandingPosX = m_LiftoffPosX - m_CubesWidth / 2.f;
 		m_LandingPosY = m_LiftoffPosY + m_CubesHeight * 0.75f;
-		m_MovementXIncomplete = true;
-		m_MovementYIncomplete = true;
-		m_MovingRight = false;
-		m_MovingDown = true;
 		m_Jumping = true;
 		break;
 
@@ -246,8 +226,6 @@ void JumpingObserver::OnNotify(const dae::Event& event)
 		m_MidFlightPosY = m_LiftoffPosY;
 		m_LandingPosX = m_LiftoffPosX - m_CubesWidth;
 		m_LandingPosY = m_LiftoffPosY;
-		m_MovementXIncomplete = true;
-		m_MovingRight = false;
 		m_Jumping = true;
 		break;
 
@@ -259,8 +237,6 @@ void JumpingObserver::OnNotify(const dae::Event& event)
 		m_MidFlightPosY = m_LiftoffPosY;
 		m_LandingPosX = m_LiftoffPosX + m_CubesWidth;
 		m_LandingPosY = m_LiftoffPosY;
-		m_MovementXIncomplete = true;
-		m_MovingRight = true;
 		m_Jumping = true;
 		break;
 	}
@@ -270,55 +246,17 @@ void JumpingObserver::Update(const float deltaTime)
 {
 	if(m_Jumping)
 	{
-		// Movement in the X-Axis
-		if (m_MovementXIncomplete)
-		{
-			if (m_MovingRight)
-			{
-				if (m_MidFlightPosX < m_LandingPosX)
-					m_MidFlightPosX += m_JumpingSpeed * deltaTime;
-				else
-				{
-					m_MidFlightPosX = m_LandingPosX;
-					m_MovementXIncomplete = false;
-				}
-			}
-			else
-			{
-				if (m_MidFlightPosX > m_LandingPosX)
-					m_MidFlightPosX -= m_JumpingSpeed * deltaTime;
-				else
-				{
-					m_MidFlightPosX = m_LandingPosX;
-					m_MovementXIncomplete = false;
-				}
-			}
-		}
+		const auto toTravelInSecX = (m_LandingPosX - m_LiftoffPosX) / m_JumpTime;
+		const auto toTravelInSecY = (m_LandingPosY - m_LiftoffPosY) / m_JumpTime;
 
+		m_TimeSinceLastFrame += deltaTime;
+		m_MidFlightTime += deltaTime;
 
-		// Movement in the Y-Axis
-		if (m_MovementYIncomplete)
+		if (m_TimeSinceLastFrame >= 1.f / float(m_FPS) && m_MidFlightTime < m_JumpTime)
 		{
-			if (m_MovingDown)
-			{
-				if (m_MidFlightPosY < m_LandingPosY)
-					m_MidFlightPosY += m_JumpingSpeed * deltaTime;
-				else
-				{
-					m_MidFlightPosY = m_LandingPosY;
-					m_MovementYIncomplete = false;
-				}
-			}
-			else
-			{
-				if (m_MidFlightPosY > m_LandingPosY)
-					m_MidFlightPosY -= m_JumpingSpeed * deltaTime;
-				else
-				{
-					m_MidFlightPosY = m_LandingPosY;
-					m_MovementYIncomplete = false;
-				}
-			}
+			m_TimeSinceLastFrame -= 1.f / float(m_FPS);
+			m_MidFlightPosX += toTravelInSecX / float(m_FPS);
+			m_MidFlightPosY += toTravelInSecY / float(m_FPS);
 		}
 
 		
@@ -328,9 +266,11 @@ void JumpingObserver::Update(const float deltaTime)
 
 
 		// Stop the animation if the movement is complete
-		if (m_MovementXIncomplete == false && m_MovementYIncomplete == false)
+		if (m_MidFlightTime >= m_JumpTime)
 		{
+			m_GraphicsComp->SetPosition(m_LandingPosX, m_LandingPosY);
 			m_Jumping = false;
+			m_MidFlightTime = 0.f;
 			
 			if (m_QBertComp != nullptr)
 				m_QBertComp->JumpFinished();
