@@ -55,8 +55,9 @@ void dae::Minigin::Initialize()
 
 	// Initialize Sound System
 	const auto soundSystem = new SDLSoundSystem();
-	const auto loggingSystem = new LoggingSoundSystem(soundSystem);
-	SoundServiceLocator::RegisterSoundSystem(loggingSystem);
+	SoundServiceLocator::RegisterSoundSystem(soundSystem);
+	//const auto loggingSystem = new LoggingSoundSystem(soundSystem); // Uncommenting for debugging is recommended
+	//SoundServiceLocator::RegisterSoundSystem(loggingSystem); // Uncommenting for debugging is recommended
 
 	// Tell the resource manager where he can find the game data
 	ResourceManager::GetInstance().Init("../Data/");
@@ -65,7 +66,7 @@ void dae::Minigin::Initialize()
 /**
  * Code constructing the scene world starts here
  */
-void dae::Minigin::LoadGame() const 
+void dae::Minigin::LoadDemo() const 
 {
 
 	auto& scene = SceneManager::GetInstance().CreateScene("Demo");
@@ -78,15 +79,15 @@ void dae::Minigin::LoadGame() const
 	
 	// DAE Logo
 	gameObject = std::make_shared<GameObject>();
-	gameObject->AddComponent(new GraphicsComponent("logo.png", 216, 180));
+	gameObject->AddComponent(new GraphicsComponent("logo.png", 216, 210));
 	scene.Add(gameObject);
 
 	
 	// Engine Title
 	auto font = ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
 	gameObject = std::make_shared<GameObject>();
-	gameObject->AddComponent(new TextComponent("Programming 4 Assignment", font));
-	gameObject->GetComponent<TextComponent>()->SetPosition(80, 20);
+	gameObject->AddComponent(new TextComponent("Lime Engine Demo", font));
+	gameObject->GetComponent<TextComponent>()->SetPosition(165, 50);
 	scene.Add(gameObject);
 
 	
@@ -102,7 +103,8 @@ void dae::Minigin::LoadGame() const
 	// QBert
 	auto qBertGameObject = std::make_shared<GameObject>();
 	qBertGameObject->AddComponent(new QBertComponent(qBertGameObject));
-	qBertGameObject->AddComponent(new GraphicsComponent("qBert.png", 50, 270));
+	qBertGameObject->AddComponent(new GraphicsComponent("QBert Spritesheet.png", 50, 250,
+		150, 150, 34, 0, 17, 16));
 	scene.Add(qBertGameObject);
 	
 	
@@ -149,7 +151,9 @@ void dae::Minigin::LoadGame() const
 	// 2nd QBert
 	auto qBertGameObject2 = std::make_shared<GameObject>();
 	qBertGameObject2->AddComponent(new QBertComponent(qBertGameObject2));
-	qBertGameObject2->AddComponent(new GraphicsComponent("qBert.png", 445, 270));
+	//qBertGameObject2->AddComponent(new GraphicsComponent("qBert.png", 445, 270));
+	qBertGameObject2->AddComponent(new GraphicsComponent("QBert Spritesheet.png", 445, 250,
+		150, 150, 51, 0, 17, 16));
 	scene.Add(qBertGameObject2);
 	
 	auto dieKeyboard2 = std::make_unique<DieCommand>();

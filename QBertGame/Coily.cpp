@@ -3,6 +3,8 @@
 #include "GraphicsComponent.h"
 #include <iostream>
 #include "QBert.h"
+#include "SoundServiceLocator.h"
+#include "SoundSystem.h"
 
 Coily::Coily(const std::shared_ptr<dae::GameObject>& gameObject, QBert* qBertComp, int nrRows, float cubesWidth,
              float cubesHeight, float spriteWidth, float spriteHeight, int startingCube, float jumpInterval)
@@ -192,9 +194,19 @@ void Coily::JumpFinished()
 	m_Airborne = false;
 
 	if (m_Alive)
+	{
+		if(m_IsEgg)
+			SoundServiceLocator::GetSoundSystem().Play("../Data/Sounds/Coily Egg Jump.wav", 0.1f);
+		else
+			SoundServiceLocator::GetSoundSystem().Play("../Data/Sounds/Coily Snake Jump.wav", 0.1f);
+		
 		m_Subject->Notify(dae::Event::CoilyLanded);
+	}
 	else
+	{
+		SoundServiceLocator::GetSoundSystem().Play("../Data/Sounds/Coily Fall.wav", 0.1f);
 		m_Subject->Notify(dae::Event::CoilyFell);
+	}
 }
 
 void Coily::Update(const float deltaTime)

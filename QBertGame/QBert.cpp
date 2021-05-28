@@ -2,10 +2,12 @@
 #include <iostream>
 #include "GameObject.h"
 #include "GraphicsComponent.h"
+#include "SoundServiceLocator.h"
+#include "SoundSystem.h"
 
 
 QBert::QBert(const std::shared_ptr<dae::GameObject>& gameObject, const std::shared_ptr<dae::GameObject>& cursesGameObject,
-	int nrRows, float qBertSpriteWidth, float qBertSpriteHeight)
+             int nrRows, float qBertSpriteWidth, float qBertSpriteHeight)
 	: m_GameObject(gameObject)
 	, m_CursesGameObject(cursesGameObject)
 	, m_LastRow(nrRows)
@@ -253,10 +255,12 @@ void QBert::JumpFinished()
 {
 	if (m_JumpedOff)
 	{
+		SoundServiceLocator::GetSoundSystem().Play("../Data/Sounds/QBert Fall.wav", 0.5f);
 		m_Subject->Notify(dae::Event::QBertFell);
 	}
 	else
 	{
+		SoundServiceLocator::GetSoundSystem().Play("../Data/Sounds/QBert Jump.wav", 0.1f);
 		m_Airborne = false;
 		m_Subject->Notify(dae::Event::QBertLanded);
 	}

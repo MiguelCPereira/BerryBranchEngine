@@ -66,7 +66,7 @@ namespace dae
 	{
 	public:
 		PlaySoundCommand(SoundSystem* soundSystem) : m_SoundSystem{ soundSystem } {}
-		void Execute() override { m_SoundSystem->Play("../Data/Sounds/jump-2.wav", 0.5f); }
+		void Execute() override { m_SoundSystem->Play("../Data/Sounds/Demo Sound.wav", 0.5f); }
 	private:
 		SoundSystem* m_SoundSystem;
 	};

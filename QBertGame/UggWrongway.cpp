@@ -2,10 +2,12 @@
 #include "GameObject.h"
 #include "GraphicsComponent.h"
 #include <iostream>
+#include "SoundServiceLocator.h"
+#include "SoundSystem.h"
 
 
 UggWrongway::UggWrongway(const std::shared_ptr<dae::GameObject>& gameObject, int nrRows, float cubesWidth, float cubesHeight,
-	float spriteWidth, float spriteHeight, int startingCube, float jumpInterval, bool isUgg, bool startingLeft)
+                         float spriteWidth, float spriteHeight, int startingCube, float jumpInterval, bool isUgg, bool startingLeft)
 	: m_GameObject(gameObject)
 	, m_CurrentCubeIdx(startingCube)
 	, m_CurrentRow(nrRows)
@@ -157,7 +159,10 @@ void UggWrongway::JumpFinished()
 	m_Airborne = false;
 	
 	if (m_Alive)
+	{
+		SoundServiceLocator::GetSoundSystem().Play("../Data/Sounds/Other Foes Jump.wav", 0.08f);
 		m_Subject->Notify(dae::Event::UggWrongwayLanded);
+	}
 
 	else
 		m_Subject->Notify(dae::Event::UggWrongwayFell);

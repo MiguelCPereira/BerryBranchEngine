@@ -12,6 +12,8 @@
 #include "UggWrongway.h"
 #include "Coily.h"
 #include "Disk.h"
+#include "SoundServiceLocator.h"
+#include "SoundSystem.h"
 
 LevelSectionObserver::LevelSectionObserver(float transitionTime, QBert* qBertComp)
 	: m_GameObject()
@@ -197,6 +199,13 @@ void LevelSectionObserver::Initialize()
 			}
 		}
 	}
+
+
+	// This statement will only run if the instance of this class was created with
+	// the first constructor - which means it's only gonna be used for a level transition
+	if (m_LevelTitleScreenTime > 0.f)
+		SoundServiceLocator::GetSoundSystem().Play("../Data/Sounds/Level Screen Tune.wav", 0.1f);
+
 }
 
 void LevelSectionObserver::SetQBert(QBert* qBertComp)
@@ -296,11 +305,13 @@ void LevelSectionObserver::OnNotify(const dae::Event& event)
 			{
 				if (CheckCollidingUggWrong() || CheckCollidingCoily())
 				{
+					SoundServiceLocator::GetSoundSystem().Play("../Data/Sounds/QBert Hit.wav", 0.07f);
 					ChangeFreezeEverything(true);
 					m_DeadQbert = true;
 					m_QBertComp->Die();
 
 					// Make QBert curse
+					SoundServiceLocator::GetSoundSystem().Play("../Data/Sounds/Swearing.wav", 0.1f);
 					m_QBertComp->SetCursesHidden(false);
 				}
 			}
@@ -353,6 +364,7 @@ void LevelSectionObserver::OnNotify(const dae::Event& event)
 				m_QBertJustFell = true;
 
 				// Make QBert curse
+				SoundServiceLocator::GetSoundSystem().Play("../Data/Sounds/Swearing.wav", 0.1f);
 				m_QBertComp->SetCursesHidden(false);
 				break;
 			}
@@ -376,11 +388,13 @@ void LevelSectionObserver::OnNotify(const dae::Event& event)
 			{
 				if (CheckCollidingUggWrong())
 				{
+					SoundServiceLocator::GetSoundSystem().Play("../Data/Sounds/QBert Hit.wav", 0.07f);
 					ChangeFreezeEverything(true);
 					m_DeadQbert = true;
 					m_QBertComp->Die();
 
 					// Make QBert curse
+					SoundServiceLocator::GetSoundSystem().Play("../Data/Sounds/Swearing.wav", 0.1f);
 					m_QBertComp->SetCursesHidden(false);
 				}
 			}
@@ -396,11 +410,13 @@ void LevelSectionObserver::OnNotify(const dae::Event& event)
 			{
 				if (CheckCollidingCoily())
 				{
+					SoundServiceLocator::GetSoundSystem().Play("../Data/Sounds/QBert Hit.wav", 0.07f);
 					ChangeFreezeEverything(true);
 					m_DeadQbert = true;
 					m_QBertComp->Die();
 
 					// Make QBert curse
+					SoundServiceLocator::GetSoundSystem().Play("../Data/Sounds/Swearing.wav", 0.1f);
 					m_QBertComp->SetCursesHidden(false);
 				}
 			}
@@ -499,6 +515,7 @@ void LevelSectionObserver::KillCollidingSlickSam() const
 				i--;
 				nrSlickSams--;
 				m_QBertComp->ScoreIncrease(300);
+				SoundServiceLocator::GetSoundSystem().Play("../Data/Sounds/SlickSam Caught.wav", 0.3f);
 			}
 		}
 	}
@@ -580,6 +597,7 @@ void LevelSectionObserver::ClearAllEnemies()
 
 void LevelSectionObserver::ClearRemainingDisks() const
 {
+	SoundServiceLocator::GetSoundSystem().Play("../Data/Sounds/Clear Disks.wav", 0.1f);
 	auto nrComponents = int(m_DisksVector->size());
 	for (auto i = 0; i < nrComponents; i++)
 	{
@@ -595,6 +613,7 @@ void LevelSectionObserver::WinSection()
 {
 	if (m_SectionComplete == false)
 	{
+		SoundServiceLocator::GetSoundSystem().Play("../Data/Sounds/Round Complete Tune.wav", 0.1f);
 		ChangeFreezeEverything(true);
 		m_SectionComplete = true;
 	}
@@ -788,7 +807,7 @@ void LevelSectionObserver::Update(const float deltaTime)
 						}
 
 						// An extra second is added so the right spawner has a tiny delay compared to the left one
-						if (m_UggWrongSpawnTimer2 >= m_UggWrongSpawnInterval + 2.f)
+						if (m_UggWrongSpawnTimer2 >= m_UggWrongSpawnInterval + 2.1f)
 						{
 							bool isUgg = false;
 

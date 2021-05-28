@@ -40,6 +40,8 @@ int main(int, char* [])
     dae::Minigin engine;
     engine.Initialize();
 
+	//engine.LoadDemo();
+	
 	SetUpGlobalGOs();
 	LoadLevel01();
 	LoadLevel02();

@@ -9,7 +9,7 @@ namespace dae
 	{
 	public:
 		void Initialize();
-		void LoadGame() const;
+		void LoadDemo() const;
 		void Cleanup();
 		void Run();
 	private:

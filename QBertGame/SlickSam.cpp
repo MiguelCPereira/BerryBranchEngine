@@ -2,10 +2,12 @@
 #include "GameObject.h"
 #include "GraphicsComponent.h"
 #include <iostream>
+#include "SoundServiceLocator.h"
+#include "SoundSystem.h"
 
 
 SlickSam::SlickSam(const std::shared_ptr<dae::GameObject>& gameObject, int nrRows, float cubesWidth, float cubesHeight,
-	float spriteWidth, float spriteHeight, int startingCube, float jumpInterval, bool isSlick)
+                   float spriteWidth, float spriteHeight, int startingCube, float jumpInterval, bool isSlick)
 	: m_GameObject(gameObject)
 	, m_CurrentCubeIdx(startingCube)
 	, m_LastRow(nrRows)
@@ -99,7 +101,10 @@ void SlickSam::JumpFinished()
 	m_Airborne = false;
 	
 	if (m_Alive)
+	{
+		SoundServiceLocator::GetSoundSystem().Play("../Data/Sounds/Other Foes Jump.wav", 0.08f);
 		m_Subject->Notify(dae::Event::SlickSamLanded);
+	}
 	else
 		m_Subject->Notify(dae::Event::SlickSamFell);
 }

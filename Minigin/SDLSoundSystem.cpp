@@ -63,6 +63,6 @@ void SDLSoundSystem::LoadSound(std::string filename)
 	}
 	else
 	{
-		std::cout << "The sound file \"" << filename << "\" as already been loaded\n";
+		std::cout << "The sound file \"" << filename << "\" has already been loaded\n";
 	}
 }
