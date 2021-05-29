@@ -25,6 +25,9 @@
     <Filter Include="Components\Menu Screens">
       <UniqueIdentifier>{0d83fce5-b819-47c8-a1f0-480355db330a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Components\Player Input">
+      <UniqueIdentifier>{d98d8d7b-c6f1-4bef-9963-96286ccfd580}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="QBertGame.cpp">
@@ -84,6 +87,15 @@
     <ClCompile Include="MenuScoreDisplay.cpp">
       <Filter>Components\Menu Screens</Filter>
     </ClCompile>
+    <ClCompile Include="PlayerOneInput.cpp">
+      <Filter>Components\Player Input</Filter>
+    </ClCompile>
+    <ClCompile Include="StartScreenInput.cpp">
+      <Filter>Components\Player Input</Filter>
+    </ClCompile>
+    <ClCompile Include="VictoryDeathScreenInput.cpp">
+      <Filter>Components\Player Input</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Pyramid.h">
@@ -139,6 +151,15 @@
     </ClInclude>
     <ClInclude Include="MenuScoreDisplay.h">
       <Filter>Components\Menu Screens</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerOneInput.h">
+      <Filter>Components\Player Input</Filter>
+    </ClInclude>
+    <ClInclude Include="StartScreenInput.h">
+      <Filter>Components\Player Input</Filter>
+    </ClInclude>
+    <ClInclude Include="VictoryDeathScreenInput.h">
+      <Filter>Components\Player Input</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

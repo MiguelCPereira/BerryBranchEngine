@@ -392,10 +392,13 @@ xcopy "$(SolutionDir)$(Platform)\$(Configuration)\*.dll" "$(OutputPath)" /R /Y</
     <ClCompile Include="QBertGame.cpp" />
     <ClCompile Include="RoundLvlDisplay.cpp" />
     <ClCompile Include="ScoreDisplay.cpp" />
+    <ClCompile Include="StartScreenInput.cpp" />
+    <ClCompile Include="PlayerOneInput.cpp" />
     <ClCompile Include="SlickSam.cpp" />
     <ClCompile Include="StartScreen.cpp" />
     <ClCompile Include="UggWrongway.cpp" />
     <ClCompile Include="VictoryDeathScreen.cpp" />
+    <ClCompile Include="VictoryDeathScreenInput.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Coily.h" />
@@ -412,10 +415,13 @@ xcopy "$(SolutionDir)$(Platform)\$(Configuration)\*.dll" "$(OutputPath)" /R /Y</
     <ClInclude Include="QBert.h" />
     <ClInclude Include="RoundLvlDisplay.h" />
     <ClInclude Include="ScoreDisplay.h" />
+    <ClInclude Include="StartScreenInput.h" />
+    <ClInclude Include="PlayerOneInput.h" />
     <ClInclude Include="SlickSam.h" />
     <ClInclude Include="StartScreen.h" />
     <ClInclude Include="UggWrongway.h" />
     <ClInclude Include="VictoryDeathScreen.h" />
+    <ClInclude Include="VictoryDeathScreenInput.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

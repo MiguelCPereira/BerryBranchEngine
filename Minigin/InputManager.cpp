@@ -159,3 +159,9 @@ void dae::InputManager::AddCommand(SDL_Keycode key, std::unique_ptr<Command> com
 	m_KeyboardCommands.insert_or_assign(key, std::move(command));
 }
 
+void dae::InputManager::ClearAllCommands()
+{
+	m_ControllerCommands.clear();
+	m_KeyboardCommands.clear();
+}
+
