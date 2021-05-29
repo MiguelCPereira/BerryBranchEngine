@@ -136,8 +136,6 @@ LevelSectionObserver::~LevelSectionObserver()
 	if (m_QBertComp != nullptr)
 		m_QBertComp->GetSubject()->RemoveObserver(this);
 
-	m_QBertGraphics = nullptr;
-
 	if (m_CoilyComp != nullptr)
 		m_CoilyComp->GetSubject()->RemoveObserver(this);
 
@@ -166,47 +164,84 @@ LevelSectionObserver::~LevelSectionObserver()
 			if (m_DisksVector->operator[](i) != nullptr)
 			{
 				m_DisksVector->operator[](i)->GetSubject()->RemoveObserver(this);
-				delete m_DisksVector->operator[](i);
-				m_DisksVector->operator[](i) = nullptr;
 			}
 		}
 	}
-	delete m_DisksVector;
-	m_DisksVector = nullptr;
-
-	delete m_Pyramid;
-	m_Pyramid = nullptr;
 }
 
 void LevelSectionObserver::Initialize()
 {
-	m_ThisObserver = this;
+	// Initialize also resets every value that might be changed during gameplay,
+	// in case the scene is loaded again (aka, the round needs to restart)
 	
+	
+	m_ThisObserver = this;
+
 	if (m_QBertComp != nullptr)
 	{
 		m_QBertComp->GetSubject()->AddObserver(this);
 		m_QBertComp->SetFrozen(false);
 
 	}
-
-	if (m_DisksVector != nullptr)
-	{
-		if (m_DisksVector->empty() == false)
-		{
-			for (size_t i = 0; i < m_DisksVector->size(); i++)
-			{
-				if (m_DisksVector->operator[](i) != nullptr)
-					m_DisksVector->operator[](i)->GetSubject()->AddObserver(this);
-			}
-		}
-	}
-
-
+	
 	// This statement will only run if the instance of this class was created with
 	// the first constructor - which means it's only gonna be used for a level transition
 	if (m_LevelTitleScreenTime > 0.f)
+	{
+		m_LevelTitleTimer = 0.f;
 		SoundServiceLocator::GetSoundSystem().Play("../Data/Sounds/Level Screen Tune.wav", 0.1f);
+	}
+	else
+	{
+		m_SectionComplete = false;
+		m_QBertJustFell = false;
+		m_SpawnCoily = true;
+		m_CoilySpawnTimer = 5.f;
+		m_SlickSamSpawnTimer = 0.f;
+		m_UggWrongSpawnTimer1 = 0.f;
+		m_UggWrongSpawnTimer2 = 0.f;
+		m_AnimationTimer = 0.f;
+		m_FlashingTimer = 0.1f;
+		m_ClearDisksTimer = 0.f;
+		m_StartPostAnimationPause = false;
+		m_PostAnimationTimer = 0.f;
+		m_CurrentFlashingColor = 3;
+		m_EverythingClear = false;
+		m_DeadQbert = false;
+		m_DeadQbertTimer = 0.f;
+		m_DeathEmptyScene = false;
+		m_DeathEmptySceneTimer = 0.f;
 
+		if (m_QBertComp != nullptr)
+		{
+			m_QBertComp->GetSubject()->AddObserver(this);
+			m_QBertComp->SetFrozen(false);
+
+		}
+
+		if (m_DisksVector != nullptr)
+		{
+			if (m_DisksVector->empty() == false)
+			{
+				for (size_t i = 0; i < m_DisksVector->size(); i++)
+				{
+					auto* disk = m_DisksVector->operator[](i);
+					
+					if (disk != nullptr)
+					{
+						disk->GetSubject()->AddObserver(this);
+						disk->ResetDisk();
+					}
+				}
+			}
+		}
+
+		if(m_Pyramid != nullptr)
+		{
+			for(auto cube : m_Pyramid->m_CubeGOVector)
+				cube->GetComponent<Cube>()->ResetCube();
+		}
+	}
 }
 
 void LevelSectionObserver::SetQBert(QBert* qBertComp)
@@ -340,7 +375,7 @@ void LevelSectionObserver::OnNotify(const dae::Event& event)
 			for(size_t i = 0; i < m_DisksVector->size(); i++)
 			{
 				auto* disk = m_DisksVector->operator[](i);
-				if(disk->GetRow() == m_QBertComp->GetCurrentRow())
+				if(disk->GetHasBeenUsed() == false && disk->GetRow() == m_QBertComp->GetCurrentRow())
 				{
 					if (disk->GetIsLeft() && m_QBertComp->GetLastJumpedOffLeft())
 					{
@@ -359,6 +394,7 @@ void LevelSectionObserver::OnNotify(const dae::Event& event)
 			
 			if (m_QBertJustFell == false && m_QBertJustTookDisk == false)
 			{
+				SoundServiceLocator::GetSoundSystem().Play("../Data/Sounds/QBert Fall.wav", 0.5f);
 				ChangeFreezeEverything(true);
 				m_DeadQbert = true;
 				m_QBertComp->Die();
@@ -491,8 +527,7 @@ void LevelSectionObserver::DestroyUsedDisk() const
 		auto* disk = m_DisksVector->operator[](i);
 		if (disk->GetHasBeenUsed())
 		{
-			disk->GetDeleted();
-			m_DisksVector->erase(std::find(m_DisksVector->begin(), m_DisksVector->end(), disk));
+			disk->SetHide(true);
 			break;
 		}
 
@@ -599,15 +634,20 @@ void LevelSectionObserver::ClearAllEnemies()
 void LevelSectionObserver::ClearRemainingDisks() const
 {
 	SoundServiceLocator::GetSoundSystem().Play("../Data/Sounds/Clear Disks.wav", 0.1f);
-	auto nrComponents = int(m_DisksVector->size());
-	for (auto i = 0; i < nrComponents; i++)
+	
+	int nrActiveDisks = 0;
+	for (size_t i = 0; i < m_DisksVector->size(); i++)
 	{
-		auto* disk = m_DisksVector->operator[](0);		
-		m_DisksVector->erase(m_DisksVector->begin());
-		disk->GetDeleted();
+		auto* disk = m_DisksVector->operator[](i);
+		if (disk->GetHasBeenUsed() == false)
+		{
+			disk->SetHide(true);
+			nrActiveDisks++;
+		}
+
 	}
 
-	m_QBertComp->ScoreIncrease(nrComponents * 50);
+	m_QBertComp->ScoreIncrease(nrActiveDisks * 50);
 }
 
 void LevelSectionObserver::WinSection()
@@ -635,7 +675,7 @@ void LevelSectionObserver::ChangeFreezeEverything(bool freeze) const
 	
 }
 
-void LevelSectionObserver::ChangeSection()
+void LevelSectionObserver::ChangeSection() const
 {
 	if (m_QBertComp != nullptr)
 	{
@@ -655,13 +695,10 @@ void LevelSectionObserver::ChangeSection()
 
 
 
-			// Delete everything from this observer, as otherwise it would still be
-			// active after the round transition, as QBert is stored as a global
+			// Stop observing everything once the round ends
 			
 			if (m_QBertComp != nullptr)
 				m_QBertComp->GetSubject()->RemoveObserver(m_ThisObserver);
-
-			m_QBertGraphics = nullptr;
 
 			if (m_CoilyComp != nullptr)
 				m_CoilyComp->GetSubject()->RemoveObserver(m_ThisObserver);
@@ -691,16 +728,9 @@ void LevelSectionObserver::ChangeSection()
 					if (m_DisksVector->operator[](i) != nullptr)
 					{
 						m_DisksVector->operator[](i)->GetSubject()->RemoveObserver(m_ThisObserver);
-						delete m_DisksVector->operator[](i);
-						m_DisksVector->operator[](i) = nullptr;
 					}
 				}
 			}
-			delete m_DisksVector;
-			m_DisksVector = nullptr;
-
-			delete m_Pyramid;
-			m_Pyramid = nullptr;
 		}
 	}
 	

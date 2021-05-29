@@ -7,7 +7,7 @@ class QBert;
 class ScoreDisplay : public dae::BaseComponent, public dae::Observer
 {
 public:
-	explicit ScoreDisplay(QBert* qBertComp);
+	explicit ScoreDisplay(QBert* qBertComp, dae::TextComponent* textComp);
 	~ScoreDisplay() override;
 
 	void SetQBert(QBert* qBertComp);

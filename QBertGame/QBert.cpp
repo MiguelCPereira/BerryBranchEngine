@@ -34,6 +34,14 @@ void QBert::Die()
 	}
 }
 
+void QBert::ResetGameVariables()
+{
+	m_Lives = m_MaxLives;
+	m_Level = 0;
+	m_Round = 1;
+	m_Score = 0;
+}
+
 void QBert::ResetPosition()
 {
 	m_CurrentCubeIdx = 1;
@@ -255,7 +263,6 @@ void QBert::JumpFinished()
 {
 	if (m_JumpedOff)
 	{
-		SoundServiceLocator::GetSoundSystem().Play("../Data/Sounds/QBert Fall.wav", 0.5f);
 		m_Subject->Notify(dae::Event::QBertFell);
 	}
 	else

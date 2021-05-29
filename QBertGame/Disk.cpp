@@ -29,6 +29,10 @@ Disk::Disk(const std::shared_ptr<dae::GameObject>& gameObject, int rowIdx, bool 
 	, m_FinalPositionReached(false)
 	, m_HasBeenUsed(false)
 
+	, m_Hidden(false)
+	, m_PosBeforeHiddenX()
+	, m_PosBeforeHiddenY()
+
 	, m_FPSIdle(9)
 	, m_FPSFlight(50)
 	, m_MidFlightTime(0.f)
@@ -62,15 +66,45 @@ void Disk::Activate(QBert* qBertComp, dae::GraphicsComponent* qBertGraphics)
 	m_Activated = true;
 }
 
-void Disk::GetDeleted() const
+void Disk::SetHide(bool isHidden)
 {
-	m_GameObject->RemoveAllComponents();
+	auto* graphics = m_GameObject->GetComponent<dae::GraphicsComponent>();
+
+	if (isHidden)
+	{
+		m_PosBeforeHiddenX = graphics->GetPosX();
+		m_PosBeforeHiddenY = graphics->GetPosY();
+		graphics->SetPosition(-50, -50);
+	}
+	else
+	{
+		graphics->SetPosition(m_PosBeforeHiddenX, m_PosBeforeHiddenY);
+	}
+
+	m_Hidden = isHidden;
+}
+
+void Disk::ResetDisk()
+{
+	auto* graphics = m_GameObject->GetComponent<dae::GraphicsComponent>();
+	graphics->SetPosition(m_InitialPosX, m_InitialPosY);
+	
+	m_Activated = false;
+	m_MidFlightPosX = m_InitialPosX;
+	m_MidFlightPosY = m_InitialPosY;
+	m_FinalPositionReached = false;
+	m_MidFlightTime = 0.f;
+	m_TimeSinceLastFrameFlight = 0.f;
+	m_TimeSinceLastFrameIdle = 0.f;
+	m_CurrentFrame = 0;
+	m_HasBeenUsed = false;
+	m_Hidden = false;
 }
 
 
 void Disk::Update(const float deltaTime)
 {
-	if (m_HasBeenUsed == false)
+	if (m_HasBeenUsed == false && m_Hidden == false)
 	{
 		// Idle Spinning Animation
 		m_TimeSinceLastFrameIdle += deltaTime;

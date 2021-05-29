@@ -10,7 +10,6 @@ namespace dae
 		friend Scene& SceneManager::CreateScene(const std::string& name);
 	public:
 		void MINIGIN_ENTRY Add(const std::shared_ptr<GameObject>& object);
-
 		void MINIGIN_ENTRY Initialize();
 		void Update(const float deltaTime);
 		void Render() const;
@@ -25,7 +24,7 @@ namespace dae
 		explicit Scene(const std::string& name);
 
 		std::string m_Name;
-		std::vector < std::shared_ptr<GameObject>> m_Objects{};
+		std::vector <std::shared_ptr<GameObject>> m_Objects{};
 
 		static unsigned int m_IdCounter; 
 	};

@@ -39,17 +39,9 @@ std::vector<std::shared_ptr<dae::GameObject>> MakeQBert()
 	qBertGO->AddComponent(new JumpingObserver(qBertGO->GetComponent<QBert>(), qBertGO->GetComponent<dae::GraphicsComponent>(),
 		g_CubesActualWidth, g_CubesActualHeight));
 
-	auto livesDisplayGO = std::make_shared<dae::GameObject>();
-	livesDisplayGO->AddComponent(new LivesDisplay(qBertGO->GetComponent<QBert>()));
-
-	auto scoreDisplayGO = std::make_shared<dae::GameObject>();
-	scoreDisplayGO->AddComponent(new ScoreDisplay(qBertGO->GetComponent<QBert>()));
-	
 	std::vector< std::shared_ptr<dae::GameObject>> returnVector;
 	returnVector.push_back(std::move(qBertGO));
 	returnVector.push_back(std::move(cursesGO));
-	returnVector.push_back(std::move(livesDisplayGO));
-	returnVector.push_back(std::move(scoreDisplayGO));
 	
 	return returnVector;
 }
@@ -254,8 +246,25 @@ std::shared_ptr<dae::GameObject> MakeHeartForDisplay(bool playerOne, float posY)
 	return heartGO;
 }
 
+std::vector<std::shared_ptr<dae::GameObject>>* MakeLivesDisplayVisuals(bool playerOne, int livesAmount)
+{
+	auto posY = 130.f;
+	auto spacingBetweenHearts = 40.f;
 
-std::shared_ptr<dae::GameObject> MakeScoreDisplay(bool playerOne)
+	auto* returnVector = new std::vector< std::shared_ptr<dae::GameObject>>();
+	
+	for (auto i = 0; i < livesAmount; i++)
+	{
+		auto heartGO = MakeHeartForDisplay(playerOne, posY);
+		posY += spacingBetweenHearts;
+		returnVector->push_back(std::move(heartGO));
+	}
+
+	return returnVector;
+}
+
+
+std::shared_ptr<dae::GameObject> MakeScoreDisplayVisuals(bool playerOne)
 {
 	const auto titleActualWidth = 195;
 	const auto titleActualHeight = 33;
@@ -281,7 +290,7 @@ std::shared_ptr<dae::GameObject> MakeScoreDisplay(bool playerOne)
 }
 
 
-std::shared_ptr<dae::GameObject> MakeLevelDisplay(bool coOpOn)
+std::shared_ptr<dae::GameObject> MakeLevelDisplayVisuals(bool coOpOn)
 {
 	float posY;
 	float posX;
@@ -307,7 +316,7 @@ std::shared_ptr<dae::GameObject> MakeLevelDisplay(bool coOpOn)
 }
 
 
-std::shared_ptr<dae::GameObject> MakeRoundDisplay(bool coOpOn)
+std::shared_ptr<dae::GameObject> MakeRoundDisplayVisuals(bool coOpOn)
 {
 	float posY;
 	float posX;
@@ -332,11 +341,72 @@ std::shared_ptr<dae::GameObject> MakeRoundDisplay(bool coOpOn)
 }
 
 
-std::shared_ptr<dae::GameObject> MakeRoundLevelDisplayGO(QBert* qBertComp, bool coOpOn)
+std::vector<std::shared_ptr<dae::GameObject>> MakeUI(std::vector<QBert*>* qBertCompVector, bool coOpOn)
 {
-	auto displayGO = std::make_shared<dae::GameObject>();
-	displayGO->AddComponent(new RoundLvlDisplay(qBertComp, coOpOn));
-	return displayGO;
+	std::vector< std::shared_ptr<dae::GameObject>> returnVector;
+
+
+	
+	// Make the Level/Round Display
+	auto levelVisualsGO = MakeLevelDisplayVisuals(coOpOn);
+	auto roundVisualsGO = MakeRoundDisplayVisuals(coOpOn);
+	auto roundLevelGO = std::make_shared<dae::GameObject>();
+	roundLevelGO->AddComponent(new RoundLvlDisplay(qBertCompVector->operator[](0), coOpOn, levelVisualsGO->GetComponent<dae::TextComponent>(),
+		roundVisualsGO->GetComponent<dae::TextComponent>()));
+	returnVector.push_back(std::move(levelVisualsGO));
+	returnVector.push_back(std::move(roundVisualsGO));
+	returnVector.push_back(std::move(roundLevelGO));
+	
+
+	
+	// Make the Lives Display
+	auto* heartsGOVector1 = MakeLivesDisplayVisuals(true, qBertCompVector->operator[](0)->GetMaxLives());
+	auto* graphicsCompVector1 = new std::vector<dae::GraphicsComponent*>();
+	
+	for(size_t i = 0; i < heartsGOVector1->size(); i++)
+	{
+		graphicsCompVector1->push_back(heartsGOVector1->operator[](i)->GetComponent<dae::GraphicsComponent>());
+		returnVector.push_back(std::move(heartsGOVector1->operator[](i)));
+	}
+	
+	auto livesGO1 = std::make_shared<dae::GameObject>();
+	livesGO1->AddComponent(new LivesDisplay(qBertCompVector->operator[](0), graphicsCompVector1));
+	returnVector.push_back(std::move(livesGO1));
+
+
+	
+	// Make the Score Display
+	auto scoreGO1 = MakeScoreDisplayVisuals(true);
+	scoreGO1->AddComponent(new ScoreDisplay(qBertCompVector->operator[](0), scoreGO1->GetComponent<dae::TextComponent>()));
+	returnVector.push_back(std::move(scoreGO1));
+
+
+	
+	// If there's co-op, make another pair of score and lives displays
+	if (coOpOn)
+	{
+		auto* heartsGOVector2 = MakeLivesDisplayVisuals(false, qBertCompVector->operator[](1)->GetMaxLives());
+		auto* graphicsCompVector2 = new std::vector<dae::GraphicsComponent*>();
+
+		for (size_t i = 0; i < heartsGOVector1->size(); i++)
+		{
+			graphicsCompVector2->push_back(heartsGOVector2->operator[](i)->GetComponent<dae::GraphicsComponent>());
+			returnVector.push_back(std::move(heartsGOVector2->operator[](i)));
+		}
+		
+		auto livesGO2 = std::make_shared<dae::GameObject>();
+		livesGO2->AddComponent(new LivesDisplay(qBertCompVector->operator[](1), graphicsCompVector2));
+		returnVector.push_back(std::move(livesGO2));
+
+		
+		auto scoreGO2 = MakeScoreDisplayVisuals(false);
+		scoreGO2->AddComponent(new ScoreDisplay(qBertCompVector->operator[](1), scoreGO2->GetComponent<dae::TextComponent>()));
+		returnVector.push_back(std::move(scoreGO2));
+	}
+
+
+	
+	return returnVector;
 }
 
 

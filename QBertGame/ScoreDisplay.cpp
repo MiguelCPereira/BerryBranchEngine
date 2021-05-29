@@ -9,9 +9,9 @@
 #include "TextComponent.h"
 
 
-ScoreDisplay::ScoreDisplay(QBert* qBertComp)
+ScoreDisplay::ScoreDisplay(QBert* qBertComp, dae::TextComponent* textComp)
 	: m_QBertComp(qBertComp)
-	, m_TextComp()
+	, m_TextComp(textComp)
 {
 }
 
@@ -32,10 +32,7 @@ void ScoreDisplay::Initialize()
 		m_QBertComp->SetFrozen(false);
 	}
 
-	auto scoreGO = MakeScoreDisplay(true);
-	m_TextComp = scoreGO->GetComponent<dae::TextComponent>();
 	UpdateScoreText();
-	dae::SceneManager::GetInstance().GetCurrentScene()->Add(scoreGO);
 }
 
 

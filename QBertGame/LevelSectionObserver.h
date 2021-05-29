@@ -46,7 +46,7 @@ public:
 	void WinSection();
 	void LevelWonAnimation(const float deltaTime);
 	void ChangeFreezeEverything(bool freeze) const;
-	void ChangeSection();
+	void ChangeSection() const;
 
 	void AddCoily(bool isLeft);
 	void AddSlickSam(bool isSlick, bool isLeft);

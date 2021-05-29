@@ -9,10 +9,10 @@
 #include "Scene.h"
 #include "TextComponent.h"
 
-RoundLvlDisplay::RoundLvlDisplay(QBert* qBertComp, bool isCoOp)
+RoundLvlDisplay::RoundLvlDisplay(QBert* qBertComp, bool isCoOp, dae::TextComponent* levelTextComp, dae::TextComponent* roundTextComp)
 	: m_QBertComp(qBertComp)
-	, m_LevelTextComp()
-	, m_RoundTextComp()
+	, m_LevelTextComp(levelTextComp)
+	, m_RoundTextComp(roundTextComp)
 	, m_IsCoOp(isCoOp)
 {
 }
@@ -34,14 +34,8 @@ void RoundLvlDisplay::Initialize()
 		m_QBertComp->SetFrozen(false);
 	}
 
-	auto lvlDisplayGO = MakeLevelDisplay(m_IsCoOp);
-	m_LevelTextComp = lvlDisplayGO->GetComponent<dae::TextComponent>();
-	auto roundDisplayGO = MakeRoundDisplay(m_IsCoOp);
-	m_RoundTextComp = roundDisplayGO->GetComponent<dae::TextComponent>();
 	UpdateLevelText();
 	UpdateRoundText();
-	dae::SceneManager::GetInstance().GetCurrentScene()->Add(lvlDisplayGO);
-	dae::SceneManager::GetInstance().GetCurrentScene()->Add(roundDisplayGO);
 }
 
 void RoundLvlDisplay::SetQBert(QBert* qBertComp)

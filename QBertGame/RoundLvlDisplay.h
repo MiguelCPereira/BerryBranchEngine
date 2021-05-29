@@ -7,7 +7,7 @@ class QBert;
 class RoundLvlDisplay : public dae::BaseComponent, public dae::Observer
 {
 public:
-	explicit RoundLvlDisplay(QBert* qBertComp, bool isCoOp);
+	explicit RoundLvlDisplay(QBert* qBertComp, bool isCoOp, dae::TextComponent* levelTextComp, dae::TextComponent* roundTextComp);
 	~RoundLvlDisplay() override;
 
 	void SetQBert(QBert* qBertComp);

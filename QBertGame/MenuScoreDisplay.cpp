@@ -14,6 +14,7 @@ MenuScoreDisplay::MenuScoreDisplay(QBert* qBertComp, dae::TextComponent* textCom
 void MenuScoreDisplay::Initialize()
 {
 	const auto score = m_QBertComp->GetScore();
+	m_QBertComp->ResetGameVariables();
 
 	int nrOfDigits = 0;
 	int temp = score;

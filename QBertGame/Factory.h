@@ -37,13 +37,15 @@ std::shared_ptr<dae::GameObject> MakeFPSCounter();
 
 std::shared_ptr<dae::GameObject> MakeHeartForDisplay(bool playerOne, float posY);
 
-std::shared_ptr<dae::GameObject> MakeScoreDisplay(bool playerOne);
+std::vector<std::shared_ptr<dae::GameObject>>* MakeLivesDisplayVisuals(bool playerOne, int livesAmount);
 
-std::shared_ptr<dae::GameObject> MakeLevelDisplay(bool coOpOn); // This is used to make the actual RoundLevelDisplay
+std::shared_ptr<dae::GameObject> MakeScoreDisplayVisuals(bool playerOne);
 
-std::shared_ptr<dae::GameObject> MakeRoundDisplay(bool coOpOn); // This is used to make the actual RoundLevelDisplay
+std::shared_ptr<dae::GameObject> MakeLevelDisplayVisuals(bool coOpOn);
 
-std::shared_ptr<dae::GameObject> MakeRoundLevelDisplayGO(QBert* qBertComp, bool coOpOn);
+std::shared_ptr<dae::GameObject> MakeRoundDisplayVisuals(bool coOpOn);
+
+std::vector<std::shared_ptr<dae::GameObject>> MakeUI(std::vector<QBert*>* qBertCompVector, bool coOpOn);
 
 std::shared_ptr<dae::GameObject> MakeDiskGO(int row, bool isLeft, int colorIdx);
 

@@ -14,11 +14,12 @@ public:
 	Cube& operator=(const Cube& other) = delete;
 	Cube& operator=(Cube&& other) noexcept = delete;
 
+	void ResetCube();
 	bool TurnCube();
 	void SlickSamTurnCube();
 	bool GetIsTurned() const { return m_Turned; }
 
-	// These functions are only for animation purposes
+	// These functions are only for visual purposes
 	// They don't actually change anything about the cube's functionality
 	void MakeCube1stColor() const;
 	void MakeCube2ndColor() const;

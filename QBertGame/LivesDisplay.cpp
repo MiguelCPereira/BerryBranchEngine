@@ -6,11 +6,10 @@
 #include "Scene.h"
 #include "Factory.h"
 
-LivesDisplay::LivesDisplay(QBert* qBertComp)
+LivesDisplay::LivesDisplay(QBert* qBertComp, std::vector<dae::GraphicsComponent*>* heartGraphics)
 	: m_QBertComp(qBertComp)
-	, m_Graphics()
+	, m_Graphics(heartGraphics)
 {
-	m_Graphics = new std::vector<dae::GraphicsComponent*>;
 }
 
 LivesDisplay::~LivesDisplay()
@@ -32,16 +31,10 @@ void LivesDisplay::Initialize()
 		m_QBertComp->SetFrozen(false);
 	}
 
-	m_Graphics->clear();
+	const auto heartsToHide = int(m_Graphics->size()) - m_QBertComp->GetCurrentLives();
 
-	auto posY = 130.f;
-	for (auto i = 0; i < m_QBertComp->GetCurrentLives(); i++)
-	{
-		auto heartGO = MakeHeartForDisplay(true, posY);
-		posY += 40.f;
-		m_Graphics->push_back(heartGO->GetComponent<dae::GraphicsComponent>());
-		dae::SceneManager::GetInstance().GetCurrentScene()->Add(heartGO);
-	}
+	for(auto i = 0; i < heartsToHide; i++)
+		m_Graphics->operator[](m_Graphics->size() - 1 - i)->SetPosition(-50, -50);
 }
 
 

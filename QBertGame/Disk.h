@@ -22,7 +22,8 @@ public:
 	Disk& operator=(Disk&& other) noexcept = delete;
 
 	void Activate(QBert* qBertComp, dae::GraphicsComponent* qBertGraphics);
-	void GetDeleted() const;
+	void SetHide(bool isHidden);
+	void ResetDisk();
 	
 	int GetRow() const { return m_RowIdx; }
 	bool GetHasBeenUsed() const { return m_HasBeenUsed; }
@@ -48,11 +49,14 @@ private:
 	bool m_FinalPositionReached;
 	bool m_HasBeenUsed;
 
+	bool m_Hidden;
+	float m_PosBeforeHiddenX, m_PosBeforeHiddenY;
+
 	const int m_FPSIdle, m_FPSFlight;
 	float m_MidFlightTime;
 	float m_TimeSinceLastFrameFlight;
 	float m_TimeSinceLastFrameIdle;
 	int m_CurrentFrame, m_NrFrames;
-	float m_SpriteWidth, m_SpriteHeight;
+	const float m_SpriteWidth, m_SpriteHeight;
 };
 

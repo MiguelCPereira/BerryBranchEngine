@@ -25,6 +25,7 @@ public:
 	int GetRound() const { return m_Round; }
 		
 	void Die();
+	void ResetGameVariables();
 	void ResetPosition();
 	void RevertToLastPosition();
 	void SetFrozen(bool frozen);
