@@ -100,13 +100,13 @@ void dae::InputManager::ExecuteKey(SDL_Keycode key, bool keyUp) const
 		{
 			if (itr->second->GetPressType() == ButtonPress::PressedDown && itr->second->GetCommandExecuted() == false)
 			{
-				itr->second->Execute();
 				itr->second->SetCommandExecuted(true);
+				itr->second->Execute();
 			}
 			else if (itr->second->GetPressType() == ButtonPress::PressedAndReleased && itr->second->GetCommandExecuted() == false)
 			{
-				itr->second->Execute();
 				itr->second->SetCommandExecuted(true);
+				itr->second->Execute();
 			}
 			else if (itr->second->GetPressType() == ButtonPress::WhilePressed)
 			{
@@ -123,20 +123,20 @@ void dae::InputManager::ExecuteKey(SDL_Keycode key, bool keyUp) const
 			{
 				if (itr->second->GetCommandExecuted() == true)
 				{
-					itr->second->Execute();
 					itr->second->SetCommandExecuted(false);
+					itr->second->Execute();
 				}
 			}
 			else
 			{
 				if (itr->second->GetCommandExecuted() == true)
 				{
+					itr->second->SetCommandExecuted(false);
+					
 					if (itr->second->GetPressType() == ButtonPress::PressedAndReleased)
 					{
 						itr->second->Execute();
 					}
-
-					itr->second->SetCommandExecuted(false);
 				}
 			}
 		}

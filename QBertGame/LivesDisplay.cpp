@@ -31,10 +31,22 @@ void LivesDisplay::Initialize()
 		m_QBertComp->SetFrozen(false);
 	}
 
-	const auto heartsToHide = int(m_Graphics->size()) - m_QBertComp->GetCurrentLives();
+	// Re-show all heart if they're hidden already
+	for (auto i = 0; i < int(m_Graphics->size()); i++)
+	{
+		auto* heart = m_Graphics->operator[](i);
 
-	for(auto i = 0; i < heartsToHide; i++)
-		m_Graphics->operator[](m_Graphics->size() - 1 - i)->SetPosition(-50, -50);
+		if (heart->GetPosX() < 0)
+			heart->SetPosition(heart->GetPosX() + 2000, heart->GetPosY());
+	}
+
+	// Hide as many as lives Qbert has lost
+	const auto heartsToHide = int(m_Graphics->size()) - m_QBertComp->GetCurrentLives();
+	for (auto i = 0; i < heartsToHide; i++)
+	{
+		auto* heart = m_Graphics->operator[](m_Graphics->size() - 1 - i);
+		heart->SetPosition(heart->GetPosX() - 2000, heart->GetPosY());
+	}
 }
 
 
@@ -56,7 +68,10 @@ void LivesDisplay::OnNotify(const dae::Event& event)
 	{
 	case dae::Event::QBertDied:
 		if(m_QBertComp->GetCurrentLives() >= 0)
-			m_Graphics->operator[](m_QBertComp->GetCurrentLives())->SetPosition(-50, -50);
+		{
+			auto* heart = m_Graphics->operator[](m_QBertComp->GetCurrentLives());
+			heart->SetPosition(heart->GetPosX() - 2000, heart->GetPosY());
+		}
 		break;
 	}
 }

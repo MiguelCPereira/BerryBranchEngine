@@ -558,9 +558,38 @@ std::shared_ptr<dae::GameObject> MakeVictoryScreenVisuals()
 }
 
 
+std::shared_ptr<dae::GameObject> MakeDeathScreenVisuals()
+{
+	const auto width = 376.f;
+	const auto height = 149.f;
+	const auto titlePosX = 138.f;
+	const auto titlePosY = 40.f;
+	const auto scoreTextPosX = 250.f;
+	const auto scoreTextPosY = 240.f;
+	const auto goBackPosX = 135.f;
+	const auto goBackPosY = 400.f;
+
+	auto newGO = std::make_shared<dae::GameObject>();
+
+	newGO->AddComponent(new dae::GraphicsComponent("Game Over Title.png", titlePosX, titlePosY, width, height));
+
+	auto font = dae::ResourceManager::GetInstance().LoadFont("Minecraft.ttf", 38);
+	auto* scoreComp = new dae::TextComponent("SCORE", font);
+	scoreComp->SetPosition(scoreTextPosX, scoreTextPosY);
+	newGO->AddComponent(scoreComp);
+
+	font = dae::ResourceManager::GetInstance().LoadFont("Minecraft.ttf", 16);
+	auto* goBackComp = new dae::TextComponent("Press ESC or START to go back to the main menu", font);
+	goBackComp->SetPosition(goBackPosX, goBackPosY);
+	newGO->AddComponent(goBackComp);
+
+	return newGO;
+}
+
+
 std::shared_ptr<dae::GameObject> MakeVictoryDeathScreenLogic(int startScreenSceneIdx, QBert* qBertComp)
 {
-	const auto scorePosX = 270.f;
+	const auto scorePosX = 255.f;
 	const auto scorePosY = 290.f;
 
 	auto victoryDeathScreenGO = std::make_shared<dae::GameObject>();

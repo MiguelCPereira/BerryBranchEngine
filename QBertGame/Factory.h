@@ -57,4 +57,6 @@ std::shared_ptr<dae::GameObject> MakeStartScreenLogic(int soloModeSceneIdx, int 
 
 std::shared_ptr<dae::GameObject> MakeVictoryScreenVisuals();
 
+std::shared_ptr<dae::GameObject> MakeDeathScreenVisuals();
+
 std::shared_ptr<dae::GameObject> MakeVictoryDeathScreenLogic(int startScreenSceneIdx, QBert* qBertComp);

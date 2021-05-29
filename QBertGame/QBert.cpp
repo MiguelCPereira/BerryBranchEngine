@@ -22,16 +22,8 @@ QBert::QBert(const std::shared_ptr<dae::GameObject>& gameObject, const std::shar
 
 void QBert::Die()
 {
-	if (m_Lives - 1 >= 0)
-	{
-		m_Lives--;
-		// Play sound
-		m_Subject->Notify(dae::Event::QBertDied);
-	}
-	else
-	{
-		// Game over
-	}
+	m_Lives--;
+	m_Subject->Notify(dae::Event::QBertDied);
 }
 
 void QBert::ResetGameVariables()
