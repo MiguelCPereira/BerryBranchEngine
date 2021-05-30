@@ -35,13 +35,22 @@ auto* qBertsCompVector = new std::vector<QBert*>();
 void SetUpGlobalGOs();
 void PrintInstructions();
 
-void LoadDeathScreen();
 void LoadStartScreen();
-void LoadVictoryScreen();
+void LoadDeathScreenSolo();
+void LoadVictoryScreenSolo();
+void LoadDeathScreenVersus();
+void LoadVictoryScreenVersus();
 
-void CreateBinaryLevel01();
-void CreateBinaryLevel02();
-void CreateBinaryLevel03();
+void CreateBinaryLevel01Solo();
+void CreateBinaryLevel02Solo();
+void CreateBinaryLevel03Solo();
+void CreateBinaryLevel01Coop();
+void CreateBinaryLevel02Coop();
+void CreateBinaryLevel03Coop();
+void CreateBinaryLevel01Versus();
+void CreateBinaryLevel02Versus();
+void CreateBinaryLevel03Versus();
+
 void LoadLevelsBinaries(const std::string& fileName);
 
 // Only for testing, not using bin files
@@ -60,7 +69,7 @@ struct Round
 	bool spawnUggWrongs;
 	float slickSamsSpawnInterval;
 	float uggWrongSpawnInterval;
-	bool isCoop;
+	int gameMode; // 1 is solo, 2 is coop, 3 is versus
 };
 
 
@@ -70,9 +79,15 @@ int main(int, char* [])
 {
 	srand((unsigned)time(nullptr));
 
-	CreateBinaryLevel01();
-	CreateBinaryLevel02();
-	CreateBinaryLevel03();
+	CreateBinaryLevel01Solo();
+	CreateBinaryLevel02Solo();
+	CreateBinaryLevel03Solo();
+	CreateBinaryLevel01Coop();
+	CreateBinaryLevel02Coop();
+	CreateBinaryLevel03Coop();
+	CreateBinaryLevel01Versus();
+	CreateBinaryLevel02Versus();
+	CreateBinaryLevel03Versus();
 	
     dae::Minigin engine;
     engine.Initialize();
@@ -80,18 +95,24 @@ int main(int, char* [])
 	//engine.LoadDemo();
 	
 	SetUpGlobalGOs();
-	LoadStartScreen();
-	LoadDeathScreen();
-	LoadLevelsBinaries("Level01.bin");
-	LoadLevelsBinaries("Level02.bin");
-	LoadLevelsBinaries("Level03.bin");
-	LoadVictoryScreen();
+	LoadStartScreen(); // Scene idx 00
+	LoadDeathScreenSolo(); // Scene idx 01
+	LoadLevelsBinaries("Level01Solo.bin"); // Scene idx 02-06
+	LoadLevelsBinaries("Level02Solo.bin"); // Scene idx 07-11
+	LoadLevelsBinaries("Level03Solo.bin"); // Scene idx 12-16
+	LoadVictoryScreenSolo(); // Scene idx 17
+	LoadDeathScreenVersus(); // Scene idx 18
+	LoadLevelsBinaries("Level01Versus.bin"); // Scene idx 19-23
+	LoadLevelsBinaries("Level02Versus.bin"); // Scene idx 24-28
+	LoadLevelsBinaries("Level03Versus.bin"); // Scene idx 29-33
+	LoadVictoryScreenVersus(); // Scene idx 34
 	PrintInstructions();
 	
 	engine.Run();
 	
     return 0;
 }
+
 
 
 
@@ -116,12 +137,13 @@ void PrintInstructions()
 
 
 
-void CreateBinaryLevel01()
+
+void CreateBinaryLevel01Solo()
 {	
-	std::ofstream levelOne("Level01.bin", std::ios::out | std::ios::binary);
+	std::ofstream levelOne("Level01Solo.bin", std::ios::out | std::ios::binary);
 	
 	if (!levelOne)
-		std::cout << "Level 01 file couldn't be created\n";
+		std::cout << "Level 01 Solo file couldn't be created\n";
 
 	const int nrRounds = 4;
 	Round rounds[nrRounds];
@@ -133,7 +155,7 @@ void CreateBinaryLevel01()
 	rounds[0].spawnUggWrongs = false;
 	rounds[0].slickSamsSpawnInterval = 0.f;
 	rounds[0].uggWrongSpawnInterval = 0.f;
-	rounds[0].isCoop = false;
+	rounds[0].gameMode = 1;
 
 	rounds[1].roundNumber = 2;
 	rounds[1].level = 1;
@@ -142,7 +164,7 @@ void CreateBinaryLevel01()
 	rounds[1].spawnUggWrongs = false;
 	rounds[1].slickSamsSpawnInterval = 0.f;
 	rounds[1].uggWrongSpawnInterval = 0.f;
-	rounds[1].isCoop = false;
+	rounds[1].gameMode = 1;
 
 	rounds[2].roundNumber = 3;
 	rounds[2].level = 1;
@@ -151,7 +173,7 @@ void CreateBinaryLevel01()
 	rounds[2].spawnUggWrongs = true;
 	rounds[2].slickSamsSpawnInterval = 0.f;
 	rounds[2].uggWrongSpawnInterval = 10.f;
-	rounds[2].isCoop = false;
+	rounds[2].gameMode = 1;
 
 	rounds[3].roundNumber = 4;
 	rounds[3].level = 1;
@@ -160,7 +182,7 @@ void CreateBinaryLevel01()
 	rounds[3].spawnUggWrongs = true;
 	rounds[3].slickSamsSpawnInterval = 0.f;
 	rounds[3].uggWrongSpawnInterval = 7.f;
-	rounds[3].isCoop = false;
+	rounds[3].gameMode = 1;
 	
 	for (int i = 0; i < nrRounds; i++)
 		levelOne.write((char*)&rounds[i], sizeof(Round));
@@ -168,15 +190,15 @@ void CreateBinaryLevel01()
 	levelOne.close();
 	
 	if (!levelOne.good())
-		std::cout << "Level 01 file wasn't properly written\n";
+		std::cout << "Level 01 Solo file wasn't properly written\n";
 }
 
-void CreateBinaryLevel02()
+void CreateBinaryLevel02Solo()
 {
-	std::ofstream levelTwo("Level02.bin", std::ios::out | std::ios::binary);
+	std::ofstream levelTwo("Level02Solo.bin", std::ios::out | std::ios::binary);
 
 	if (!levelTwo)
-		std::cout << "Level 02 file couldn't be created\n";
+		std::cout << "Level 02 Solo file couldn't be created\n";
 
 	const int nrRounds = 4;
 	Round rounds[nrRounds];
@@ -188,7 +210,7 @@ void CreateBinaryLevel02()
 	rounds[0].spawnUggWrongs = true;
 	rounds[0].slickSamsSpawnInterval = 15.f;
 	rounds[0].uggWrongSpawnInterval = 15.f;
-	rounds[0].isCoop = false;
+	rounds[0].gameMode = 1;
 
 	rounds[1].roundNumber = 2;
 	rounds[1].level = 2;
@@ -197,7 +219,7 @@ void CreateBinaryLevel02()
 	rounds[1].spawnUggWrongs = true;
 	rounds[1].slickSamsSpawnInterval = 13.f;
 	rounds[1].uggWrongSpawnInterval = 10.f;
-	rounds[1].isCoop = false;
+	rounds[1].gameMode = 1;
 
 	rounds[2].roundNumber = 3;
 	rounds[2].level = 2;
@@ -206,7 +228,7 @@ void CreateBinaryLevel02()
 	rounds[2].spawnUggWrongs = true;
 	rounds[2].slickSamsSpawnInterval = 10.f;
 	rounds[2].uggWrongSpawnInterval = 7.f;
-	rounds[2].isCoop = false;
+	rounds[2].gameMode = 1;
 
 	rounds[3].roundNumber = 4;
 	rounds[3].level = 2;
@@ -215,7 +237,7 @@ void CreateBinaryLevel02()
 	rounds[3].spawnUggWrongs = true;
 	rounds[3].slickSamsSpawnInterval = 10.f;
 	rounds[3].uggWrongSpawnInterval = 5.f;
-	rounds[3].isCoop = false;
+	rounds[3].gameMode = 1;
 
 	for (int i = 0; i < nrRounds; i++)
 		levelTwo.write((char*)&rounds[i], sizeof(Round));
@@ -223,15 +245,15 @@ void CreateBinaryLevel02()
 	levelTwo.close();
 
 	if (!levelTwo.good())
-		std::cout << "Level 02 file wasn't properly written\n";
+		std::cout << "Level 02 Solo file wasn't properly written\n";
 }
 
-void CreateBinaryLevel03()
+void CreateBinaryLevel03Solo()
 {
-	std::ofstream levelThree("Level03.bin", std::ios::out | std::ios::binary);
+	std::ofstream levelThree("Level03Solo.bin", std::ios::out | std::ios::binary);
 
 	if (!levelThree)
-		std::cout << "Level 03 file couldn't be created\n";
+		std::cout << "Level 03 Solo file couldn't be created\n";
 
 	const int nrRounds = 4;
 	Round rounds[nrRounds];
@@ -243,7 +265,7 @@ void CreateBinaryLevel03()
 	rounds[0].spawnUggWrongs = true;
 	rounds[0].slickSamsSpawnInterval = 25.f;
 	rounds[0].uggWrongSpawnInterval = 15.f;
-	rounds[0].isCoop = false;
+	rounds[0].gameMode = 1;
 
 	rounds[1].roundNumber = 2;
 	rounds[1].level = 3;
@@ -252,7 +274,7 @@ void CreateBinaryLevel03()
 	rounds[1].spawnUggWrongs = true;
 	rounds[1].slickSamsSpawnInterval = 20.f;
 	rounds[1].uggWrongSpawnInterval = 10.f;
-	rounds[1].isCoop = false;
+	rounds[1].gameMode = 1;
 
 	rounds[2].roundNumber = 3;
 	rounds[2].level = 3;
@@ -261,7 +283,7 @@ void CreateBinaryLevel03()
 	rounds[2].spawnUggWrongs = true;
 	rounds[2].slickSamsSpawnInterval = 15.f;
 	rounds[2].uggWrongSpawnInterval = 7.f;
-	rounds[2].isCoop = false;
+	rounds[2].gameMode = 1;
 
 	rounds[3].roundNumber = 4;
 	rounds[3].level = 3;
@@ -270,7 +292,7 @@ void CreateBinaryLevel03()
 	rounds[3].spawnUggWrongs = true;
 	rounds[3].slickSamsSpawnInterval = 10.f;
 	rounds[3].uggWrongSpawnInterval = 5.f;
-	rounds[3].isCoop = false;
+	rounds[3].gameMode = 1;
 
 	for (int i = 0; i < nrRounds; i++)
 		levelThree.write((char*)&rounds[i], sizeof(Round));
@@ -278,8 +300,345 @@ void CreateBinaryLevel03()
 	levelThree.close();
 
 	if (!levelThree.good())
-		std::cout << "Level 03 file wasn't properly written\n";
+		std::cout << "Level 03 Solo file wasn't properly written\n";
 }
+
+
+void CreateBinaryLevel01Coop()
+{
+	std::ofstream levelOne("Level01Coop.bin", std::ios::out | std::ios::binary);
+
+	if (!levelOne)
+		std::cout << "Level 01 Co-op file couldn't be created\n";
+
+	const int nrRounds = 4;
+	Round rounds[nrRounds];
+
+	rounds[0].roundNumber = 1;
+	rounds[0].level = 1;
+	rounds[0].colorIdx = 0;
+	rounds[0].spawnSlickSams = false;
+	rounds[0].spawnUggWrongs = false;
+	rounds[0].slickSamsSpawnInterval = 0.f;
+	rounds[0].uggWrongSpawnInterval = 0.f;
+	rounds[0].gameMode = 2;
+
+	rounds[1].roundNumber = 2;
+	rounds[1].level = 1;
+	rounds[1].colorIdx = 1;
+	rounds[1].spawnSlickSams = false;
+	rounds[1].spawnUggWrongs = false;
+	rounds[1].slickSamsSpawnInterval = 0.f;
+	rounds[1].uggWrongSpawnInterval = 0.f;
+	rounds[1].gameMode = 2;
+
+	rounds[2].roundNumber = 3;
+	rounds[2].level = 1;
+	rounds[2].colorIdx = 2;
+	rounds[2].spawnSlickSams = false;
+	rounds[2].spawnUggWrongs = true;
+	rounds[2].slickSamsSpawnInterval = 0.f;
+	rounds[2].uggWrongSpawnInterval = 10.f;
+	rounds[2].gameMode = 2;
+
+	rounds[3].roundNumber = 4;
+	rounds[3].level = 1;
+	rounds[3].colorIdx = 3;
+	rounds[3].spawnSlickSams = false;
+	rounds[3].spawnUggWrongs = true;
+	rounds[3].slickSamsSpawnInterval = 0.f;
+	rounds[3].uggWrongSpawnInterval = 7.f;
+	rounds[3].gameMode = 2;
+
+	for (int i = 0; i < nrRounds; i++)
+		levelOne.write((char*)&rounds[i], sizeof(Round));
+
+	levelOne.close();
+
+	if (!levelOne.good())
+		std::cout << "Level 01 Co-op file wasn't properly written\n";
+}
+
+void CreateBinaryLevel02Coop()
+{
+	std::ofstream levelTwo("Level02Coop.bin", std::ios::out | std::ios::binary);
+
+	if (!levelTwo)
+		std::cout << "Level 02 Co-op file couldn't be created\n";
+
+	const int nrRounds = 4;
+	Round rounds[nrRounds];
+
+	rounds[0].roundNumber = 1;
+	rounds[0].level = 2;
+	rounds[0].colorIdx = 1;
+	rounds[0].spawnSlickSams = true;
+	rounds[0].spawnUggWrongs = true;
+	rounds[0].slickSamsSpawnInterval = 15.f;
+	rounds[0].uggWrongSpawnInterval = 15.f;
+	rounds[0].gameMode = 2;
+
+	rounds[1].roundNumber = 2;
+	rounds[1].level = 2;
+	rounds[1].colorIdx = 3;
+	rounds[1].spawnSlickSams = true;
+	rounds[1].spawnUggWrongs = true;
+	rounds[1].slickSamsSpawnInterval = 13.f;
+	rounds[1].uggWrongSpawnInterval = 10.f;
+	rounds[1].gameMode = 2;
+
+	rounds[2].roundNumber = 3;
+	rounds[2].level = 2;
+	rounds[2].colorIdx = 0;
+	rounds[2].spawnSlickSams = true;
+	rounds[2].spawnUggWrongs = true;
+	rounds[2].slickSamsSpawnInterval = 10.f;
+	rounds[2].uggWrongSpawnInterval = 7.f;
+	rounds[2].gameMode = 2;
+
+	rounds[3].roundNumber = 4;
+	rounds[3].level = 2;
+	rounds[3].colorIdx = 4;
+	rounds[3].spawnSlickSams = true;
+	rounds[3].spawnUggWrongs = true;
+	rounds[3].slickSamsSpawnInterval = 10.f;
+	rounds[3].uggWrongSpawnInterval = 5.f;
+	rounds[3].gameMode = 2;
+
+	for (int i = 0; i < nrRounds; i++)
+		levelTwo.write((char*)&rounds[i], sizeof(Round));
+
+	levelTwo.close();
+
+	if (!levelTwo.good())
+		std::cout << "Level 02 Co-op file wasn't properly written\n";
+}
+
+void CreateBinaryLevel03Coop()
+{
+	std::ofstream levelThree("Level03Coop.bin", std::ios::out | std::ios::binary);
+
+	if (!levelThree)
+		std::cout << "Level 03 Co-op file couldn't be created\n";
+
+	const int nrRounds = 4;
+	Round rounds[nrRounds];
+
+	rounds[0].roundNumber = 1;
+	rounds[0].level = 3;
+	rounds[0].colorIdx = 5;
+	rounds[0].spawnSlickSams = true;
+	rounds[0].spawnUggWrongs = true;
+	rounds[0].slickSamsSpawnInterval = 25.f;
+	rounds[0].uggWrongSpawnInterval = 15.f;
+	rounds[0].gameMode = 2;
+
+	rounds[1].roundNumber = 2;
+	rounds[1].level = 3;
+	rounds[1].colorIdx = 2;
+	rounds[1].spawnSlickSams = true;
+	rounds[1].spawnUggWrongs = true;
+	rounds[1].slickSamsSpawnInterval = 20.f;
+	rounds[1].uggWrongSpawnInterval = 10.f;
+	rounds[1].gameMode = 2;
+
+	rounds[2].roundNumber = 3;
+	rounds[2].level = 3;
+	rounds[2].colorIdx = 1;
+	rounds[2].spawnSlickSams = true;
+	rounds[2].spawnUggWrongs = true;
+	rounds[2].slickSamsSpawnInterval = 15.f;
+	rounds[2].uggWrongSpawnInterval = 7.f;
+	rounds[2].gameMode = 2;
+
+	rounds[3].roundNumber = 4;
+	rounds[3].level = 3;
+	rounds[3].colorIdx = 0;
+	rounds[3].spawnSlickSams = true;
+	rounds[3].spawnUggWrongs = true;
+	rounds[3].slickSamsSpawnInterval = 10.f;
+	rounds[3].uggWrongSpawnInterval = 5.f;
+	rounds[3].gameMode = 2;
+
+	for (int i = 0; i < nrRounds; i++)
+		levelThree.write((char*)&rounds[i], sizeof(Round));
+
+	levelThree.close();
+
+	if (!levelThree.good())
+		std::cout << "Level 03 Co-op file wasn't properly written\n";
+}
+
+
+void CreateBinaryLevel01Versus()
+{
+	std::ofstream levelOne("Level01Versus.bin", std::ios::out | std::ios::binary);
+
+	if (!levelOne)
+		std::cout << "Level 01 Versus file couldn't be created\n";
+
+	const int nrRounds = 4;
+	Round rounds[nrRounds];
+
+	rounds[0].roundNumber = 1;
+	rounds[0].level = 1;
+	rounds[0].colorIdx = 0;
+	rounds[0].spawnSlickSams = false;
+	rounds[0].spawnUggWrongs = false;
+	rounds[0].slickSamsSpawnInterval = 0.f;
+	rounds[0].uggWrongSpawnInterval = 0.f;
+	rounds[0].gameMode = 3;
+
+	rounds[1].roundNumber = 2;
+	rounds[1].level = 1;
+	rounds[1].colorIdx = 1;
+	rounds[1].spawnSlickSams = false;
+	rounds[1].spawnUggWrongs = false;
+	rounds[1].slickSamsSpawnInterval = 0.f;
+	rounds[1].uggWrongSpawnInterval = 0.f;
+	rounds[1].gameMode = 3;
+
+	rounds[2].roundNumber = 3;
+	rounds[2].level = 1;
+	rounds[2].colorIdx = 2;
+	rounds[2].spawnSlickSams = false;
+	rounds[2].spawnUggWrongs = true;
+	rounds[2].slickSamsSpawnInterval = 0.f;
+	rounds[2].uggWrongSpawnInterval = 10.f;
+	rounds[2].gameMode = 3;
+
+	rounds[3].roundNumber = 4;
+	rounds[3].level = 1;
+	rounds[3].colorIdx = 3;
+	rounds[3].spawnSlickSams = false;
+	rounds[3].spawnUggWrongs = true;
+	rounds[3].slickSamsSpawnInterval = 0.f;
+	rounds[3].uggWrongSpawnInterval = 7.f;
+	rounds[3].gameMode = 3;
+
+	for (int i = 0; i < nrRounds; i++)
+		levelOne.write((char*)&rounds[i], sizeof(Round));
+
+	levelOne.close();
+
+	if (!levelOne.good())
+		std::cout << "Level 01 Versus file wasn't properly written\n";
+}
+
+void CreateBinaryLevel02Versus()
+{
+	std::ofstream levelTwo("Level02Versus.bin", std::ios::out | std::ios::binary);
+
+	if (!levelTwo)
+		std::cout << "Level 02 Versus file couldn't be created\n";
+
+	const int nrRounds = 4;
+	Round rounds[nrRounds];
+
+	rounds[0].roundNumber = 1;
+	rounds[0].level = 2;
+	rounds[0].colorIdx = 1;
+	rounds[0].spawnSlickSams = true;
+	rounds[0].spawnUggWrongs = true;
+	rounds[0].slickSamsSpawnInterval = 15.f;
+	rounds[0].uggWrongSpawnInterval = 15.f;
+	rounds[0].gameMode = 3;
+
+	rounds[1].roundNumber = 2;
+	rounds[1].level = 2;
+	rounds[1].colorIdx = 3;
+	rounds[1].spawnSlickSams = true;
+	rounds[1].spawnUggWrongs = true;
+	rounds[1].slickSamsSpawnInterval = 13.f;
+	rounds[1].uggWrongSpawnInterval = 10.f;
+	rounds[1].gameMode = 3;
+
+	rounds[2].roundNumber = 3;
+	rounds[2].level = 2;
+	rounds[2].colorIdx = 0;
+	rounds[2].spawnSlickSams = true;
+	rounds[2].spawnUggWrongs = true;
+	rounds[2].slickSamsSpawnInterval = 10.f;
+	rounds[2].uggWrongSpawnInterval = 7.f;
+	rounds[2].gameMode = 3;
+
+	rounds[3].roundNumber = 4;
+	rounds[3].level = 2;
+	rounds[3].colorIdx = 4;
+	rounds[3].spawnSlickSams = true;
+	rounds[3].spawnUggWrongs = true;
+	rounds[3].slickSamsSpawnInterval = 10.f;
+	rounds[3].uggWrongSpawnInterval = 5.f;
+	rounds[3].gameMode = 3;
+
+	for (int i = 0; i < nrRounds; i++)
+		levelTwo.write((char*)&rounds[i], sizeof(Round));
+
+	levelTwo.close();
+
+	if (!levelTwo.good())
+		std::cout << "Level 02 Versus file wasn't properly written\n";
+}
+
+void CreateBinaryLevel03Versus()
+{
+	std::ofstream levelThree("Level03Versus.bin", std::ios::out | std::ios::binary);
+
+	if (!levelThree)
+		std::cout << "Level 03 Versus file couldn't be created\n";
+
+	const int nrRounds = 4;
+	Round rounds[nrRounds];
+
+	rounds[0].roundNumber = 1;
+	rounds[0].level = 3;
+	rounds[0].colorIdx = 5;
+	rounds[0].spawnSlickSams = true;
+	rounds[0].spawnUggWrongs = true;
+	rounds[0].slickSamsSpawnInterval = 25.f;
+	rounds[0].uggWrongSpawnInterval = 15.f;
+	rounds[0].gameMode = 3;
+
+	rounds[1].roundNumber = 2;
+	rounds[1].level = 3;
+	rounds[1].colorIdx = 2;
+	rounds[1].spawnSlickSams = true;
+	rounds[1].spawnUggWrongs = true;
+	rounds[1].slickSamsSpawnInterval = 20.f;
+	rounds[1].uggWrongSpawnInterval = 10.f;
+	rounds[1].gameMode = 3;
+
+	rounds[2].roundNumber = 3;
+	rounds[2].level = 3;
+	rounds[2].colorIdx = 1;
+	rounds[2].spawnSlickSams = true;
+	rounds[2].spawnUggWrongs = true;
+	rounds[2].slickSamsSpawnInterval = 15.f;
+	rounds[2].uggWrongSpawnInterval = 7.f;
+	rounds[2].gameMode = 3;
+
+	rounds[3].roundNumber = 4;
+	rounds[3].level = 3;
+	rounds[3].colorIdx = 0;
+	rounds[3].spawnSlickSams = true;
+	rounds[3].spawnUggWrongs = true;
+	rounds[3].slickSamsSpawnInterval = 10.f;
+	rounds[3].uggWrongSpawnInterval = 5.f;
+	rounds[3].gameMode = 3;
+
+	for (int i = 0; i < nrRounds; i++)
+		levelThree.write((char*)&rounds[i], sizeof(Round));
+
+	levelThree.close();
+
+	if (!levelThree.good())
+		std::cout << "Level 03 Versus file wasn't properly written\n";
+}
+
+
+
+
+
 
 void LoadLevelsBinaries(const std::string& fileName)
 {
@@ -310,10 +669,18 @@ void LoadLevelsBinaries(const std::string& fileName)
 	std::string levelTitleSceneName = "Level0";
 	levelTitleSceneName += std::to_string(rounds[0].level);
 	levelTitleSceneName += "Title";
+	
+	if (rounds[0].gameMode == 1)
+		levelTitleSceneName += "Solo";
+	else if(rounds[0].gameMode == 2)
+		levelTitleSceneName += "Coop";
+	else
+		levelTitleSceneName += "Versus";
+	
 	auto& levelTitleScene = dae::SceneManager::GetInstance().CreateScene(levelTitleSceneName);
 
 	// Add All Needed Game Objects
-	levelTitleScene.Add(MakeLevelTitle(rounds[0].level));
+	levelTitleScene.Add(MakeLevelTitle(rounds[0].level, rounds[0].gameMode));
 	levelTitleScene.Add(MakeLevelTransition(g_QBertGOs[0]->GetComponent<QBert>()));
 
 
@@ -324,9 +691,17 @@ void LoadLevelsBinaries(const std::string& fileName)
 	{
 		// Create Scene
 		std::string sceneName = "Level0";
-		levelTitleSceneName += std::to_string(rounds[0].level);
-		levelTitleSceneName += "-";
-		levelTitleSceneName += std::to_string(rounds[0].roundNumber);
+		sceneName += std::to_string(round.level);
+		sceneName += "-";
+		sceneName += std::to_string(round.roundNumber);
+
+		if (rounds[0].gameMode == 1)
+			sceneName += "Solo";
+		else if (rounds[0].gameMode == 2)
+			sceneName += "Coop";
+		else
+			sceneName += "Versus";
+		
 		auto& scene = dae::SceneManager::GetInstance().CreateScene(sceneName);
 
 		// Level Map
@@ -349,14 +724,36 @@ void LoadLevelsBinaries(const std::string& fileName)
 			scene.Add(gameObject);
 
 		// Make UI
-		auto uiGOs = MakeUI(qBertsCompVector, round.isCoop);
+		std::vector<std::shared_ptr<dae::GameObject>> uiGOs;
+		
+		if(round.gameMode == 2)
+			uiGOs = MakeUI(qBertsCompVector, true);
+		else
+			uiGOs = MakeUI(qBertsCompVector, false);
+		
 		for (const auto& gameObject : uiGOs)
 			scene.Add(gameObject);
 
 		// Level Section Observer
+		int deathSceneIdx;
+		if (round.gameMode == 1) // Solo
+			deathSceneIdx = 1;
+		else if (round.gameMode == 3) // Versus
+			deathSceneIdx = 18;
+		else					// Co-op
+			deathSceneIdx = 1;
+		
 		auto sectionObserverGO = std::make_shared<dae::GameObject>();
-		sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0], pyramid, disksVector, 1, round.level,
-			round.spawnSlickSams, round.spawnUggWrongs, round.slickSamsSpawnInterval, round.uggWrongSpawnInterval));
+		if (round.gameMode == 3)
+		{
+			sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0], pyramid, disksVector, deathSceneIdx, round.level,
+				true, round.spawnSlickSams, round.spawnUggWrongs, round.slickSamsSpawnInterval, round.uggWrongSpawnInterval));
+		}
+		else
+		{
+			sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0], pyramid, disksVector, deathSceneIdx, round.level,
+				false, round.spawnSlickSams, round.spawnUggWrongs, round.slickSamsSpawnInterval, round.uggWrongSpawnInterval));
+		}
 		scene.Add(sectionObserverGO);
 
 		// Add The Mode's Player Input
@@ -369,6 +766,7 @@ void LoadLevelsBinaries(const std::string& fileName)
 
 
 
+
 void LoadStartScreen()
 {
 	// Create Scene
@@ -376,7 +774,7 @@ void LoadStartScreen()
 
 	// Add All Needed Game Objects
 	startScreenScene.Add(MakeStartScreenVisuals());
-	const auto startScreenGO = MakeStartScreenLogic(2, 2, 2);
+	const auto startScreenGO = MakeStartScreenLogic(2, 2, 19);
 	startScreenScene.Add(startScreenGO);
 
 	// Add The Start Menu Player Input
@@ -388,13 +786,13 @@ void LoadStartScreen()
 	startScreenScene.Initialize();
 }
 
-void LoadDeathScreen()
+void LoadDeathScreenSolo()
 {
 	// Create Scene
-	auto& deathScreenScene = dae::SceneManager::GetInstance().CreateScene("DeathScreen");
+	auto& deathScreenScene = dae::SceneManager::GetInstance().CreateScene("DeathScreenSolo");
 
 	// Add All Needed Game Objects
-	deathScreenScene.Add(MakeDeathScreenVisuals());
+	deathScreenScene.Add(MakeDeathScreenSoloVisuals());
 	const auto deathScreenGO = MakeVictoryDeathScreenLogic(0, g_QBertGOs[0]->GetComponent<QBert>());
 	deathScreenScene.Add(deathScreenGO);
 
@@ -404,13 +802,13 @@ void LoadDeathScreen()
 	deathScreenScene.Add(deathScreenInputGO);
 }
 
-void LoadVictoryScreen()
+void LoadVictoryScreenSolo()
 {
 	// Create Scene
-	auto& victoryScene = dae::SceneManager::GetInstance().CreateScene("VictoryScene");
+	auto& victoryScene = dae::SceneManager::GetInstance().CreateScene("VictorySceneSolo");
 
 	// Add All Needed Game Objects
-	victoryScene.Add(MakeVictoryScreenVisuals());
+	victoryScene.Add(MakeVictoryScreenSoloVisuals());
 	const auto victoryScreenGO = MakeVictoryDeathScreenLogic(0, g_QBertGOs[0]->GetComponent<QBert>());
 	victoryScene.Add(victoryScreenGO);
 
@@ -420,539 +818,34 @@ void LoadVictoryScreen()
 	victoryScene.Add(menuPlayerInputGO);
 }
 
-
-
-
-
-
-
-
-void LoadLevel01()
+void LoadDeathScreenVersus()
 {
-	//// Level Title Screen
-
 	// Create Scene
-	auto& levelTitleScene = dae::SceneManager::GetInstance().CreateScene("Level01Title");
+	auto& deathScreenScene = dae::SceneManager::GetInstance().CreateScene("DeathScreenVersus");
 
 	// Add All Needed Game Objects
-	levelTitleScene.Add(MakeLevelTitle(1));
-	levelTitleScene.Add(MakeLevelTransition(g_QBertGOs[0]->GetComponent<QBert>()));
-	
-	
-	
-	//// Section 01
+	deathScreenScene.Add(MakeDeathScreenVersusVisuals());
+	const auto deathScreenGO = MakeVictoryDeathScreenLogic(0, g_QBertGOs[0]->GetComponent<QBert>());
+	deathScreenScene.Add(deathScreenGO);
 
-	// Create Scene
-	auto& scene1 = dae::SceneManager::GetInstance().CreateScene("Level01-1");
-
-	// Level Map
-	auto* pyramid = new Pyramid(300.f, 80.f, g_NrRows, g_CubesActualWidth, g_CubesActualHeight,
-		0, 1, g_CubesSpriteWidth, g_CubesSpriteHeight);
-	for (const std::shared_ptr<dae::GameObject>& cube : pyramid->m_CubeGOVector)
-		scene1.Add(cube);
-
-	// Disks
-	auto* diskGOsVector = MakeDiskGOsVector(1, 0);
-	auto* disksVector = new std::vector<Disk*>();
-	for(size_t i = 0; i < diskGOsVector->size(); i++)
-	{
-		disksVector->push_back(diskGOsVector->operator[](i)->GetComponent<Disk>());
-		scene1.Add(diskGOsVector->operator[](i));
-	}
-	
-	// Transfer QBert
-	for(const auto& gameObject : g_QBertGOs)
-		scene1.Add(gameObject);
-
-	// Make UI
-	auto uiGOs = MakeUI(qBertsCompVector, false);
-	for (const auto& gameObject : uiGOs)
-		scene1.Add(gameObject);
-	
-	// Level Section Observer
-	auto sectionObserverGO = std::make_shared<dae::GameObject>();
-	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0],
-		pyramid, disksVector, 1, 1, false, false));
-	
-	scene1.Add(sectionObserverGO);
-
-	// Add The Mode's Player Input
-	auto gamePlayerInputGO = std::make_shared<dae::GameObject>();
-	gamePlayerInputGO->AddComponent(new PlayerOneInput(g_QBertGOs[0]));
-	scene1.Add(gamePlayerInputGO);
-
-	// FPS Counter
-	scene1.Add(MakeFPSCounter());
-
-	
-	//////////////////////////
-
-	
-	//// Section 02
-	
-	// Create Scene
-	auto& scene2 = dae::SceneManager::GetInstance().CreateScene("Level01-2");
-
-	// Level Map
-	pyramid = new Pyramid(300.f, 80.f, g_NrRows, g_CubesActualWidth, g_CubesActualHeight,
-		1, 1, g_CubesSpriteWidth, g_CubesSpriteHeight);
-	for (const std::shared_ptr<dae::GameObject>& cube : pyramid->m_CubeGOVector)
-		scene2.Add(cube);
-
-	// Disks
-	diskGOsVector = MakeDiskGOsVector(1, 1);
-	disksVector = new std::vector<Disk*>();
-	for (size_t i = 0; i < diskGOsVector->size(); i++)
-	{
-		disksVector->push_back(diskGOsVector->operator[](i)->GetComponent<Disk>());
-		scene2.Add(diskGOsVector->operator[](i));
-	}
-	
-	// Transfer QBert
-	for (const auto& gameObject : g_QBertGOs)
-		scene2.Add(gameObject);
-
-	// Make UI
-	for (const auto& gameObject : uiGOs)
-		scene2.Add(gameObject);
-
-	// Level Section Observer
-	sectionObserverGO = std::make_shared<dae::GameObject>();
-	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0],
-		pyramid, disksVector, 1, 1, false, false));
-	scene2.Add(sectionObserverGO);
-
-	// FPS Counter
-	scene2.Add(MakeFPSCounter());
-
-
-	//////////////////////////
-
-	
-	//// Section 03
-	
-	// Create Scene
-	auto& scene3 = dae::SceneManager::GetInstance().CreateScene("Level01-3");
-
-	// Level Map
-	pyramid = new Pyramid(300.f, 80.f, g_NrRows, g_CubesActualWidth, g_CubesActualHeight,
-		2, 1, g_CubesSpriteWidth, g_CubesSpriteHeight);
-	for (const std::shared_ptr<dae::GameObject>& cube : pyramid->m_CubeGOVector)
-		scene3.Add(cube);
-
-	// Disks
-	diskGOsVector = MakeDiskGOsVector(1, 2);
-	disksVector = new std::vector<Disk*>();
-	for (size_t i = 0; i < diskGOsVector->size(); i++)
-	{
-		disksVector->push_back(diskGOsVector->operator[](i)->GetComponent<Disk>());
-		scene3.Add(diskGOsVector->operator[](i));
-	}
-
-	// Transfer QBert
-	for (const auto& gameObject : g_QBertGOs)
-		scene3.Add(gameObject);
-
-	// Make UI
-	for (const auto& gameObject : uiGOs)
-		scene3.Add(gameObject);
-
-	// Level Section Observer
-	sectionObserverGO = std::make_shared<dae::GameObject>();
-	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0],
-		pyramid, disksVector, 1, 1, false, true, 0, 10.f));
-	scene3.Add(sectionObserverGO);
-
-	// FPS Counter
-	scene3.Add(MakeFPSCounter());
-
-	//////////////////////////
-
-
-	//// Section 04
-	
-	// Create Scene
-	auto& scene4 = dae::SceneManager::GetInstance().CreateScene("Level01-4");
-
-	// Level Map
-	pyramid = new Pyramid(300.f, 80.f, g_NrRows, g_CubesActualWidth, g_CubesActualHeight,
-		3, 1, g_CubesSpriteWidth, g_CubesSpriteHeight);
-	for (const std::shared_ptr<dae::GameObject>& cube : pyramid->m_CubeGOVector)
-		scene4.Add(cube);
-
-	// Disks
-	diskGOsVector = MakeDiskGOsVector(1, 3);
-	disksVector = new std::vector<Disk*>();
-	for (size_t i = 0; i < diskGOsVector->size(); i++)
-	{
-		disksVector->push_back(diskGOsVector->operator[](i)->GetComponent<Disk>());
-		scene4.Add(diskGOsVector->operator[](i));
-	}
-	
-	// Transfer QBert
-	for (const auto& gameObject : g_QBertGOs)
-		scene4.Add(gameObject);
-
-	// Make UI
-	for (const auto& gameObject : uiGOs)
-		scene4.Add(gameObject);
-
-	// Level Section Observer
-	sectionObserverGO = std::make_shared<dae::GameObject>();
-	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0],
-		pyramid, disksVector, 1, 1, false, true, 0, 7.f));
-	scene4.Add(sectionObserverGO);
-
-	// FPS Counter
-	scene4.Add(MakeFPSCounter());
+	// Add The Victory/Death Screen Player Input
+	auto deathScreenInputGO = std::make_shared<dae::GameObject>();
+	deathScreenInputGO->AddComponent(new VictoryDeathScreenInput(deathScreenGO));
+	deathScreenScene.Add(deathScreenInputGO);
 }
 
-void LoadLevel02()
+void LoadVictoryScreenVersus()
 {
-	//// Level Title Screen
-
 	// Create Scene
-	auto& levelTitleScene = dae::SceneManager::GetInstance().CreateScene("Level02Title");
+	auto& victoryScene = dae::SceneManager::GetInstance().CreateScene("VictorySceneVersus");
 
 	// Add All Needed Game Objects
-	levelTitleScene.Add(MakeLevelTitle(2));
-	levelTitleScene.Add(MakeLevelTransition(g_QBertGOs[0]->GetComponent<QBert>()));
-
-
-
-	//// Section 01
-
-	// Create Scene
-	auto& scene1 = dae::SceneManager::GetInstance().CreateScene("Level02-1");
-
-	// Level Map
-	auto* pyramid = new Pyramid(300.f, 80.f, g_NrRows, g_CubesActualWidth, g_CubesActualHeight,
-		1, 2, g_CubesSpriteWidth, g_CubesSpriteHeight);
-	for (const std::shared_ptr<dae::GameObject>& cube : pyramid->m_CubeGOVector)
-		scene1.Add(cube);
-
-	// Disks
-	auto* diskGOsVector = MakeDiskGOsVector(2, 1);
-	auto* disksVector = new std::vector<Disk*>();
-	for (size_t i = 0; i < diskGOsVector->size(); i++)
-	{
-		disksVector->push_back(diskGOsVector->operator[](i)->GetComponent<Disk>());
-		scene1.Add(diskGOsVector->operator[](i));
-	}
-
-	// Transfer QBert
-	for (const auto& gameObject : g_QBertGOs)
-		scene1.Add(gameObject);
-
-	// Make UI
-	auto uiGOs = MakeUI(qBertsCompVector, false);
-	for (const auto& gameObject : uiGOs)
-		scene1.Add(gameObject);
-
-	// Level Section Observer
-	auto sectionObserverGO = std::make_shared<dae::GameObject>();
-	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0],
-		pyramid, disksVector, 1, 2, true, true, 15.f, 15.f));
-	scene1.Add(sectionObserverGO);
-
-	// FPS Counter
-	scene1.Add(MakeFPSCounter());
-
-
-	//////////////////////////
-
-
-	//// Section 02
-
-	// Create Scene
-	auto& scene2 = dae::SceneManager::GetInstance().CreateScene("Level02-2");
-
-	// Level Map
-	pyramid = new Pyramid(300.f, 80.f, g_NrRows, g_CubesActualWidth, g_CubesActualHeight,
-		3, 2, g_CubesSpriteWidth, g_CubesSpriteHeight);
-	for (const std::shared_ptr<dae::GameObject>& cube : pyramid->m_CubeGOVector)
-		scene2.Add(cube);
-
-	// Disks
-	diskGOsVector = MakeDiskGOsVector(2, 3);
-	disksVector = new std::vector<Disk*>();
-	for (size_t i = 0; i < diskGOsVector->size(); i++)
-	{
-		disksVector->push_back(diskGOsVector->operator[](i)->GetComponent<Disk>());
-		scene2.Add(diskGOsVector->operator[](i));
-	}
-
-	// Transfer QBert
-	for (const auto& gameObject : g_QBertGOs)
-		scene2.Add(gameObject);
-
-	// Make UI
-	for (const auto& gameObject : uiGOs)
-		scene2.Add(gameObject);
-
-	// Level Section Observer
-	sectionObserverGO = std::make_shared<dae::GameObject>();
-	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0],
-		pyramid, disksVector, 1, 2, true, true, 13.f, 10.f));
-	scene2.Add(sectionObserverGO);
-
-	// FPS Counter
-	scene2.Add(MakeFPSCounter());
-
-
-	//////////////////////////
-
-
-	//// Section 03
-
-	// Create Scene
-	auto& scene3 = dae::SceneManager::GetInstance().CreateScene("Level02-3");
-
-	// Level Map
-	pyramid = new Pyramid(300.f, 80.f, g_NrRows, g_CubesActualWidth, g_CubesActualHeight,
-		0, 2, g_CubesSpriteWidth, g_CubesSpriteHeight);
-	for (const std::shared_ptr<dae::GameObject>& cube : pyramid->m_CubeGOVector)
-		scene3.Add(cube);
-
-	// Disks
-	diskGOsVector = MakeDiskGOsVector(2, 0);
-	disksVector = new std::vector<Disk*>();
-	for (size_t i = 0; i < diskGOsVector->size(); i++)
-	{
-		disksVector->push_back(diskGOsVector->operator[](i)->GetComponent<Disk>());
-		scene3.Add(diskGOsVector->operator[](i));
-	}
-
-	// Transfer QBert
-	for (const auto& gameObject : g_QBertGOs)
-		scene3.Add(gameObject);
-
-	// Make UI
-	for (const auto& gameObject : uiGOs)
-		scene3.Add(gameObject);
-
-	// Level Section Observer
-	sectionObserverGO = std::make_shared<dae::GameObject>();
-	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0],
-		pyramid, disksVector, 1, 2, true, true, 10.f, 7.f));
-	scene3.Add(sectionObserverGO);
-
-	// FPS Counter
-	scene3.Add(MakeFPSCounter());
-
-
-	//////////////////////////
-
-
-	//// Section 04
-
-	// Create Scene
-	auto& scene4 = dae::SceneManager::GetInstance().CreateScene("Level02-4");
-
-	// Level Map
-	pyramid = new Pyramid(300.f, 80.f, g_NrRows, g_CubesActualWidth, g_CubesActualHeight,
-		4, 2, g_CubesSpriteWidth, g_CubesSpriteHeight);
-	for (const std::shared_ptr<dae::GameObject>& cube : pyramid->m_CubeGOVector)
-		scene4.Add(cube);
-
-	// Disks
-	diskGOsVector = MakeDiskGOsVector(2, 4);
-	disksVector = new std::vector<Disk*>();
-	for (size_t i = 0; i < diskGOsVector->size(); i++)
-	{
-		disksVector->push_back(diskGOsVector->operator[](i)->GetComponent<Disk>());
-		scene4.Add(diskGOsVector->operator[](i));
-	}
-
-	// Transfer QBert
-	for (const auto& gameObject : g_QBertGOs)
-		scene4.Add(gameObject);
-
-	// Make UI
-	for (const auto& gameObject : uiGOs)
-		scene4.Add(gameObject);
-
-	// Level Section Observer
-	sectionObserverGO = std::make_shared<dae::GameObject>();
-	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0],
-		pyramid, disksVector, 1, 2, true, true, 10.f, 5.f));
-	scene4.Add(sectionObserverGO);
-
-	// FPS Counter
-	scene4.Add(MakeFPSCounter());
-}
-
-void LoadLevel03()
-{
-	//// Level Title Screen
-
-	// Create Scene
-	auto& levelTitleScene = dae::SceneManager::GetInstance().CreateScene("Level03Title");
-
-	// Add All Needed Game Objects
-	levelTitleScene.Add(MakeLevelTitle(3));
-	levelTitleScene.Add(MakeLevelTransition(g_QBertGOs[0]->GetComponent<QBert>()));
-
-
-
-	//// Section 01
-
-	// Create Scene
-	auto& scene1 = dae::SceneManager::GetInstance().CreateScene("Level03-1");
-
-	// Level Map
-	auto* pyramid = new Pyramid(300.f, 80.f, g_NrRows, g_CubesActualWidth, g_CubesActualHeight,
-		5, 3, g_CubesSpriteWidth, g_CubesSpriteHeight);
-	for (const std::shared_ptr<dae::GameObject>& cube : pyramid->m_CubeGOVector)
-		scene1.Add(cube);
-
-	// Transfer QBert
-	for (const auto& gameObject : g_QBertGOs)
-		scene1.Add(gameObject);
-
-	// Disks
-	auto* diskGOsVector = MakeDiskGOsVector(3, 5);
-	auto* disksVector = new std::vector<Disk*>();
-	for (size_t i = 0; i < diskGOsVector->size(); i++)
-	{
-		disksVector->push_back(diskGOsVector->operator[](i)->GetComponent<Disk>());
-		scene1.Add(diskGOsVector->operator[](i));
-	}
-
-	// Make UI
-	auto uiGOs = MakeUI(qBertsCompVector, false);
-	for (const auto& gameObject : uiGOs)
-		scene1.Add(gameObject);
-
-	// Level Section Observer
-	auto sectionObserverGO = std::make_shared<dae::GameObject>();
-	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0],
-		pyramid, disksVector, 1, 3, true, true, 25.f, 15.f));
-	scene1.Add(sectionObserverGO);
-
-	// FPS Counter
-	scene1.Add(MakeFPSCounter());
-
-
-	//////////////////////////
-
-
-	//// Section 02
-
-	// Create Scene
-	auto& scene2 = dae::SceneManager::GetInstance().CreateScene("Level03-2");
-
-	// Level Map
-	pyramid = new Pyramid(300.f, 80.f, g_NrRows, g_CubesActualWidth, g_CubesActualHeight,
-		2, 3, g_CubesSpriteWidth, g_CubesSpriteHeight);
-	for (const std::shared_ptr<dae::GameObject>& cube : pyramid->m_CubeGOVector)
-		scene2.Add(cube);
-
-	// Transfer QBert
-	for (const auto& gameObject : g_QBertGOs)
-		scene2.Add(gameObject);
-
-	// Disks
-	diskGOsVector = MakeDiskGOsVector(3, 2);
-	disksVector = new std::vector<Disk*>();
-	for (size_t i = 0; i < diskGOsVector->size(); i++)
-	{
-		disksVector->push_back(diskGOsVector->operator[](i)->GetComponent<Disk>());
-		scene2.Add(diskGOsVector->operator[](i));
-	}
-
-	// Make UI
-	for (const auto& gameObject : uiGOs)
-		scene2.Add(gameObject);
-
-	// Level Section Observer
-	sectionObserverGO = std::make_shared<dae::GameObject>();
-	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0],
-		pyramid, disksVector, 1, 3, true, true, 20.f, 10.f));
-	scene2.Add(sectionObserverGO);
-
-	// FPS Counter
-	scene2.Add(MakeFPSCounter());
-
-
-	//////////////////////////
-
-
-	//// Section 03
-
-	// Create Scene
-	auto& scene3 = dae::SceneManager::GetInstance().CreateScene("Level03-3");
-
-	// Level Map
-	pyramid = new Pyramid(300.f, 80.f, g_NrRows, g_CubesActualWidth, g_CubesActualHeight,
-		1, 3, g_CubesSpriteWidth, g_CubesSpriteHeight);
-	for (const std::shared_ptr<dae::GameObject>& cube : pyramid->m_CubeGOVector)
-		scene3.Add(cube);
-
-	// Transfer QBert
-	for (const auto& gameObject : g_QBertGOs)
-		scene3.Add(gameObject);
-
-	// Disks
-	diskGOsVector = MakeDiskGOsVector(3, 1);
-	disksVector = new std::vector<Disk*>();
-	for (size_t i = 0; i < diskGOsVector->size(); i++)
-	{
-		disksVector->push_back(diskGOsVector->operator[](i)->GetComponent<Disk>());
-		scene3.Add(diskGOsVector->operator[](i));
-	}
-
-	// Make UI
-	for (const auto& gameObject : uiGOs)
-		scene3.Add(gameObject);
-
-	// Level Section Observer
-	sectionObserverGO = std::make_shared<dae::GameObject>();
-	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0],
-		pyramid, disksVector, 1, 3, true, true, 15.f, 7.f));
-	scene3.Add(sectionObserverGO);
-
-	// FPS Counter
-	scene3.Add(MakeFPSCounter());
-
-
-	//////////////////////////
-
-
-	//// Section 04
-
-	// Create Scene
-	auto& scene4 = dae::SceneManager::GetInstance().CreateScene("Level03-4");
-
-	// Level Map
-	pyramid = new Pyramid(300.f, 80.f, g_NrRows, g_CubesActualWidth, g_CubesActualHeight,
-		0, 3, g_CubesSpriteWidth, g_CubesSpriteHeight);
-	for (const std::shared_ptr<dae::GameObject>& cube : pyramid->m_CubeGOVector)
-		scene4.Add(cube);
-
-	// Transfer QBert
-	for (const auto& gameObject : g_QBertGOs)
-		scene4.Add(gameObject);
-
-	// Disks
-	diskGOsVector = MakeDiskGOsVector(3, 0);
-	disksVector = new std::vector<Disk*>();
-	for (size_t i = 0; i < diskGOsVector->size(); i++)
-	{
-		disksVector->push_back(diskGOsVector->operator[](i)->GetComponent<Disk>());
-		scene4.Add(diskGOsVector->operator[](i));
-	}
-
-	// Make UI
-	for (const auto& gameObject : uiGOs)
-		scene4.Add(gameObject);
-
-	// Level Section Observer
-	sectionObserverGO = std::make_shared<dae::GameObject>();
-	sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertGOs[0],
-		pyramid, disksVector, 1, 3, true, true, 10.f, 5.f));
-	scene4.Add(sectionObserverGO);
-
-	// FPS Counter
-	scene4.Add(MakeFPSCounter());
+	victoryScene.Add(MakeVictoryScreenVersusVisuals());
+	const auto victoryScreenGO = MakeVictoryDeathScreenLogic(0, g_QBertGOs[0]->GetComponent<QBert>());
+	victoryScene.Add(victoryScreenGO);
+
+	// Add The Victory/Death Screen Player Input
+	auto menuPlayerInputGO = std::make_shared<dae::GameObject>();
+	menuPlayerInputGO->AddComponent(new VictoryDeathScreenInput(victoryScreenGO));
+	victoryScene.Add(menuPlayerInputGO);
 }

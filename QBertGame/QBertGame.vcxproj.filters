@@ -96,6 +96,9 @@
     <ClCompile Include="VictoryDeathScreenInput.cpp">
       <Filter>Components\Player Input</Filter>
     </ClCompile>
+    <ClCompile Include="PlayerTwoCoilyInput.cpp">
+      <Filter>Components\Player Input</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Pyramid.h">
@@ -159,6 +162,9 @@
       <Filter>Components\Player Input</Filter>
     </ClInclude>
     <ClInclude Include="VictoryDeathScreenInput.h">
+      <Filter>Components\Player Input</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerTwoCoilyInput.h">
       <Filter>Components\Player Input</Filter>
     </ClInclude>
   </ItemGroup>

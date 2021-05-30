@@ -47,7 +47,7 @@ std::vector<std::shared_ptr<dae::GameObject>> MakeQBert()
 }
 
 
-std::shared_ptr<dae::GameObject> MakeCoily(QBert* qBertComp, bool isLeft, float  moveInterval)
+std::shared_ptr<dae::GameObject> MakeCoily(QBert* qBertComp, bool isLeft, float  moveInterval, bool controlledByPlayer)
 {
 	const auto spriteWidth = 16.f;
 	const auto spriteHeight = 32.f;
@@ -59,14 +59,14 @@ std::shared_ptr<dae::GameObject> MakeCoily(QBert* qBertComp, bool isLeft, float 
 	if (isLeft)
 	{
 		newGO->AddComponent(new Coily(newGO, qBertComp, g_NrRows, g_CubesActualWidth, g_CubesActualHeight,
-			spriteWidth, spriteHeight, 2, moveInterval));
+			spriteWidth, spriteHeight, 2, moveInterval, controlledByPlayer));
 		newGO->AddComponent(new dae::GraphicsComponent("Coily Spritesheet.png", g_EnemiesLeftSpawnPosX, g_EnemiesSpawnPosY - 22.f,
 			actualWidth, actualHeight, 0, 0, spriteWidth, spriteHeight));
 	}
 	else
 	{
 		newGO->AddComponent(new Coily(newGO, qBertComp, g_NrRows, g_CubesActualWidth, g_CubesActualHeight,
-			spriteWidth, spriteHeight, 3, moveInterval));
+			spriteWidth, spriteHeight, 3, moveInterval, controlledByPlayer));
 		newGO->AddComponent(new dae::GraphicsComponent("Coily Spritesheet.png", g_EnemiesRightSpawnPosX, g_EnemiesSpawnPosY - 22.f,
 			actualWidth, actualHeight, 0, 0, spriteWidth, spriteHeight));
 	}
@@ -186,22 +186,46 @@ std::shared_ptr<dae::GameObject> MakeUggWrongway(bool isUgg, bool isLeft, float 
 }
 
 
-std::shared_ptr<dae::GameObject> MakeLevelTitle(int lvlNr)
+std::shared_ptr<dae::GameObject> MakeLevelTitle(int lvlNr, int gameMode)
 {
 	const auto width = 500.f;
 	const auto height = 230.f;
-	const auto positionX = 78.f;
-	const auto positionY = 150.f;
+	const auto titlePosX = 78.f;
+	const auto titlePosY = 90.f;
+	const auto subTitlePosX = 235.f;
+	const auto subTitlePosY = 360.f;
 
+	
 	auto newGO = std::make_shared<dae::GameObject>();
 
+	
 	if (lvlNr == 1)
-		newGO->AddComponent(new dae::GraphicsComponent("Level 01 Title.png", positionX, positionY, width, height));
+		newGO->AddComponent(new dae::GraphicsComponent("Level 01 Title.png", titlePosX, titlePosY, width, height));
 	else if (lvlNr == 2)
-		newGO->AddComponent(new dae::GraphicsComponent("Level 02 Title.png", positionX, positionY, width, height));
+		newGO->AddComponent(new dae::GraphicsComponent("Level 02 Title.png", titlePosX, titlePosY, width, height));
 	else
-		newGO->AddComponent(new dae::GraphicsComponent("Level 03 Title.png", positionX, positionY, width, height));
+		newGO->AddComponent(new dae::GraphicsComponent("Level 03 Title.png", titlePosX, titlePosY, width, height));
 
+	
+	auto font = dae::ResourceManager::GetInstance().LoadFont("Minecraft.ttf", 40);
+	
+	if (gameMode == 1)
+	{
+		newGO->AddComponent(new dae::TextComponent("Solo Mode", font, 219, 184, 125));
+		newGO->GetComponent<dae::TextComponent>()->SetPosition(subTitlePosX, subTitlePosY);
+	}
+	else if (gameMode == 2)
+	{
+		newGO->AddComponent(new dae::TextComponent("Co-op Mode", font, 219, 184, 125));
+		newGO->GetComponent<dae::TextComponent>()->SetPosition(subTitlePosX - 20.f, subTitlePosY);
+	}
+	else
+	{
+		newGO->AddComponent(new dae::TextComponent("Versus Mode", font, 219, 184, 125));
+		newGO->GetComponent<dae::TextComponent>()->SetPosition(subTitlePosX - 30.f, subTitlePosY);
+	}
+
+	
 	return newGO;
 }
 
@@ -529,7 +553,7 @@ std::shared_ptr<dae::GameObject> MakeStartScreenLogic(int soloModeSceneIdx, int 
 }
 
 
-std::shared_ptr<dae::GameObject> MakeVictoryScreenVisuals()
+std::shared_ptr<dae::GameObject> MakeVictoryScreenSoloVisuals()
 {
 	const auto width = 270.f;
 	const auto height = 149.f;
@@ -558,15 +582,50 @@ std::shared_ptr<dae::GameObject> MakeVictoryScreenVisuals()
 }
 
 
-std::shared_ptr<dae::GameObject> MakeDeathScreenVisuals()
+std::shared_ptr<dae::GameObject> MakeVictoryScreenVersusVisuals()
+{
+	const auto titleAPosX = 170.f;
+	const auto titleAPosY = 70.f;
+	const auto titleBPosX = 250.f;
+	const auto titleBPosY = 135.f;
+	const auto scoreTextPosX = 250.f;
+	const auto scoreTextPosY = 240.f;
+	const auto goBackPosX = 126.f;
+	const auto goBackPosY = 400.f;
+
+	auto newGO = std::make_shared<dae::GameObject>();
+
+	auto font = dae::ResourceManager::GetInstance().LoadFont("Minecraft.ttf", 60);
+	auto* titleAComp = new dae::TextComponent("PLAYER 1", font);
+	titleAComp->SetPosition(titleAPosX, titleAPosY);
+	newGO->AddComponent(titleAComp);
+	auto* titleBComp = new dae::TextComponent("WON", font);
+	titleBComp->SetPosition(titleBPosX, titleBPosY);
+	newGO->AddComponent(titleBComp);
+
+	font = dae::ResourceManager::GetInstance().LoadFont("Minecraft.ttf", 38);
+	auto* scoreComp = new dae::TextComponent("SCORE", font);
+	scoreComp->SetPosition(scoreTextPosX, scoreTextPosY);
+	newGO->AddComponent(scoreComp);
+
+	font = dae::ResourceManager::GetInstance().LoadFont("Minecraft.ttf", 16);
+	auto* goBackComp = new dae::TextComponent("Press ESC or START to go back to the main menu", font);
+	goBackComp->SetPosition(goBackPosX, goBackPosY);
+	newGO->AddComponent(goBackComp);
+
+	return newGO;
+}
+
+
+std::shared_ptr<dae::GameObject> MakeDeathScreenSoloVisuals()
 {
 	const auto width = 376.f;
 	const auto height = 149.f;
-	const auto titlePosX = 138.f;
+	const auto titlePosX = 130.f;
 	const auto titlePosY = 40.f;
 	const auto scoreTextPosX = 250.f;
 	const auto scoreTextPosY = 240.f;
-	const auto goBackPosX = 135.f;
+	const auto goBackPosX = 126.f;
 	const auto goBackPosY = 400.f;
 
 	auto newGO = std::make_shared<dae::GameObject>();
@@ -575,6 +634,41 @@ std::shared_ptr<dae::GameObject> MakeDeathScreenVisuals()
 
 	auto font = dae::ResourceManager::GetInstance().LoadFont("Minecraft.ttf", 38);
 	auto* scoreComp = new dae::TextComponent("SCORE", font);
+	scoreComp->SetPosition(scoreTextPosX, scoreTextPosY);
+	newGO->AddComponent(scoreComp);
+
+	font = dae::ResourceManager::GetInstance().LoadFont("Minecraft.ttf", 16);
+	auto* goBackComp = new dae::TextComponent("Press ESC or START to go back to the main menu", font);
+	goBackComp->SetPosition(goBackPosX, goBackPosY);
+	newGO->AddComponent(goBackComp);
+
+	return newGO;
+}
+
+
+std::shared_ptr<dae::GameObject> MakeDeathScreenVersusVisuals()
+{
+	const auto titleAPosX = 170.f;
+	const auto titleAPosY = 70.f;
+	const auto titleBPosX = 250.f;
+	const auto titleBPosY = 135.f;
+	const auto scoreTextPosX = 150.f;
+	const auto scoreTextPosY = 240.f;
+	const auto goBackPosX = 126.f;
+	const auto goBackPosY = 400.f;
+
+	auto newGO = std::make_shared<dae::GameObject>();
+
+	auto font = dae::ResourceManager::GetInstance().LoadFont("Minecraft.ttf", 60);
+	auto* titleAComp = new dae::TextComponent("PLAYER 2", font);
+	titleAComp->SetPosition(titleAPosX, titleAPosY);
+	newGO->AddComponent(titleAComp);
+	auto* titleBComp = new dae::TextComponent("WON", font);
+	titleBComp->SetPosition(titleBPosX, titleBPosY);
+	newGO->AddComponent(titleBComp);
+
+	font = dae::ResourceManager::GetInstance().LoadFont("Minecraft.ttf", 38);
+	auto* scoreComp = new dae::TextComponent("PLAYER 1 SCORE", font);
 	scoreComp->SetPosition(scoreTextPosX, scoreTextPosY);
 	newGO->AddComponent(scoreComp);
 

@@ -23,13 +23,13 @@ namespace dae
 
 std::vector<std::shared_ptr<dae::GameObject>> MakeQBert();
 
-std::shared_ptr<dae::GameObject> MakeCoily(QBert* qBertComp, bool isLeft, float  moveInterval);
+std::shared_ptr<dae::GameObject> MakeCoily(QBert* qBertComp, bool isLeft, float  moveInterval, bool controlledByPlayer);
 
 std::shared_ptr<dae::GameObject> MakeSlickSam(bool isSlick, bool isLeft, float  moveInterval);
 
 std::shared_ptr<dae::GameObject> MakeUggWrongway(bool isUgg, bool isLeft, float  moveInterval);
 
-std::shared_ptr<dae::GameObject> MakeLevelTitle(int lvlNr);
+std::shared_ptr<dae::GameObject> MakeLevelTitle(int lvlNr, int gameMode); // 1 is Solo, 2 is Coop, 3 is Versus
 
 std::shared_ptr<dae::GameObject> MakeLevelTransition(QBert* qBertComp);
 
@@ -55,8 +55,12 @@ std::shared_ptr<dae::GameObject> MakeStartScreenVisuals();
 
 std::shared_ptr<dae::GameObject> MakeStartScreenLogic(int soloModeSceneIdx, int coopModeSceneIdx, int versusModeSceneIdx);
 
-std::shared_ptr<dae::GameObject> MakeVictoryScreenVisuals();
+std::shared_ptr<dae::GameObject> MakeVictoryScreenSoloVisuals();
 
-std::shared_ptr<dae::GameObject> MakeDeathScreenVisuals();
+std::shared_ptr<dae::GameObject> MakeVictoryScreenVersusVisuals();
+
+std::shared_ptr<dae::GameObject> MakeDeathScreenSoloVisuals();
+
+std::shared_ptr<dae::GameObject> MakeDeathScreenVersusVisuals();
 
 std::shared_ptr<dae::GameObject> MakeVictoryDeathScreenLogic(int startScreenSceneIdx, QBert* qBertComp);

@@ -12,6 +12,7 @@
 #include "UggWrongway.h"
 #include "Coily.h"
 #include "Disk.h"
+#include "PlayerTwoCoilyInput.h"
 #include "SoundServiceLocator.h"
 #include "SoundSystem.h"
 
@@ -21,6 +22,7 @@ LevelSectionObserver::LevelSectionObserver(float transitionTime, QBert* qBertCom
 	, m_QBertGraphics()
 	, m_Pyramid()
 	, m_DeathSceneIdx()
+	, m_Versus()
 
 	, m_QBertJustFell()
 	, m_QBertJustTookDisk()
@@ -70,13 +72,14 @@ LevelSectionObserver::LevelSectionObserver(float transitionTime, QBert* qBertCom
 
 
 LevelSectionObserver::LevelSectionObserver(const std::shared_ptr<dae::GameObject>& gameObject, const std::shared_ptr<dae::GameObject>& qBertGO, Pyramid* pyramid,
-	std::vector<Disk*>* disksVector, int deathSceneIdx, int level, bool spawnSlickSams, bool spawnUggWrongs, float slickSamSpawnInterval, float uggWrongSpawnInterval)
+	std::vector<Disk*>* disksVector, int deathSceneIdx, int level, bool versus, bool spawnSlickSams, bool spawnUggWrongs, float slickSamSpawnInterval, float uggWrongSpawnInterval)
 	: m_GameObject(gameObject)
 	, m_QBertComp(qBertGO->GetComponent<QBert>())
 	, m_QBertGraphics(qBertGO->GetComponent<dae::GraphicsComponent>())
 	, m_Pyramid(pyramid)
 	, m_DisksVector(disksVector)
 	, m_DeathSceneIdx(deathSceneIdx)
+	, m_Versus(versus)
 
 	, m_QBertJustFell(false)
 	, m_QBertJustTookDisk(false)
@@ -266,7 +269,7 @@ void LevelSectionObserver::SetPyramid(Pyramid* pyramid)
 
 void LevelSectionObserver::AddCoily(bool isLeft)
 {
-	auto newCoilyGO = MakeCoily(m_QBertComp, isLeft, m_CoilyMoveInterval);
+	auto newCoilyGO = MakeCoily(m_QBertComp, isLeft, m_CoilyMoveInterval, m_Versus);
 	dae::SceneManager::GetInstance().GetCurrentScene()->Add(newCoilyGO);
 	auto* newCoilyComp = newCoilyGO->GetComponent<Coily>();
 
@@ -278,6 +281,14 @@ void LevelSectionObserver::AddCoily(bool isLeft)
 	else
 	{
 		std::cout << "Coily creation failed\n";
+	}
+
+	if (m_Versus)
+	{
+		auto coilyPlayerInputGO = std::make_shared<dae::GameObject>();
+		coilyPlayerInputGO->AddComponent(new PlayerTwoCoilyInput(newCoilyGO));
+		dae::SceneManager::GetInstance().GetCurrentScene()->Add(coilyPlayerInputGO);
+		coilyPlayerInputGO->GetComponent<PlayerTwoCoilyInput>()->Initialize();
 	}
 }
 
@@ -761,11 +772,18 @@ void LevelSectionObserver::Update(const float deltaTime)
 				m_DeadQbertTimer += deltaTime;
 				if (m_DeadQbertTimer >= m_DeadQbertMaxTime)
 				{
+					if(m_QBertJustFell)
+						m_QBertComp->RevertToLastPosition();
+					
+					m_QBertComp->SetHideGraphics(true);
+					m_QBertComp->SetCursesHidden(true);
+					ClearAllEnemies();
+
 					if (m_QBertComp->GetCurrentLives() <= 0)
 					{
 						if (m_QBertJustFell)
 							m_QBertJustFell = false;
-						
+
 						m_QBertComp->BackToGround();
 						m_QBertComp->SetFrozen(false);
 						m_QBertComp->SetCursesHidden(true);
@@ -774,17 +792,10 @@ void LevelSectionObserver::Update(const float deltaTime)
 					}
 					else
 					{
-						if(m_QBertJustFell)
-							m_QBertComp->RevertToLastPosition();
-					
-						m_QBertComp->SetHideGraphics(true);
-						m_QBertComp->SetCursesHidden(true);
-						ClearAllEnemies();
+						m_DeadQbertTimer = 0.f;
+						m_DeadQbert = false;
+						m_DeathEmptyScene = true;
 					}
-
-					m_DeadQbertTimer = 0.f;
-					m_DeadQbert = false;
-					m_DeathEmptyScene = true;
 				}
 			}
 			else

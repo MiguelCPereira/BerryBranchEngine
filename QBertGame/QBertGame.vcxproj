@@ -387,6 +387,7 @@ xcopy "$(SolutionDir)$(Platform)\$(Configuration)\*.dll" "$(OutputPath)" /R /Y</
     <ClCompile Include="LevelSectionObserver.cpp" />
     <ClCompile Include="LivesDisplay.cpp" />
     <ClCompile Include="MenuScoreDisplay.cpp" />
+    <ClCompile Include="PlayerTwoCoilyInput.cpp" />
     <ClCompile Include="Pyramid.cpp" />
     <ClCompile Include="QBert.cpp" />
     <ClCompile Include="QBertGame.cpp" />
@@ -411,6 +412,7 @@ xcopy "$(SolutionDir)$(Platform)\$(Configuration)\*.dll" "$(OutputPath)" /R /Y</
     <ClInclude Include="LevelSectionObserver.h" />
     <ClInclude Include="LivesDisplay.h" />
     <ClInclude Include="MenuScoreDisplay.h" />
+    <ClInclude Include="PlayerTwoCoilyInput.h" />
     <ClInclude Include="Pyramid.h" />
     <ClInclude Include="QBert.h" />
     <ClInclude Include="RoundLvlDisplay.h" />

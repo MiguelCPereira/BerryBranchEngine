@@ -7,9 +7,10 @@
 #include "SoundSystem.h"
 
 Coily::Coily(const std::shared_ptr<dae::GameObject>& gameObject, QBert* qBertComp, int nrRows, float cubesWidth,
-             float cubesHeight, float spriteWidth, float spriteHeight, int startingCube, float jumpInterval)
+             float cubesHeight, float spriteWidth, float spriteHeight, int startingCube, float jumpInterval, bool controlledByPlayer)
 	: m_GameObject(gameObject)
 	, m_QBertComp(qBertComp)
+	, m_ControlledByPlayer(controlledByPlayer)
 	, m_CurrentCubeIdx(startingCube)
 	, m_LastRow(nrRows)
 	, m_CubesWidth(cubesWidth)
@@ -18,6 +19,7 @@ Coily::Coily(const std::shared_ptr<dae::GameObject>& gameObject, QBert* qBertCom
 	, m_SpriteHeight(spriteHeight)
 	, m_JumpInterval(jumpInterval)
 	, m_Direction(startingCube - 1)
+	, m_TurnedToSnakeVersus(false)
 {
 }
 
@@ -74,7 +76,7 @@ bool Coily::MoveDownLeft()
 
 bool Coily::MoveDownRight()
 {
-	if (m_Frozen == false)
+	if (m_Frozen == false && m_Airborne == false)
 	{
 		// If Coily isn't in the last pyramid row, change the pos index
 		if (m_CurrentRow != m_LastRow)
@@ -172,6 +174,38 @@ bool Coily::MoveUpRight()
 	return false;
 }
 
+bool Coily::MoveDownLeftPlayer()
+{
+	if (m_IsEgg == false)
+		return MoveDownLeft();
+
+	return false;
+}
+
+bool Coily::MoveDownRightPlayer()
+{
+	if (m_IsEgg == false)
+		return MoveDownRight();
+
+	return false;
+}
+
+bool Coily::MoveUpLeftPlayer()
+{
+	if (m_IsEgg == false)
+		return MoveUpLeft();
+
+	return false;
+}
+
+bool Coily::MoveUpRightPlayer()
+{
+	if (m_IsEgg == false)
+		return MoveUpRight();
+
+	return false;
+}
+
 void Coily::JumpFinished()
 {
 	// Set landing graphics
@@ -238,60 +272,72 @@ void Coily::Update(const float deltaTime)
 					else
 						MoveDownLeft();
 				}
-				else
+				else if(m_IsEgg == false)
 				{
-					int qBertNrInRow; // Counting from the right
-					int coilyNrInRow; // Counting from the right
-					const int qBertCubeIdx = m_QBertComp->GetPositionIndex();
-					const int qBertRow = m_QBertComp->GetCurrentRow();
-					
-					
-					if (qBertCubeIdx != 1)
-						qBertNrInRow = (qBertRow * (qBertRow + 1) / 2) - qBertCubeIdx;
-					else
-						qBertNrInRow = 0;
-
-
-					if (m_CurrentCubeIdx != 1)
-						coilyNrInRow = (m_CurrentRow * (m_CurrentRow + 1) / 2) - m_CurrentCubeIdx;
-					else
-						coilyNrInRow = 0;
-
-					
-					if (qBertRow > m_CurrentRow) // QBert is bellow Coily
+					if(m_ControlledByPlayer)
 					{
-						if (qBertNrInRow > coilyNrInRow) // Qbert is to Coily's Left
-							MoveDownLeft();
-						else // Qbert is either to Coily's Right or exactly bellow
-							MoveDownRight();
-					}
-					else if (qBertRow < m_CurrentRow) // QBert is above Coily
-					{
-						if (qBertNrInRow < coilyNrInRow) // Qbert is to Coily's Right
-							MoveUpRight();
-						else // Qbert is either to Coily's Right or exactly above
-							MoveUpLeft();
-					}
-					else // They're both in the same row
-					{
-						// Coily will always move up in these situations
-						// (unless QBert has taken a disk)
-						// because if they went down and they happened to be in the last row
-						// they would jump to their death
-						
-						if(qBertNrInRow < coilyNrInRow) // QBert is to Coily's Right
-							MoveUpRight();
-						else if (qBertNrInRow > coilyNrInRow)// QBert's to Coily's Left
-							MoveUpLeft();
-						else // QBert has taken a disk, because Coily's in the same cube has Qbert's last index
+						if (m_TurnedToSnakeVersus == false)
 						{
-							// Make Coily jump to their death, depending on which direction QBert jumped to last
-							if (m_QBertComp->GetLastJumpedOffLeft())
-								MoveUpLeft();
-							else
-								MoveUpRight();
+							// Show transformation without moving, so the player knows they now have control
+							m_GameObject->GetComponent<dae::GraphicsComponent>()->SetSrcRectangle(m_SpriteWidth * 6, 0, m_SpriteWidth, m_SpriteHeight);
+							m_TurnedToSnakeVersus = true;
 						}
+					}
+					else
+					{
+						int qBertNrInRow; // Counting from the right
+						int coilyNrInRow; // Counting from the right
+						const int qBertCubeIdx = m_QBertComp->GetPositionIndex();
+						const int qBertRow = m_QBertComp->GetCurrentRow();
 
+
+						if (qBertCubeIdx != 1)
+							qBertNrInRow = (qBertRow * (qBertRow + 1) / 2) - qBertCubeIdx;
+						else
+							qBertNrInRow = 0;
+
+
+						if (m_CurrentCubeIdx != 1)
+							coilyNrInRow = (m_CurrentRow * (m_CurrentRow + 1) / 2) - m_CurrentCubeIdx;
+						else
+							coilyNrInRow = 0;
+
+
+						if (qBertRow > m_CurrentRow) // QBert is bellow Coily
+						{
+							if (qBertNrInRow > coilyNrInRow) // Qbert is to Coily's Left
+								MoveDownLeft();
+							else // Qbert is either to Coily's Right or exactly bellow
+								MoveDownRight();
+						}
+						else if (qBertRow < m_CurrentRow) // QBert is above Coily
+						{
+							if (qBertNrInRow < coilyNrInRow) // Qbert is to Coily's Right
+								MoveUpRight();
+							else // Qbert is either to Coily's Right or exactly above
+								MoveUpLeft();
+						}
+						else // They're both in the same row
+						{
+							// Coily will always move up in these situations
+							// (unless QBert has taken a disk)
+							// because if they went down and they happened to be in the last row
+							// they would jump to their death
+
+							if (qBertNrInRow < coilyNrInRow) // QBert is to Coily's Right
+								MoveUpRight();
+							else if (qBertNrInRow > coilyNrInRow)// QBert's to Coily's Left
+								MoveUpLeft();
+							else // QBert has taken a disk, because Coily's in the same cube has Qbert's last index
+							{
+								// Make Coily jump to their death, depending on which direction QBert jumped to last
+								if (m_QBertComp->GetLastJumpedOffLeft())
+									MoveUpLeft();
+								else
+									MoveUpRight();
+							}
+
+						}
 					}
 					
 				}

@@ -21,7 +21,7 @@ class LevelSectionObserver final : public dae::BaseComponent, public dae::Observ
 public:
 	explicit LevelSectionObserver(float transitionTime, QBert* qBertComp); // An empty observer just for the level title scenes
 	explicit LevelSectionObserver(const std::shared_ptr<dae::GameObject>& gameObject, const std::shared_ptr<dae::GameObject>& qBertGO, Pyramid* pyramid,
-		std::vector<Disk*>* disksVector, int deathSceneIdx, int level, bool spawnSlickSams, bool spawnUggWrongs, float slickSamSpawnInterval = 0, float uggWrongSpawnInterval = 0);
+		std::vector<Disk*>* disksVector, int deathSceneIdx, int level, bool versus, bool spawnSlickSams, bool spawnUggWrongs, float slickSamSpawnInterval = 0, float uggWrongSpawnInterval = 0);
 
 	~LevelSectionObserver() override;
 
@@ -60,6 +60,7 @@ private:
 	Pyramid* m_Pyramid;
 	std::vector<Disk*>* m_DisksVector;
 	const int m_DeathSceneIdx;
+	const bool m_Versus;
 
 	bool m_QBertJustFell;
 	bool m_QBertJustTookDisk;
