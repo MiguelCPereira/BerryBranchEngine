@@ -13,8 +13,8 @@ namespace dae
 		void Update(const float deltaTime) override;
 		void Render() const override;
 
-		void SetText(const std::string& text);
-		void MINIGIN_ENTRY SetPosition(float x, float y);
+		MINIGIN_ENTRY void SetText(const std::string& text);
+		MINIGIN_ENTRY void SetPosition(float x, float y) const;
 
 		explicit MINIGIN_ENTRY TextComponent(const std::string& text, const std::shared_ptr<Font>& font);
 		explicit MINIGIN_ENTRY TextComponent(const std::string& text, const std::shared_ptr<Font>& font, int colorR, int colorG, int colorB);
