@@ -7,9 +7,9 @@
 #include "SoundSystem.h"
 
 Disk::Disk(const std::shared_ptr<dae::GameObject>& gameObject, int rowIdx, bool isLeft, int colorIdx,
-           float finalPosX, float finalPosY, float finalQbertPosY, float spriteWidth, float spriteHeight)
-	: m_GameObject (gameObject)
-	, m_QBertComp ()
+	float finalPosX, float finalPosY, float finalQbertPosY, float spriteWidth, float spriteHeight)
+	: m_GameObject(gameObject)
+	, m_QBertComp()
 	, m_QBertGraphics()
 	, m_RowIdx(rowIdx)
 	, m_IsLeft(isLeft)
@@ -42,6 +42,8 @@ Disk::Disk(const std::shared_ptr<dae::GameObject>& gameObject, int rowIdx, bool 
 	, m_NrFrames(4)
 	, m_SpriteWidth(spriteWidth)
 	, m_SpriteHeight(spriteHeight)
+
+	, m_CarryingPlayerOne()
 {
 }
 
@@ -51,9 +53,10 @@ Disk::~Disk()
 }
 
 
-void Disk::Activate(QBert* qBertComp, dae::GraphicsComponent* qBertGraphics)
+void Disk::Activate(QBert* qBertComp, dae::GraphicsComponent* qBertGraphics, bool playerOne)
 {
 	SoundServiceLocator::GetSoundSystem().Play("../Data/Sounds/Disk Lift.wav", 0.1f);
+	m_CarryingPlayerOne = playerOne;
 	m_QBertComp = qBertComp;
 	m_QBertComp->SetFrozen(true);
 	auto* graphics = m_GameObject->GetComponent<dae::GraphicsComponent>();
@@ -88,7 +91,7 @@ void Disk::ResetDisk()
 {
 	auto* graphics = m_GameObject->GetComponent<dae::GraphicsComponent>();
 	graphics->SetPosition(m_InitialPosX, m_InitialPosY);
-	
+
 	m_Activated = false;
 	m_MidFlightPosX = m_InitialPosX;
 	m_MidFlightPosY = m_InitialPosY;
@@ -166,7 +169,11 @@ void Disk::Update(const float deltaTime)
 					m_QBertGraphics->SetPosition(m_MidFlightPosX + m_QBertGraphAdjustmentX, m_FinalQBertPosY);
 					m_Activated = false;
 					m_HasBeenUsed = true;
-					m_Subject->Notify(dae::Event::DiskFlightEnded);
+
+					if (m_CarryingPlayerOne)
+						m_Subject->Notify(dae::Event::DiskFlightEndedP1);
+					else
+						m_Subject->Notify(dae::Event::DiskFlightEndedP2);
 				}
 			}
 		}

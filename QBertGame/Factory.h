@@ -21,9 +21,9 @@ namespace dae
 	class GameObject;
 }
 
-std::vector<std::shared_ptr<dae::GameObject>> MakeQBert();
+std::vector<std::shared_ptr<dae::GameObject>> MakeQBert(bool playerOne);
 
-std::shared_ptr<dae::GameObject> MakeCoily(QBert* qBertComp, bool isLeft, float  moveInterval, bool controlledByPlayer);
+std::shared_ptr<dae::GameObject> MakeCoily(std::vector<QBert*>* qBertCompVector, bool isLeft, float  moveInterval, bool controlledByPlayer);
 
 std::shared_ptr<dae::GameObject> MakeSlickSam(bool isSlick, bool isLeft, float  moveInterval);
 
@@ -31,7 +31,7 @@ std::shared_ptr<dae::GameObject> MakeUggWrongway(bool isUgg, bool isLeft, float 
 
 std::shared_ptr<dae::GameObject> MakeLevelTitle(int lvlNr, int gameMode); // 1 is Solo, 2 is Coop, 3 is Versus
 
-std::shared_ptr<dae::GameObject> MakeLevelTransition(QBert* qBertComp);
+std::shared_ptr<dae::GameObject> MakeLevelTransition(std::vector<QBert*>* qBertCompVector, int gameMode); // 1 is Solo, 2 is Coop, 3 is Versus
 
 std::shared_ptr<dae::GameObject> MakeFPSCounter();
 

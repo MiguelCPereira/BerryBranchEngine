@@ -21,14 +21,14 @@ public:
 	Disk& operator=(const Disk& other) = delete;
 	Disk& operator=(Disk&& other) noexcept = delete;
 
-	void Activate(QBert* qBertComp, dae::GraphicsComponent* qBertGraphics);
+	void Activate(QBert* qBertComp, dae::GraphicsComponent* qBertGraphics, bool playerOne);
 	void SetHide(bool isHidden);
 	void ResetDisk();
-	
+
 	int GetRow() const { return m_RowIdx; }
 	bool GetHasBeenUsed() const { return m_HasBeenUsed; }
-	bool GetIsLeft() const{ return m_IsLeft; }
-	
+	bool GetIsLeft() const { return m_IsLeft; }
+
 	void Update(const float deltaTime) override;
 
 private:
@@ -39,7 +39,7 @@ private:
 	const bool m_IsLeft;
 	const int m_ColorIdx;
 	bool m_Activated;
-	
+
 	const float m_FlightTime;
 	const float m_QBertFallSpeed;
 	const float m_InitialPosX, m_InitialPosY;
@@ -58,5 +58,7 @@ private:
 	float m_TimeSinceLastFrameIdle;
 	int m_CurrentFrame, m_NrFrames;
 	const float m_SpriteWidth, m_SpriteHeight;
+
+	bool m_CarryingPlayerOne;
 };
 

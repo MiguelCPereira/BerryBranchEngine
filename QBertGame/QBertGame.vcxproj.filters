@@ -87,16 +87,19 @@
     <ClCompile Include="MenuScoreDisplay.cpp">
       <Filter>Components\Menu Screens</Filter>
     </ClCompile>
-    <ClCompile Include="PlayerOneInput.cpp">
-      <Filter>Components\Player Input</Filter>
-    </ClCompile>
     <ClCompile Include="StartScreenInput.cpp">
       <Filter>Components\Player Input</Filter>
     </ClCompile>
     <ClCompile Include="VictoryDeathScreenInput.cpp">
       <Filter>Components\Player Input</Filter>
     </ClCompile>
-    <ClCompile Include="PlayerTwoCoilyInput.cpp">
+    <ClCompile Include="SoloVersusP1Input.cpp">
+      <Filter>Components\Player Input</Filter>
+    </ClCompile>
+    <ClCompile Include="P2CoilyInput.cpp">
+      <Filter>Components\Player Input</Filter>
+    </ClCompile>
+    <ClCompile Include="CoopAllInput.cpp">
       <Filter>Components\Player Input</Filter>
     </ClCompile>
   </ItemGroup>
@@ -155,16 +158,19 @@
     <ClInclude Include="MenuScoreDisplay.h">
       <Filter>Components\Menu Screens</Filter>
     </ClInclude>
-    <ClInclude Include="PlayerOneInput.h">
-      <Filter>Components\Player Input</Filter>
-    </ClInclude>
     <ClInclude Include="StartScreenInput.h">
       <Filter>Components\Player Input</Filter>
     </ClInclude>
     <ClInclude Include="VictoryDeathScreenInput.h">
       <Filter>Components\Player Input</Filter>
     </ClInclude>
-    <ClInclude Include="PlayerTwoCoilyInput.h">
+    <ClInclude Include="SoloVersusP1Input.h">
+      <Filter>Components\Player Input</Filter>
+    </ClInclude>
+    <ClInclude Include="P2CoilyInput.h">
+      <Filter>Components\Player Input</Filter>
+    </ClInclude>
+    <ClInclude Include="CoopAllInput.h">
       <Filter>Components\Player Input</Filter>
     </ClInclude>
   </ItemGroup>

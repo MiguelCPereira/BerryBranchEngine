@@ -7,7 +7,7 @@
 
 
 QBert::QBert(const std::shared_ptr<dae::GameObject>& gameObject, const std::shared_ptr<dae::GameObject>& cursesGameObject,
-             int nrRows, float qBertSpriteWidth, float qBertSpriteHeight)
+             int nrRows, float qBertSpriteWidth, float qBertSpriteHeight, bool isPlayerOne)
 	: m_GameObject(gameObject)
 	, m_CursesGameObject(cursesGameObject)
 	, m_LastRow(nrRows)
@@ -17,13 +17,17 @@ QBert::QBert(const std::shared_ptr<dae::GameObject>& gameObject, const std::shar
 	, m_QBertInitialPosY()
 	, m_PosXBeforeHidden()
 	, m_PosYBeforeHidden()
+	, m_IsPlayerOne(isPlayerOne)
 {}
 
 
 void QBert::Die()
 {
 	m_Lives--;
-	m_Subject->Notify(dae::Event::QBertDied);
+	if(m_IsPlayerOne)
+		m_Subject->Notify(dae::Event::QBertDiedP1);
+	else
+		m_Subject->Notify(dae::Event::QBertDiedP2);
 }
 
 void QBert::ResetGameVariables()
@@ -97,7 +101,10 @@ void QBert::SetNewPositionIndexes(int cubeIdx, int rowNr)
 void QBert::ScoreIncrease(int gainedPoints)
 {
 	m_Score += gainedPoints;
-	m_Subject->Notify(dae::Event::ScoreIncreased);
+	if (m_IsPlayerOne)
+		m_Subject->Notify(dae::Event::ScoreIncreasedP1);
+	else
+		m_Subject->Notify(dae::Event::ScoreIncreasedP2);
 }
 
 void QBert::SetLevel(int actualLevel)
@@ -255,13 +262,19 @@ void QBert::JumpFinished()
 {
 	if (m_JumpedOff)
 	{
-		m_Subject->Notify(dae::Event::QBertFell);
+		if(m_IsPlayerOne)
+			m_Subject->Notify(dae::Event::QBertFellP1);
+		else
+			m_Subject->Notify(dae::Event::QBertFellP2);
 	}
 	else
 	{
 		SoundServiceLocator::GetSoundSystem().Play("../Data/Sounds/QBert Jump.wav", 0.1f);
 		m_Airborne = false;
-		m_Subject->Notify(dae::Event::QBertLanded);
+		if (m_IsPlayerOne)
+			m_Subject->Notify(dae::Event::QBertLandedP1);
+		else
+			m_Subject->Notify(dae::Event::QBertLandedP2);
 	}
 }
 

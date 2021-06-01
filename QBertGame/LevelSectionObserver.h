@@ -19,22 +19,26 @@ namespace dae
 class LevelSectionObserver final : public dae::BaseComponent, public dae::Observer
 {
 public:
-	explicit LevelSectionObserver(float transitionTime, QBert* qBertComp); // An empty observer just for the level title scenes
-	explicit LevelSectionObserver(const std::shared_ptr<dae::GameObject>& gameObject, const std::shared_ptr<dae::GameObject>& qBertGO, Pyramid* pyramid,
-		std::vector<Disk*>* disksVector, int deathSceneIdx, int level, bool versus, bool spawnSlickSams, bool spawnUggWrongs, float slickSamSpawnInterval = 0, float uggWrongSpawnInterval = 0);
+	explicit LevelSectionObserver(float transitionTime, std::vector<QBert*>* qBertCompVector, int gameMode); // An empty observer just for the level title scenes
+	explicit LevelSectionObserver(const std::shared_ptr<dae::GameObject>& gameObject, std::vector<QBert*>* qBertCompVector, std::vector<dae::GraphicsComponent*>* qBertGraphicsVector,
+		Pyramid* pyramid, std::vector<Disk*>* disksVector, int deathSceneIdx, int level, int gameMode, bool spawnSlickSams, bool spawnUggWrongs, float slickSamSpawnInterval = 0, float uggWrongSpawnInterval = 0);
 
 	~LevelSectionObserver() override;
 
-	void SetQBert(QBert* qBertComp);
+	void SetQBertVector(std::vector<QBert*>* qBertCompVector);
 	void SetPyramid(Pyramid* pyramid);
 
 	void Initialize() override;
 	void Update(const float deltaTime) override;
 	void OnNotify(const dae::Event& event) override;
 
+	void DeadP1Update(const float deltaTime);
+	void DeadP2Update(const float deltaTime);
+
+
 	bool CheckAllCubesTurned() const;
-	bool CheckCollidingCoily() const;
-	bool CheckCollidingUggWrong() const;
+	bool CheckCollidingCoily(int qBertIdx) const;
+	bool CheckCollidingUggWrong(int qBertIdx) const;
 	void DestroyUsedDisk() const;
 	void KillCollidingSlickSam() const;
 	void KillFallenSlickSam() const;
@@ -55,20 +59,21 @@ public:
 private:
 	std::shared_ptr<dae::GameObject> m_GameObject{};
 	Observer* m_ThisObserver{};
-	QBert* m_QBertComp{};
-	dae::GraphicsComponent* m_QBertGraphics{};
+	std::vector<QBert*>* m_QBertCompVector;
+	std::vector<dae::GraphicsComponent*>* m_QBertGraphicsVector;
 	Pyramid* m_Pyramid;
 	std::vector<Disk*>* m_DisksVector;
 	const int m_DeathSceneIdx;
-	const bool m_Versus;
 
-	bool m_QBertJustFell;
-	bool m_QBertJustTookDisk;
-	
-	Coily* m_CoilyComp{};
+	bool m_QBertP1JustFell;
+	bool m_QBertP1JustTookDisk;
+	bool m_QBertP2JustFell;
+	bool m_QBertP2JustTookDisk;
+
+	Coily* m_CoilyComp;
 	bool m_SpawnCoily;
 	float m_CoilySpawnTimer, m_CoilySpawnDelay, m_CoilyMoveInterval;
-	
+
 	const bool m_SpawnSlickSams;
 	std::vector<SlickSam*>* m_SlickSamCompVector;
 	float m_SlickSamSpawnTimer, m_SlickSamSpawnInterval, m_SlickSamMoveInterval;
@@ -87,11 +92,13 @@ private:
 	bool m_EverythingClear;
 	const int m_Level;
 
-	bool m_DeadQbert;
-	float m_DeadQbertTimer, m_DeadQbertMaxTime;
+	bool m_DeadQbertP1, m_DeadQbertP2;
+	float m_DeadQbertP1Timer, m_DeadQbertP2Timer, m_DeadQbertMaxTime;
 	bool m_DeathEmptyScene;
 	float m_DeathEmptySceneTimer, m_DeathEmptySceneMaxTime;
 
 	float m_LevelTitleTimer, m_LevelTitleScreenTime;
+
+	const int m_GameMode; // 1 is Solo, 2 is Coop, 3 is Versus
 };
 

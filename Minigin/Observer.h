@@ -20,23 +20,34 @@ namespace dae
 		// While these are only used in the game
 		CoilyLanded,
 		CoilyFell,
-		ScoreIncreased,
-		QBertDied,
-		QBertLanded,
-		QBertFell,
+		
+		ScoreIncreasedP1,
+		QBertDiedP1,
+		QBertLandedP1,
+		QBertFellP1,
+
+		ScoreIncreasedP2,
+		QBertDiedP2,
+		QBertLandedP2,
+		QBertFellP2,
+		
 		SlickSamLanded,
 		SlickSamFell,
 		UggWrongwayLanded,
 		UggWrongwayFell,
+		
 		JumpUpRight,
 		JumpUpLeft,
 		JumpDownRight,
 		JumpDownLeft,
 		JumpLeft,
 		JumpRight,
+		
 		LevelUpdated,
 		RoundUpdated,
-		DiskFlightEnded
+		
+		DiskFlightEndedP1,
+		DiskFlightEndedP2
 	};
 
 	class Observer

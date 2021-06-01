@@ -18,7 +18,7 @@
 #include "StartScreen.h"
 #include "VictoryDeathScreen.h"
 
-std::vector<std::shared_ptr<dae::GameObject>> MakeQBert()
+std::vector<std::shared_ptr<dae::GameObject>> MakeQBert(bool playerOne)
 {
 	const auto cursesWidth = 55.f;
 	const auto cursesHeight = 29.f;
@@ -33,7 +33,7 @@ std::vector<std::shared_ptr<dae::GameObject>> MakeQBert()
 	cursesGO->AddComponent(new dae::GraphicsComponent("QBert Curses.png", -50, -50, cursesWidth, cursesHeight));
 
 	auto qBertGO = std::make_shared<dae::GameObject>();
-	qBertGO->AddComponent(new QBert(qBertGO, cursesGO, g_NrRows, spriteWidth, spriteHeight));
+	qBertGO->AddComponent(new QBert(qBertGO, cursesGO, g_NrRows, spriteWidth, spriteHeight, playerOne));
 	qBertGO->AddComponent(new dae::GraphicsComponent("QBert Spritesheet.png", initialPosX, g_InitialQbertPosY,
 		actualWidth, actualHeight, spriteWidth * 2, 0, spriteWidth, spriteHeight));
 	qBertGO->AddComponent(new JumpingObserver(qBertGO->GetComponent<QBert>(), qBertGO->GetComponent<dae::GraphicsComponent>(),
@@ -47,7 +47,7 @@ std::vector<std::shared_ptr<dae::GameObject>> MakeQBert()
 }
 
 
-std::shared_ptr<dae::GameObject> MakeCoily(QBert* qBertComp, bool isLeft, float  moveInterval, bool controlledByPlayer)
+std::shared_ptr<dae::GameObject> MakeCoily(std::vector<QBert*>* qBertCompVector, bool isLeft, float  moveInterval, bool controlledByPlayer)
 {
 	const auto spriteWidth = 16.f;
 	const auto spriteHeight = 32.f;
@@ -58,14 +58,14 @@ std::shared_ptr<dae::GameObject> MakeCoily(QBert* qBertComp, bool isLeft, float 
 
 	if (isLeft)
 	{
-		newGO->AddComponent(new Coily(newGO, qBertComp, g_NrRows, g_CubesActualWidth, g_CubesActualHeight,
+		newGO->AddComponent(new Coily(newGO, qBertCompVector, g_NrRows, g_CubesActualWidth, g_CubesActualHeight,
 			spriteWidth, spriteHeight, 2, moveInterval, controlledByPlayer));
 		newGO->AddComponent(new dae::GraphicsComponent("Coily Spritesheet.png", g_EnemiesLeftSpawnPosX, g_EnemiesSpawnPosY - 22.f,
 			actualWidth, actualHeight, 0, 0, spriteWidth, spriteHeight));
 	}
 	else
 	{
-		newGO->AddComponent(new Coily(newGO, qBertComp, g_NrRows, g_CubesActualWidth, g_CubesActualHeight,
+		newGO->AddComponent(new Coily(newGO, qBertCompVector, g_NrRows, g_CubesActualWidth, g_CubesActualHeight,
 			spriteWidth, spriteHeight, 3, moveInterval, controlledByPlayer));
 		newGO->AddComponent(new dae::GraphicsComponent("Coily Spritesheet.png", g_EnemiesRightSpawnPosX, g_EnemiesSpawnPosY - 22.f,
 			actualWidth, actualHeight, 0, 0, spriteWidth, spriteHeight));
@@ -230,12 +230,12 @@ std::shared_ptr<dae::GameObject> MakeLevelTitle(int lvlNr, int gameMode)
 }
 
 
-std::shared_ptr<dae::GameObject> MakeLevelTransition(QBert* qBertComp)
+std::shared_ptr<dae::GameObject> MakeLevelTransition(std::vector<QBert*>* qBertCompVector, int gameMode)
 {
 	const float transitionTime = 2.f;
 
 	auto sectionObserverGO = std::make_shared<dae::GameObject>();
-	sectionObserverGO->AddComponent(new LevelSectionObserver(transitionTime, qBertComp));
+	sectionObserverGO->AddComponent(new LevelSectionObserver(transitionTime, qBertCompVector, gameMode));
 
 	return sectionObserverGO;
 }
@@ -269,6 +269,7 @@ std::shared_ptr<dae::GameObject> MakeHeartForDisplay(bool playerOne, float posY)
 
 	return heartGO;
 }
+
 
 std::vector<std::shared_ptr<dae::GameObject>>* MakeLivesDisplayVisuals(bool playerOne, int livesAmount)
 {

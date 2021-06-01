@@ -374,6 +374,7 @@ xcopy "$(SolutionDir)3rdParty\SDL2_ttf\lib\$(PlatformTarget)\*.dll" "$(OutputPat
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Coily.cpp" />
+    <ClCompile Include="CoopAllInput.cpp" />
     <ClCompile Include="Cube.cpp" />
     <ClCompile Include="Disk.cpp" />
     <ClCompile Include="Factory.cpp" />
@@ -383,14 +384,14 @@ xcopy "$(SolutionDir)3rdParty\SDL2_ttf\lib\$(PlatformTarget)\*.dll" "$(OutputPat
     <ClCompile Include="LevelSectionObserver.cpp" />
     <ClCompile Include="LivesDisplay.cpp" />
     <ClCompile Include="MenuScoreDisplay.cpp" />
-    <ClCompile Include="PlayerTwoCoilyInput.cpp" />
+    <ClCompile Include="P2CoilyInput.cpp" />
     <ClCompile Include="Pyramid.cpp" />
     <ClCompile Include="QBert.cpp" />
     <ClCompile Include="QBertGame.cpp" />
     <ClCompile Include="RoundLvlDisplay.cpp" />
     <ClCompile Include="ScoreDisplay.cpp" />
     <ClCompile Include="StartScreenInput.cpp" />
-    <ClCompile Include="PlayerOneInput.cpp" />
+    <ClCompile Include="SoloVersusP1Input.cpp" />
     <ClCompile Include="SlickSam.cpp" />
     <ClCompile Include="StartScreen.cpp" />
     <ClCompile Include="UggWrongway.cpp" />
@@ -399,6 +400,7 @@ xcopy "$(SolutionDir)3rdParty\SDL2_ttf\lib\$(PlatformTarget)\*.dll" "$(OutputPat
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Coily.h" />
+    <ClInclude Include="CoopAllInput.h" />
     <ClInclude Include="Cube.h" />
     <ClInclude Include="Disk.h" />
     <ClInclude Include="Factory.h" />
@@ -408,13 +410,13 @@ xcopy "$(SolutionDir)3rdParty\SDL2_ttf\lib\$(PlatformTarget)\*.dll" "$(OutputPat
     <ClInclude Include="LevelSectionObserver.h" />
     <ClInclude Include="LivesDisplay.h" />
     <ClInclude Include="MenuScoreDisplay.h" />
-    <ClInclude Include="PlayerTwoCoilyInput.h" />
+    <ClInclude Include="P2CoilyInput.h" />
     <ClInclude Include="Pyramid.h" />
     <ClInclude Include="QBert.h" />
     <ClInclude Include="RoundLvlDisplay.h" />
     <ClInclude Include="ScoreDisplay.h" />
     <ClInclude Include="StartScreenInput.h" />
-    <ClInclude Include="PlayerOneInput.h" />
+    <ClInclude Include="SoloVersusP1Input.h" />
     <ClInclude Include="SlickSam.h" />
     <ClInclude Include="StartScreen.h" />
     <ClInclude Include="UggWrongway.h" />

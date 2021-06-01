@@ -52,7 +52,7 @@ void ScoreDisplay::OnNotify(const dae::Event& event)
 {
 	switch (event)
 	{
-	case dae::Event::ScoreIncreased:
+	case dae::Event::ScoreIncreasedP1:
 		UpdateScoreText();
 		break;
 	}

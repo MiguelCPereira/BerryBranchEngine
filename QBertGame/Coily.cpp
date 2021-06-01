@@ -6,10 +6,10 @@
 #include "SoundServiceLocator.h"
 #include "SoundSystem.h"
 
-Coily::Coily(const std::shared_ptr<dae::GameObject>& gameObject, QBert* qBertComp, int nrRows, float cubesWidth,
+Coily::Coily(const std::shared_ptr<dae::GameObject>& gameObject, std::vector<QBert*>* qBertCompVector, int nrRows, float cubesWidth,
              float cubesHeight, float spriteWidth, float spriteHeight, int startingCube, float jumpInterval, bool controlledByPlayer)
 	: m_GameObject(gameObject)
-	, m_QBertComp(qBertComp)
+	, m_QBertCompVector(qBertCompVector)
 	, m_ControlledByPlayer(controlledByPlayer)
 	, m_CurrentCubeIdx(startingCube)
 	, m_LastRow(nrRows)
@@ -287,8 +287,8 @@ void Coily::Update(const float deltaTime)
 					{
 						int qBertNrInRow; // Counting from the right
 						int coilyNrInRow; // Counting from the right
-						const int qBertCubeIdx = m_QBertComp->GetPositionIndex();
-						const int qBertRow = m_QBertComp->GetCurrentRow();
+						const int qBertCubeIdx = m_QBertCompVector->operator[](0)->GetPositionIndex();
+						const int qBertRow = m_QBertCompVector->operator[](0)->GetCurrentRow();
 
 
 						if (qBertCubeIdx != 1)
@@ -331,7 +331,7 @@ void Coily::Update(const float deltaTime)
 							else // QBert has taken a disk, because Coily's in the same cube has Qbert's last index
 							{
 								// Make Coily jump to their death, depending on which direction QBert jumped to last
-								if (m_QBertComp->GetLastJumpedOffLeft())
+								if (m_QBertCompVector->operator[](0)->GetLastJumpedOffLeft())
 									MoveUpLeft();
 								else
 									MoveUpRight();

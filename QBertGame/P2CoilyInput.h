@@ -2,11 +2,11 @@
 #include "BaseComponent.h"
 #include <memory>
 
-class PlayerTwoCoilyInput final : public dae::BaseComponent
+class P2CoilyInput final : public dae::BaseComponent
 {
 public:
-	explicit PlayerTwoCoilyInput(const std::shared_ptr<dae::GameObject>& coilyGO);
-	~PlayerTwoCoilyInput() override = default;
+	explicit P2CoilyInput(const std::shared_ptr<dae::GameObject>& coilyGO);
+	~P2CoilyInput() override = default;
 
 	void Initialize() override;
 	void Update(const float deltaTime) override;

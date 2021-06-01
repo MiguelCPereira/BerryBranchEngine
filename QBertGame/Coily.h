@@ -8,7 +8,7 @@ class QBert;
 class Coily final : public dae::BaseComponent
 {
 public:
-	explicit Coily(const std::shared_ptr<dae::GameObject>& gameObject, QBert* qBertComp, int nrRows, float cubesWidth,
+	explicit Coily(const std::shared_ptr<dae::GameObject>& gameObject, std::vector<QBert*>* qBertCompVector, int nrRows, float cubesWidth,
 		float cubesHeight, float spriteWidth, float spriteHeight, int startingCube, float jumpInterval, bool controlledByPlayer);
 
 	int GetPositionIndex() const { return m_CurrentCubeIdx; }
@@ -32,7 +32,7 @@ public:
 
 private:
 	std::shared_ptr<dae::GameObject> m_GameObject{};
-	QBert* m_QBertComp;
+	std::vector<QBert*>* m_QBertCompVector;
 	bool m_ControlledByPlayer;
 	bool m_Airborne{ false };
 	bool m_Frozen{ false };

@@ -1,13 +1,13 @@
-#include "PlayerTwoCoilyInput.h"
+#include "P2CoilyInput.h"
 #include "GameCommands.h"
 #include "InputManager.h"
 
-PlayerTwoCoilyInput::PlayerTwoCoilyInput(const std::shared_ptr<dae::GameObject>& coilyGO)
+P2CoilyInput::P2CoilyInput(const std::shared_ptr<dae::GameObject>& coilyGO)
 	: m_CoilyGO(coilyGO)
 {
 }
 
-void PlayerTwoCoilyInput::Initialize()
+void P2CoilyInput::Initialize()
 {
 	auto moveUpKeyboard = std::make_unique<CoilyMoveUpCommand>();
 	moveUpKeyboard->SetActor(m_CoilyGO);
@@ -56,7 +56,7 @@ void PlayerTwoCoilyInput::Initialize()
 	dae::InputManager::GetInstance().AddCommand(controllerKey, std::move(moveRightController));
 }
 
-void PlayerTwoCoilyInput::Update(const float)
+void P2CoilyInput::Update(const float)
 {
 }
 

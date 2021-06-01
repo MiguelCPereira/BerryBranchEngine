@@ -66,7 +66,7 @@ void LivesDisplay::OnNotify(const dae::Event& event)
 {
 	switch (event)
 	{
-	case dae::Event::QBertDied:
+	case dae::Event::QBertDiedP1:
 		if(m_QBertComp->GetCurrentLives() >= 0)
 		{
 			auto* heart = m_Graphics->operator[](m_QBertComp->GetCurrentLives());

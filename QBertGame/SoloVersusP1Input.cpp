@@ -1,13 +1,13 @@
-#include "PlayerOneInput.h"
+#include "SoloVersusP1Input.h"
 #include "GameCommands.h"
 #include "InputManager.h"
 
-PlayerOneInput::PlayerOneInput(const std::shared_ptr<dae::GameObject>& qBertGO)
+SoloVersusP1Input::SoloVersusP1Input(const std::shared_ptr<dae::GameObject>& qBertGO)
 	: m_QBertGO(qBertGO)
 {
 }
 
-void PlayerOneInput::Initialize()
+void SoloVersusP1Input::Initialize()
 {
 	dae::InputManager::GetInstance().ClearAllCommands();
 	
@@ -58,7 +58,7 @@ void PlayerOneInput::Initialize()
 	dae::InputManager::GetInstance().AddCommand(controllerKey, std::move(moveRightController));
 }
 
-void PlayerOneInput::Update(const float)
+void SoloVersusP1Input::Update(const float)
 {
 }
 
