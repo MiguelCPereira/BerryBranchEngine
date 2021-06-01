@@ -1,11 +1,13 @@
 #pragma once
+#include "MiniginLibType.h"
+
 namespace dae
 {
 	template <typename T>
 	class Singleton
 	{
 	public:
-		static T& GetInstance()
+		static MINIGIN_ENTRY T& GetInstance()
 		{
 			static T instance{};
 			return instance;
