@@ -56,7 +56,7 @@ std::vector<std::shared_ptr<dae::GameObject>> MakeQBert(bool playerOne)
 }
 
 
-std::shared_ptr<dae::GameObject> MakeCoily(std::vector<QBert*>* qBertCompVector, bool isLeft, float  moveInterval, bool controlledByPlayer)
+std::shared_ptr<dae::GameObject> MakeCoily(std::vector<QBert*>* qBertCompVector, bool isLeft, float  moveInterval, int gameMode)
 {
 	const auto spriteWidth = 16.f;
 	const auto spriteHeight = 32.f;
@@ -67,15 +67,15 @@ std::shared_ptr<dae::GameObject> MakeCoily(std::vector<QBert*>* qBertCompVector,
 
 	if (isLeft)
 	{
-		newGO->AddComponent(new Coily(newGO, qBertCompVector, g_NrRows, g_CubesActualWidth, g_CubesActualHeight,
-			spriteWidth, spriteHeight, 2, moveInterval, controlledByPlayer));
+		newGO->AddComponent(new Coily(newGO, qBertCompVector, gameMode, g_NrRows, g_CubesActualWidth, g_CubesActualHeight,
+			spriteWidth, spriteHeight, 2, moveInterval));
 		newGO->AddComponent(new dae::GraphicsComponent("Coily Spritesheet.png", g_EnemiesLeftSpawnPosX, g_EnemiesSpawnPosY - 22.f,
 			actualWidth, actualHeight, 0, 0, spriteWidth, spriteHeight));
 	}
 	else
 	{
-		newGO->AddComponent(new Coily(newGO, qBertCompVector, g_NrRows, g_CubesActualWidth, g_CubesActualHeight,
-			spriteWidth, spriteHeight, 3, moveInterval, controlledByPlayer));
+		newGO->AddComponent(new Coily(newGO, qBertCompVector, gameMode, g_NrRows, g_CubesActualWidth, g_CubesActualHeight,
+			spriteWidth, spriteHeight, 3, moveInterval));
 		newGO->AddComponent(new dae::GraphicsComponent("Coily Spritesheet.png", g_EnemiesRightSpawnPosX, g_EnemiesSpawnPosY - 22.f,
 			actualWidth, actualHeight, 0, 0, spriteWidth, spriteHeight));
 	}

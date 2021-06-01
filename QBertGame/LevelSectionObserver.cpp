@@ -317,12 +317,7 @@ void LevelSectionObserver::SetPyramid(Pyramid* pyramid)
 
 void LevelSectionObserver::AddCoily(bool isLeft)
 {
-	bool versus = false;
-
-	if (m_GameMode == 3)
-		versus = true;
-
-	auto newCoilyGO = MakeCoily(m_QBertCompVector, isLeft, m_CoilyMoveInterval, versus);
+	auto newCoilyGO = MakeCoily(m_QBertCompVector, isLeft, m_CoilyMoveInterval, m_GameMode);
 	dae::SceneManager::GetInstance().GetCurrentScene()->Add(newCoilyGO);
 	auto* newCoilyComp = newCoilyGO->GetComponent<Coily>();
 

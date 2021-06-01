@@ -8,8 +8,8 @@ class QBert;
 class Coily final : public dae::BaseComponent
 {
 public:
-	explicit Coily(const std::shared_ptr<dae::GameObject>& gameObject, std::vector<QBert*>* qBertCompVector, int nrRows, float cubesWidth,
-		float cubesHeight, float spriteWidth, float spriteHeight, int startingCube, float jumpInterval, bool controlledByPlayer);
+	explicit Coily(const std::shared_ptr<dae::GameObject>& gameObject, std::vector<QBert*>* qBertCompVector, int gameMode, int nrRows, float cubesWidth,
+		float cubesHeight, float spriteWidth, float spriteHeight, int startingCube, float jumpInterval);
 
 	int GetPositionIndex() const { return m_CurrentCubeIdx; }
 	bool GetIsAlive() const { return m_Alive; }
@@ -28,12 +28,15 @@ public:
 	bool MoveUpRightPlayer();
 	void JumpFinished();
 
+	bool CoilySeekBehaviour();
+	bool ChaseQBert(int qBertRow, int qBertNrInRow, int coilyNrInRow, bool isPlayerOne);
+	int CalculateQBertDistance(int qBertRow, int qBertNrInRow, int coilyNrInRow) const;
+
 	void Update(const float deltaTime) override;
 
 private:
 	std::shared_ptr<dae::GameObject> m_GameObject{};
 	std::vector<QBert*>* m_QBertCompVector;
-	bool m_ControlledByPlayer;
 	bool m_Airborne{ false };
 	bool m_Frozen{ false };
 	int m_CurrentCubeIdx;
@@ -50,5 +53,6 @@ private:
 	const float m_TransformationTime{ 0.9f } ;
 	int m_Direction; // 1 is left/down, 2 is right/down, 3 is left/up and 4 is right/up
 	bool m_TurnedToSnakeVersus;
+	int m_GameMode; // 1 is solo, 2 is Co-op, 3 is Versus
 };
 

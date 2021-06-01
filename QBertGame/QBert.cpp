@@ -130,6 +130,11 @@ void QBert::SetRound(int actualRound)
 	m_Subject->Notify(dae::Event::RoundUpdated);
 }
 
+void QBert::SetIsInDisk(bool inDisk)
+{
+	m_IsInDisk = inDisk;
+}
+
 bool QBert::IsInLeftBorder() const
 {
 	

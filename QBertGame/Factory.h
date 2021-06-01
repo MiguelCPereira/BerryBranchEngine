@@ -23,7 +23,7 @@ namespace dae
 
 std::vector<std::shared_ptr<dae::GameObject>> MakeQBert(bool playerOne);
 
-std::shared_ptr<dae::GameObject> MakeCoily(std::vector<QBert*>* qBertCompVector, bool isLeft, float  moveInterval, bool controlledByPlayer);
+std::shared_ptr<dae::GameObject> MakeCoily(std::vector<QBert*>* qBertCompVector, bool isLeft, float  moveInterval, int gameMode); // 1 is Solo, 2 is Coop, 3 is Versus
 
 std::shared_ptr<dae::GameObject> MakeSlickSam(bool isSlick, bool isLeft, float  moveInterval);
 

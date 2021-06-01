@@ -58,6 +58,7 @@ void Disk::Activate(QBert* qBertComp, dae::GraphicsComponent* qBertGraphics, boo
 	SoundServiceLocator::GetSoundSystem().Play("../Data/Sounds/Disk Lift.wav", 0.1f);
 	m_CarryingPlayerOne = playerOne;
 	m_QBertComp = qBertComp;
+	m_QBertComp->SetIsInDisk(true);
 	m_QBertComp->SetFrozen(true);
 	auto* graphics = m_GameObject->GetComponent<dae::GraphicsComponent>();
 	m_QBertComp = qBertComp;
@@ -169,7 +170,8 @@ void Disk::Update(const float deltaTime)
 					m_QBertGraphics->SetPosition(m_MidFlightPosX + m_QBertGraphAdjustmentX, m_FinalQBertPosY);
 					m_Activated = false;
 					m_HasBeenUsed = true;
-
+					m_QBertComp->SetIsInDisk(false);
+					
 					if (m_CarryingPlayerOne)
 						m_Subject->Notify(dae::Event::DiskFlightEndedP1);
 					else

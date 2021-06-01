@@ -22,6 +22,7 @@ public:
 	bool GetJumpedOff() const { return m_JumpedOff;  }
 	bool GetLastJumpedOffLeft() const { return m_LastJumpedOffLeft; }
 	bool GetLastJumpedOffDown() const { return m_LastJumpedOffDown; }
+	bool GetIsInDisk() const { return m_IsInDisk;  }
 	int GetLevel() const { return m_Level; }
 	int GetRound() const { return m_Round; }
 
@@ -40,6 +41,7 @@ public:
 	void ScoreIncrease(int gainedPoints);
 	void SetLevel(int actualLevel);
 	void SetRound(int actualRound);
+	void SetIsInDisk(bool inDisk);
 
 	bool IsInLeftBorder() const;
 	bool IsInRightBorder() const;
@@ -59,6 +61,7 @@ private:
 	
 	bool m_Airborne{ false };
 	bool m_Frozen{ true };
+	bool m_IsInDisk{ false };
 	
 	std::shared_ptr<dae::GameObject> m_GameObject{};
 	std::shared_ptr<dae::GameObject> m_CursesGameObject{};
