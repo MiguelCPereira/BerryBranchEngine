@@ -21,6 +21,14 @@ QBert::QBert(const std::shared_ptr<dae::GameObject>& gameObject, const std::shar
 {}
 
 
+bool QBert::AreGraphicsHidden() const
+{
+	if (m_GameObject->GetComponent<dae::GraphicsComponent>()->GetPosX() < 0.f)
+		return true;
+
+	return false;
+}
+
 void QBert::Die()
 {
 	m_Lives--;
@@ -43,8 +51,11 @@ void QBert::ResetPosition()
 	m_CurrentCubeIdx = 1;
 	m_CurrentRow = 1;
 	m_GameObject->GetComponent<dae::GraphicsComponent>()->SetPosition(m_QBertInitialPosX, m_QBertInitialPosY);
-	m_GameObject->GetComponent<dae::GraphicsComponent>()->SetSrcRectangle(m_QBertSpriteWidth * 2, 0, m_QBertSpriteWidth, m_QBertSpriteHeight);
-
+	
+	if(m_IsPlayerOne)
+		m_GameObject->GetComponent<dae::GraphicsComponent>()->SetSrcRectangle(m_QBertSpriteWidth * 2, 0, m_QBertSpriteWidth, m_QBertSpriteHeight);
+	else
+		m_GameObject->GetComponent<dae::GraphicsComponent>()->SetSrcRectangle(m_QBertSpriteWidth * 3, 0, m_QBertSpriteWidth, m_QBertSpriteHeight);
 }
 
 void QBert::RevertToLastPosition()
@@ -147,6 +158,7 @@ bool QBert::MoveUpRight()
 			m_PosXBeforeFalling = graphics->GetPosX();
 			m_PosYBeforeFalling = graphics->GetPosY();
 			m_LastJumpedOffLeft = false;
+			m_LastJumpedOffDown = false;
 			m_JumpedOff = true;
 		}
 
@@ -179,6 +191,7 @@ bool QBert::MoveUpLeft()
 			m_PosXBeforeFalling = graphics->GetPosX();
 			m_PosYBeforeFalling = graphics->GetPosY();
 			m_LastJumpedOffLeft = true;
+			m_LastJumpedOffDown = false;
 			m_JumpedOff = true;
 		}
 
@@ -211,6 +224,7 @@ bool QBert::MoveDownLeft()
 		{
 			m_PosXBeforeFalling = graphics->GetPosX();
 			m_PosYBeforeFalling = graphics->GetPosY();
+			m_LastJumpedOffDown = true;
 			m_JumpedOff = true;
 		}
 
@@ -243,6 +257,7 @@ bool QBert::MoveDownRight()
 		{
 			m_PosXBeforeFalling = graphics->GetPosX();
 			m_PosYBeforeFalling = graphics->GetPosY();
+			m_LastJumpedOffDown = true;
 			m_JumpedOff = true;
 		}
 

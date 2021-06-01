@@ -3,17 +3,17 @@
 #include <vector>
 
 class Disk;
+class QBert;
 const int g_NrRows = 7;
 const float g_CubesActualWidth = 64.f;
 const float g_CubesActualHeight = 64.f;
 const int g_EnemiesLeftSpawnPosX = 284;
-const float g_EnemiesRightSpawnPosX = 349;
-const float g_EnemiesSpawnPosY = 110;
+const float g_EnemiesRightSpawnPosX = 349.f;
+const float g_EnemiesSpawnPosY = 110.f;
 const float g_MapCenterX = 332.f;
-const float g_DiskTopRowY = 40;
+const float g_DiskTopRowY = 40.f;
 const auto g_InitialQbertPosY = 60.f;
-
-class QBert;
+const auto g_QBertActualWidth = 40.f;
 
 namespace dae
 {

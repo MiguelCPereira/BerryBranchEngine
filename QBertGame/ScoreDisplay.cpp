@@ -55,6 +55,9 @@ void ScoreDisplay::OnNotify(const dae::Event& event)
 	case dae::Event::ScoreIncreasedP1:
 		UpdateScoreText();
 		break;
+	case dae::Event::ScoreIncreasedP2:
+		UpdateScoreText();
+		break;
 	}
 }
 

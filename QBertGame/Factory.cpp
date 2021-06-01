@@ -23,19 +23,28 @@ std::vector<std::shared_ptr<dae::GameObject>> MakeQBert(bool playerOne)
 	const auto cursesWidth = 55.f;
 	const auto cursesHeight = 29.f;
 	
-	const auto actualWidth = 40.f;
 	const auto actualHeight = 39.f;
 	const auto spriteWidth = 17.f;
 	const auto spriteHeight = 16.f;
-	const auto initialPosX = g_MapCenterX - actualWidth / 2.f;
+	const auto initialPosX = g_MapCenterX - g_QBertActualWidth / 2.f;
 
 	auto cursesGO = std::make_shared<dae::GameObject>();
 	cursesGO->AddComponent(new dae::GraphicsComponent("QBert Curses.png", -50, -50, cursesWidth, cursesHeight));
 
 	auto qBertGO = std::make_shared<dae::GameObject>();
 	qBertGO->AddComponent(new QBert(qBertGO, cursesGO, g_NrRows, spriteWidth, spriteHeight, playerOne));
-	qBertGO->AddComponent(new dae::GraphicsComponent("QBert Spritesheet.png", initialPosX, g_InitialQbertPosY,
-		actualWidth, actualHeight, spriteWidth * 2, 0, spriteWidth, spriteHeight));
+
+	if (playerOne)
+	{
+		qBertGO->AddComponent(new dae::GraphicsComponent("QBert Spritesheet.png", initialPosX, g_InitialQbertPosY,
+			g_QBertActualWidth, actualHeight, spriteWidth * 2, 0, spriteWidth, spriteHeight));
+	}
+	else
+	{
+		qBertGO->AddComponent(new dae::GraphicsComponent("QBert Spritesheet.png", initialPosX, g_InitialQbertPosY,
+			g_QBertActualWidth, actualHeight, spriteWidth * 3, 0, spriteWidth, spriteHeight));
+	}
+	
 	qBertGO->AddComponent(new JumpingObserver(qBertGO->GetComponent<QBert>(), qBertGO->GetComponent<dae::GraphicsComponent>(),
 		g_CubesActualWidth, g_CubesActualHeight));
 
@@ -308,8 +317,17 @@ std::shared_ptr<dae::GameObject> MakeScoreDisplayVisuals(bool playerOne)
 	auto font = dae::ResourceManager::GetInstance().LoadFont("Minecraft.ttf", 23);
 	scoreGO->AddComponent(new dae::TextComponent("SCORE: FAIL", font, 237, 164, 69));
 	scoreGO->GetComponent<dae::TextComponent>()->SetPosition(posX, posYScore);
-	scoreGO->AddComponent(new dae::GraphicsComponent("Player Titles.png", posX, posYPlayerTitle, 
-		titleActualWidth, titleActualHeight, 0, 0, titleSpriteWidth, titleSpriteHeight));
+
+	if (playerOne)
+	{
+		scoreGO->AddComponent(new dae::GraphicsComponent("Player Titles.png", posX, posYPlayerTitle,
+			titleActualWidth, titleActualHeight, 0, 0, titleSpriteWidth, titleSpriteHeight));
+	}
+	else
+	{
+		scoreGO->AddComponent(new dae::GraphicsComponent("Player Titles.png", posX, posYPlayerTitle,
+			titleActualWidth, titleActualHeight, 0, titleSpriteHeight, titleSpriteWidth, titleSpriteHeight));
+	}
 
 	return scoreGO;
 }

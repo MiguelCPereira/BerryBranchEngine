@@ -26,10 +26,16 @@
 
 
 // Global Variables
+
 const int g_CubesSpriteHeight = 32;
 const int g_CubesSpriteWidth = 32;
 const float g_PyramidPosX = 300.f;
 const float g_PyramidPosY = 80.f;
+
+const float g_CoopP1SpawnPosX = g_MapCenterX - g_CubesActualWidth * 3.f - g_QBertActualWidth / 2.f;
+const float g_CoopP2SpawnPosX = g_MapCenterX + g_CubesActualWidth * 3.f - g_QBertActualWidth / 2.f;
+const float g_CoopSpawnPosY = g_InitialQbertPosY + g_CubesActualHeight * 0.75f * 6.f;
+
 std::vector<std::shared_ptr<dae::GameObject>> g_QBertP1GOs;
 std::vector<std::shared_ptr<dae::GameObject>> g_QBertP2GOs;
 auto* g_QBertsCompVector = new std::vector<QBert*>();
@@ -765,7 +771,8 @@ void LoadLevelsBinaries(const std::string& fileName)
 
 		auto sectionObserverGO = std::make_shared<dae::GameObject>();
 		sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertsCompVector, g_QBertsGraphicsVector, pyramid, disksVector, deathSceneIdx, round.level,
-			round.gameMode, round.spawnSlickSams, round.spawnUggWrongs, round.slickSamsSpawnInterval, round.uggWrongSpawnInterval));
+			round.gameMode, g_CoopP1SpawnPosX, g_CoopP2SpawnPosX, g_CoopSpawnPosY,
+			round.spawnSlickSams, round.spawnUggWrongs, round.slickSamsSpawnInterval, round.uggWrongSpawnInterval));
 
 		scene.Add(sectionObserverGO);
 

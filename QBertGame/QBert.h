@@ -21,9 +21,12 @@ public:
 	int GetScore() const { return m_Score; }
 	bool GetJumpedOff() const { return m_JumpedOff;  }
 	bool GetLastJumpedOffLeft() const { return m_LastJumpedOffLeft; }
+	bool GetLastJumpedOffDown() const { return m_LastJumpedOffDown; }
 	int GetLevel() const { return m_Level; }
 	int GetRound() const { return m_Round; }
-		
+
+	bool AreGraphicsHidden() const;
+	
 	void Die();
 	void ResetGameVariables();
 	void ResetPosition();
@@ -66,6 +69,7 @@ private:
 
 	bool m_JumpedOff{ false };
 	bool m_LastJumpedOffLeft{};
+	bool m_LastJumpedOffDown{};
 	float m_PosXBeforeFalling{};
 	float m_PosYBeforeFalling{};
 	

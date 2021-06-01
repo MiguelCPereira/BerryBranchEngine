@@ -73,6 +73,14 @@ void LivesDisplay::OnNotify(const dae::Event& event)
 			heart->SetPosition(heart->GetPosX() - 2000, heart->GetPosY());
 		}
 		break;
+
+	case dae::Event::QBertDiedP2:
+		if (m_QBertComp->GetCurrentLives() >= 0)
+		{
+			auto* heart = m_Graphics->operator[](m_QBertComp->GetCurrentLives());
+			heart->SetPosition(heart->GetPosX() - 2000, heart->GetPosY());
+		}
+		break;
 	}
 }
 
