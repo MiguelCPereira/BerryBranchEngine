@@ -147,8 +147,8 @@ std::shared_ptr<dae::GameObject> MakeUggWrongway(bool isUgg, bool isLeft, float 
 	const auto spriteHeight = 16.f;
 	const auto actualWidth = 30.f;
 	const auto actualHeight = 30.f;
-	const auto leftSpawnPositionX = 100.f;
-	const auto rightSpawnPositionX = 535.f;
+	const auto leftSpawnPositionX = 88.f;
+	const auto rightSpawnPositionX = 523.f;
 	const auto spawnPositionY = 400.f;
 
 	auto newGO = std::make_shared<dae::GameObject>();
@@ -779,8 +779,25 @@ std::shared_ptr<dae::GameObject> MakeInstructionsSoloVisuals()
 
 std::shared_ptr<dae::GameObject>  MakeInstructionsCoopVisuals()
 {
-	const auto titlePosX = 80.f;
-	const auto titlePosY = 80.f;
+	const auto titlePosX = 85.f;
+	const auto titlePosY = 40.f;
+
+	const auto descriptionX = 70.f;
+	const auto descriptionY = 110.f;
+	const auto descriptionLineSpacing = 30.f;
+
+	const auto controlsPosX = 40.f;
+	const auto controlsPosY = 250.f;
+	const auto controlsImgWidth = 200.f;
+	const auto controlsImgHeight = 132.f;
+
+	const auto controlsOrX = 280.f;
+	const auto controlsOrY = 310.f;
+	const auto controlsTextX = 340.f;
+	const auto controlsLineSpacing = 20.f;
+
+	const auto startGamePosX = 148.f;
+	const auto startGamePosY = 440.f;
 
 	auto newGO = std::make_shared<dae::GameObject>();
 
@@ -790,13 +807,72 @@ std::shared_ptr<dae::GameObject>  MakeInstructionsCoopVisuals()
 	titleComp->SetPosition(titlePosX, titlePosY);
 	newGO->AddComponent(titleComp);
 
+	// Add the Text
+	font = dae::ResourceManager::GetInstance().LoadFont("Minecraft.ttf", 18);
+	auto* textComp = new dae::TextComponent("Co-op follows the same rules as Solo Mode, but if", font);
+	textComp->SetPosition(descriptionX + 35.f, descriptionY);
+	newGO->AddComponent(textComp);
+	textComp = new dae::TextComponent("one player loses all their lives, both of you lose.", font);
+	textComp->SetPosition(descriptionX + 45.f, descriptionY + descriptionLineSpacing);
+	newGO->AddComponent(textComp);
+	textComp = new dae::TextComponent("(P1's controls are also the exact same - WASD and DPad)", font);
+	textComp->SetPosition(descriptionX, descriptionY + descriptionLineSpacing * 2.f);
+	newGO->AddComponent(textComp);
+
+
+	// Add the Controls Image
+	newGO->AddComponent(new dae::GraphicsComponent("P2 QBert Controls.png", controlsPosX, controlsPosY, controlsImgWidth, controlsImgHeight));
+
+	// Add the Controls Extra Text
+	font = dae::ResourceManager::GetInstance().LoadFont("Minecraft.ttf", 16);
+	textComp = new dae::TextComponent("OR", font);
+	textComp->SetPosition(controlsOrX, controlsOrY);
+	newGO->AddComponent(textComp);
+
+	textComp = new dae::TextComponent("Move up/right -> DPAD UP", font);
+	textComp->SetPosition(controlsTextX + 25.f, controlsPosY + controlsLineSpacing * 2.f);
+	newGO->AddComponent(textComp);
+	textComp = new dae::TextComponent("Move up/left -> DPAD LEFT", font);
+	textComp->SetPosition(controlsTextX + 21.f, controlsPosY + controlsLineSpacing * 3.f);
+	newGO->AddComponent(textComp);
+	textComp = new dae::TextComponent("Move down/left -> DPAD DOWN", font);
+	textComp->SetPosition(controlsTextX + 8.f, controlsPosY + controlsLineSpacing * 4.f);
+	newGO->AddComponent(textComp);
+	textComp = new dae::TextComponent("Move down/right -> DPAD RIGHT", font);
+	textComp->SetPosition(controlsTextX + 2.f, controlsPosY + controlsLineSpacing * 5.f);
+	newGO->AddComponent(textComp);
+
+
+	// And add the bottom text explaining how to start the game
+	auto* goBackComp = new dae::TextComponent("Press ENTER or START to begin the 1st level", font);
+	goBackComp->SetPosition(startGamePosX, startGamePosY);
+	newGO->AddComponent(goBackComp);
+
+
 	return newGO;
 }
 
 std::shared_ptr<dae::GameObject>  MakeInstructionsVersusVisuals()
 {
-	const auto titlePosX = 85.f;
-	const auto titlePosY = 80.f;
+	const auto titlePosX = 78.f;
+	const auto titlePosY = 40.f;
+
+	const auto descriptionX = 67.f;
+	const auto descriptionY = 110.f;
+	const auto descriptionLineSpacing = 30.f;
+
+	const auto controlsPosX = 40.f;
+	const auto controlsPosY = 250.f;
+	const auto controlsImgWidth = 200.f;
+	const auto controlsImgHeight = 132.f;
+
+	const auto controlsOrX = 280.f;
+	const auto controlsOrY = 310.f;
+	const auto controlsTextX = 340.f;
+	const auto controlsLineSpacing = 20.f;
+
+	const auto startGamePosX = 148.f;
+	const auto startGamePosY = 440.f;
 
 	auto newGO = std::make_shared<dae::GameObject>();
 
@@ -805,6 +881,48 @@ std::shared_ptr<dae::GameObject>  MakeInstructionsVersusVisuals()
 	auto* titleComp = new dae::TextComponent("INSTRUCTIONS - VERSUS MODE", font);
 	titleComp->SetPosition(titlePosX, titlePosY);
 	newGO->AddComponent(titleComp);
+
+	// Add the Text
+	font = dae::ResourceManager::GetInstance().LoadFont("Minecraft.ttf", 18);
+	auto* textComp = new dae::TextComponent("Versus is similar to Solo Mode, but once a Coily egg hatches", font);
+	textComp->SetPosition(descriptionX, descriptionY);
+	newGO->AddComponent(textComp);
+	textComp = new dae::TextComponent("P2 can take control of it. P2 will win if QBert loses all lives.", font);
+	textComp->SetPosition(descriptionX + 5.f, descriptionY + descriptionLineSpacing);
+	newGO->AddComponent(textComp);
+	textComp = new dae::TextComponent("(P1's controls are also the exact same - WASD and DPad)", font);
+	textComp->SetPosition(descriptionX + 7.f, descriptionY + descriptionLineSpacing * 2.f);
+	newGO->AddComponent(textComp);
+
+
+	// Add the Controls Image
+	newGO->AddComponent(new dae::GraphicsComponent("P2 Coily Controls.png", controlsPosX, controlsPosY, controlsImgWidth, controlsImgHeight));
+
+	// Add the Controls Extra Text
+	font = dae::ResourceManager::GetInstance().LoadFont("Minecraft.ttf", 16);
+	textComp = new dae::TextComponent("OR", font);
+	textComp->SetPosition(controlsOrX, controlsOrY);
+	newGO->AddComponent(textComp);
+
+	textComp = new dae::TextComponent("Move up/right -> DPAD UP", font);
+	textComp->SetPosition(controlsTextX + 25.f, controlsPosY + controlsLineSpacing * 2.f);
+	newGO->AddComponent(textComp);
+	textComp = new dae::TextComponent("Move up/left -> DPAD LEFT", font);
+	textComp->SetPosition(controlsTextX + 21.f, controlsPosY + controlsLineSpacing * 3.f);
+	newGO->AddComponent(textComp);
+	textComp = new dae::TextComponent("Move down/left -> DPAD DOWN", font);
+	textComp->SetPosition(controlsTextX + 8.f, controlsPosY + controlsLineSpacing * 4.f);
+	newGO->AddComponent(textComp);
+	textComp = new dae::TextComponent("Move down/right -> DPAD RIGHT", font);
+	textComp->SetPosition(controlsTextX + 2.f, controlsPosY + controlsLineSpacing * 5.f);
+	newGO->AddComponent(textComp);
+
+
+	// And add the bottom text explaining how to start the game
+	auto* goBackComp = new dae::TextComponent("Press ENTER or START to begin the 1st level", font);
+	goBackComp->SetPosition(startGamePosX, startGamePosY);
+	newGO->AddComponent(goBackComp);
+
 
 	return newGO;
 }
