@@ -29,11 +29,17 @@ std::shared_ptr<dae::GameObject> MakeSlickSam(bool isSlick, bool isLeft, float  
 
 std::shared_ptr<dae::GameObject> MakeUggWrongway(bool isUgg, bool isLeft, float  moveInterval);
 
+
+
 std::shared_ptr<dae::GameObject> MakeLevelTitle(int lvlNr, int gameMode); // 1 is Solo, 2 is Coop, 3 is Versus
 
 std::shared_ptr<dae::GameObject> MakeLevelTransition(std::vector<QBert*>* qBertCompVector, int gameMode); // 1 is Solo, 2 is Coop, 3 is Versus
 
+
+
 std::shared_ptr<dae::GameObject> MakeFPSCounter();
+
+
 
 std::shared_ptr<dae::GameObject> MakeHeartForDisplay(bool playerOne, float posY);
 
@@ -47,20 +53,34 @@ std::shared_ptr<dae::GameObject> MakeRoundDisplayVisuals(bool coOpOn);
 
 std::vector<std::shared_ptr<dae::GameObject>> MakeUI(std::vector<QBert*>* qBertCompVector, bool coOpOn);
 
+
+
 std::shared_ptr<dae::GameObject> MakeDiskGO(int row, bool isLeft, int colorIdx);
 
 std::vector<std::shared_ptr<dae::GameObject>>* MakeDiskGOsVector(int level, int colorIdx);
+
+
 
 std::shared_ptr<dae::GameObject> MakeStartScreenVisuals();
 
 std::shared_ptr<dae::GameObject> MakeStartScreenLogic(int soloModeSceneIdx, int coopModeSceneIdx, int versusModeSceneIdx);
 
+
+
 std::shared_ptr<dae::GameObject> MakeVictoryScreenSoloVisuals();
+
+std::shared_ptr<dae::GameObject> MakeVictoryScreenCoopVisuals();
 
 std::shared_ptr<dae::GameObject> MakeVictoryScreenVersusVisuals();
 
+
+
 std::shared_ptr<dae::GameObject> MakeDeathScreenSoloVisuals();
+
+std::shared_ptr<dae::GameObject> MakeDeathScreenCoopVisuals();
 
 std::shared_ptr<dae::GameObject> MakeDeathScreenVersusVisuals();
 
-std::shared_ptr<dae::GameObject> MakeVictoryDeathScreenLogic(int startScreenSceneIdx, QBert* qBertComp);
+std::shared_ptr<dae::GameObject> MakeOneQbertVictoryDeathScreenLogic(int startScreenSceneIdx, QBert* qBertComp);
+
+std::shared_ptr<dae::GameObject> MakeTwoQbertsVictoryDeathScreenLogic(int startScreenSceneIdx, std::vector<QBert*>* qBertCompVector);

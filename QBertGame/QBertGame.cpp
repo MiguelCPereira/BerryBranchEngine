@@ -43,12 +43,14 @@ auto* g_QBertsGraphicsVector = new std::vector<dae::GraphicsComponent*>();
 
 
 // Global Functions
-void SetUpGlobalGOs();
+void SetUpQBerts();
 void PrintInstructions();
 
 void LoadStartScreen();
 void LoadDeathScreenSolo();
 void LoadVictoryScreenSolo();
+void LoadDeathScreenCoop();
+void LoadVictoryScreenCoop();
 void LoadDeathScreenVersus();
 void LoadVictoryScreenVersus();
 
@@ -63,11 +65,6 @@ void CreateBinaryLevel02Versus();
 void CreateBinaryLevel03Versus();
 
 void LoadLevelsBinaries(const std::string& fileName);
-
-// Only for testing, not using bin files
-void LoadLevel01();
-void LoadLevel02();
-void LoadLevel03();
 
 
 // Struct used to read and write the binary files of each level
@@ -105,23 +102,27 @@ int main(int, char* [])
 
 	//engine.LoadDemo();
 
-	SetUpGlobalGOs();
+	SetUpQBerts();
 	LoadStartScreen(); // Scene idx 00
+	
 	LoadDeathScreenSolo(); // Scene idx 01
 	LoadLevelsBinaries("Level01Solo.bin"); // Scene idx 02-06
 	LoadLevelsBinaries("Level02Solo.bin"); // Scene idx 07-11
 	LoadLevelsBinaries("Level03Solo.bin"); // Scene idx 12-16
 	LoadVictoryScreenSolo(); // Scene idx 17
-	LoadDeathScreenVersus(); // Scene idx 18 --- still need to change for co-op
+	
+	LoadDeathScreenCoop(); // Scene idx 18
 	LoadLevelsBinaries("Level01Coop.bin"); // Scene idx 19-23
 	LoadLevelsBinaries("Level02Coop.bin"); // Scene idx 24-28
 	LoadLevelsBinaries("Level03Coop.bin"); // Scene idx 29-33
-	LoadVictoryScreenVersus(); // Scene idx 34 --- still need to change for co-op
+	LoadVictoryScreenCoop(); // Scene idx 34
+	
 	LoadDeathScreenVersus(); // Scene idx 35
 	LoadLevelsBinaries("Level01Versus.bin"); // Scene idx 36-40
 	LoadLevelsBinaries("Level02Versus.bin"); // Scene idx 41-45
 	LoadLevelsBinaries("Level03Versus.bin"); // Scene idx 46-50
 	LoadVictoryScreenVersus(); // Scene idx 51
+	
 	PrintInstructions();
 
 	engine.Run();
@@ -133,9 +134,8 @@ int main(int, char* [])
 
 
 
-void SetUpGlobalGOs()
+void SetUpQBerts()
 {
-	// QBerts
 	g_QBertP1GOs = MakeQBert(true);
 	g_QBertP2GOs = MakeQBert(false);
 	g_QBertsCompVector->push_back(g_QBertP1GOs[0]->GetComponent<QBert>());
@@ -764,10 +764,10 @@ void LoadLevelsBinaries(const std::string& fileName)
 		int deathSceneIdx;
 		if (round.gameMode == 1) // Solo
 			deathSceneIdx = 1;
-		else if (round.gameMode == 3) // Versus
+		else if (round.gameMode == 2) // Co-op
 			deathSceneIdx = 18;
-		else					// Co-op
-			deathSceneIdx = 1;
+		else					// Versus
+			deathSceneIdx = 35;
 
 		auto sectionObserverGO = std::make_shared<dae::GameObject>();
 		sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertsCompVector, g_QBertsGraphicsVector, pyramid, disksVector, deathSceneIdx, round.level,
@@ -818,7 +818,7 @@ void LoadDeathScreenSolo()
 
 	// Add All Needed Game Objects
 	deathScreenScene.Add(MakeDeathScreenSoloVisuals());
-	const auto deathScreenGO = MakeVictoryDeathScreenLogic(0, g_QBertP1GOs[0]->GetComponent<QBert>());
+	const auto deathScreenGO = MakeOneQbertVictoryDeathScreenLogic(0, g_QBertP1GOs[0]->GetComponent<QBert>());
 	deathScreenScene.Add(deathScreenGO);
 
 	// Add The Victory/Death Screen Player Input
@@ -834,7 +834,39 @@ void LoadVictoryScreenSolo()
 
 	// Add All Needed Game Objects
 	victoryScene.Add(MakeVictoryScreenSoloVisuals());
-	const auto victoryScreenGO = MakeVictoryDeathScreenLogic(0, g_QBertP1GOs[0]->GetComponent<QBert>());
+	const auto victoryScreenGO = MakeOneQbertVictoryDeathScreenLogic(0, g_QBertP1GOs[0]->GetComponent<QBert>());
+	victoryScene.Add(victoryScreenGO);
+
+	// Add The Victory/Death Screen Player Input
+	auto menuPlayerInputGO = std::make_shared<dae::GameObject>();
+	menuPlayerInputGO->AddComponent(new VictoryDeathScreenInput(victoryScreenGO));
+	victoryScene.Add(menuPlayerInputGO);
+}
+
+void LoadDeathScreenCoop()
+{
+	// Create Scene
+	auto& deathScreenScene = dae::SceneManager::GetInstance().CreateScene("DeathScreenCoop");
+
+	// Add All Needed Game Objects
+	deathScreenScene.Add(MakeDeathScreenCoopVisuals());
+	const auto deathScreenGO = MakeTwoQbertsVictoryDeathScreenLogic(0, g_QBertsCompVector);
+	deathScreenScene.Add(deathScreenGO);
+
+	// Add The Victory/Death Screen Player Input
+	auto deathScreenInputGO = std::make_shared<dae::GameObject>();
+	deathScreenInputGO->AddComponent(new VictoryDeathScreenInput(deathScreenGO));
+	deathScreenScene.Add(deathScreenInputGO);
+}
+
+void LoadVictoryScreenCoop()
+{
+	// Create Scene
+	auto& victoryScene = dae::SceneManager::GetInstance().CreateScene("VictorySceneCoop");
+
+	// Add All Needed Game Objects
+	victoryScene.Add(MakeVictoryScreenCoopVisuals());
+	const auto victoryScreenGO = MakeTwoQbertsVictoryDeathScreenLogic(0, g_QBertsCompVector);
 	victoryScene.Add(victoryScreenGO);
 
 	// Add The Victory/Death Screen Player Input
@@ -850,7 +882,7 @@ void LoadDeathScreenVersus()
 
 	// Add All Needed Game Objects
 	deathScreenScene.Add(MakeDeathScreenVersusVisuals());
-	const auto deathScreenGO = MakeVictoryDeathScreenLogic(0, g_QBertP1GOs[0]->GetComponent<QBert>());
+	const auto deathScreenGO = MakeOneQbertVictoryDeathScreenLogic(0, g_QBertP1GOs[0]->GetComponent<QBert>());
 	deathScreenScene.Add(deathScreenGO);
 
 	// Add The Victory/Death Screen Player Input
@@ -866,7 +898,7 @@ void LoadVictoryScreenVersus()
 
 	// Add All Needed Game Objects
 	victoryScene.Add(MakeVictoryScreenVersusVisuals());
-	const auto victoryScreenGO = MakeVictoryDeathScreenLogic(0, g_QBertP1GOs[0]->GetComponent<QBert>());
+	const auto victoryScreenGO = MakeOneQbertVictoryDeathScreenLogic(0, g_QBertP1GOs[0]->GetComponent<QBert>());
 	victoryScene.Add(victoryScreenGO);
 
 	// Add The Victory/Death Screen Player Input

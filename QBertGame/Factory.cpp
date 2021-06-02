@@ -195,6 +195,9 @@ std::shared_ptr<dae::GameObject> MakeUggWrongway(bool isUgg, bool isLeft, float 
 }
 
 
+///
+
+
 std::shared_ptr<dae::GameObject> MakeLevelTitle(int lvlNr, int gameMode)
 {
 	const auto width = 500.f;
@@ -250,6 +253,9 @@ std::shared_ptr<dae::GameObject> MakeLevelTransition(std::vector<QBert*>* qBertC
 }
 
 
+///
+
+
 std::shared_ptr<dae::GameObject> MakeFPSCounter()
 {
 	auto font = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 19);
@@ -260,6 +266,9 @@ std::shared_ptr<dae::GameObject> MakeFPSCounter()
 
 	return fpsCounterGO;
 }
+
+
+///
 
 
 std::shared_ptr<dae::GameObject> MakeHeartForDisplay(bool playerOne, float posY)
@@ -453,6 +462,9 @@ std::vector<std::shared_ptr<dae::GameObject>> MakeUI(std::vector<QBert*>* qBertC
 }
 
 
+///
+
+
 std::shared_ptr<dae::GameObject> MakeDiskGO(int row, bool isLeft, int colorIdx)
 {
 	const auto actualWidth = 32.f;
@@ -524,6 +536,10 @@ std::vector<std::shared_ptr<dae::GameObject>>* MakeDiskGOsVector(int level, int 
 }
 
 
+
+///
+
+
 std::shared_ptr<dae::GameObject> MakeStartScreenVisuals()
 {
 	const auto titlePosX = 75.f;
@@ -572,6 +588,10 @@ std::shared_ptr<dae::GameObject> MakeStartScreenLogic(int soloModeSceneIdx, int 
 }
 
 
+
+///
+
+
 std::shared_ptr<dae::GameObject> MakeVictoryScreenSoloVisuals()
 {
 	const auto width = 270.f;
@@ -585,13 +605,54 @@ std::shared_ptr<dae::GameObject> MakeVictoryScreenSoloVisuals()
 
 	auto newGO = std::make_shared<dae::GameObject>();
 
+	// Add the title
 	newGO->AddComponent(new dae::GraphicsComponent("Victory Title.png", titlePosX, titlePosY, width, height));
 
+	// Add the score text (the "SCORE:", not the actual number)
 	auto font = dae::ResourceManager::GetInstance().LoadFont("Minecraft.ttf", 38);
 	auto* scoreComp = new dae::TextComponent("SCORE", font);
 	scoreComp->SetPosition(scoreTextPosX, scoreTextPosY);
 	newGO->AddComponent(scoreComp);
 
+	// And add the bottom text explaining how to return to the start menu
+	font = dae::ResourceManager::GetInstance().LoadFont("Minecraft.ttf", 16);
+	auto* goBackComp = new dae::TextComponent("Press ESC or START to go back to the main menu", font);
+	goBackComp->SetPosition(goBackPosX, goBackPosY);
+	newGO->AddComponent(goBackComp);
+
+	return newGO;
+}
+
+
+std::shared_ptr<dae::GameObject> MakeVictoryScreenCoopVisuals()
+{
+	const auto width = 270.f;
+	const auto height = 149.f;
+	const auto titlePosX = 183.f;
+	const auto titlePosY = 30.f;
+	const auto score1TextPosX = 90.f;
+	const auto score2TextPosX = 350.f;
+	const auto scoresTextsPosY = 240.f;
+	const auto goBackPosX = 135.f;
+	const auto goBackPosY = 400.f;
+
+	auto newGO = std::make_shared<dae::GameObject>();
+
+	// Add the title
+	newGO->AddComponent(new dae::GraphicsComponent("Victory Title.png", titlePosX, titlePosY, width, height));
+
+	// Add the P1 score text (the "P1 SCORE:", not the actual number)
+	auto font = dae::ResourceManager::GetInstance().LoadFont("Minecraft.ttf", 38);
+	auto* score1Comp = new dae::TextComponent("P1 SCORE", font);
+	score1Comp->SetPosition(score1TextPosX, scoresTextsPosY);
+	newGO->AddComponent(score1Comp);
+
+	// Add the P2 score text (the "P2 SCORE:", not the actual number)
+	auto* score2Comp = new dae::TextComponent("P2 SCORE", font);
+	score2Comp->SetPosition(score2TextPosX, scoresTextsPosY);
+	newGO->AddComponent(score2Comp);
+
+	// And add the bottom text explaining how to return to the start menu
 	font = dae::ResourceManager::GetInstance().LoadFont("Minecraft.ttf", 16);
 	auto* goBackComp = new dae::TextComponent("Press ESC or START to go back to the main menu", font);
 	goBackComp->SetPosition(goBackPosX, goBackPosY);
@@ -614,6 +675,7 @@ std::shared_ptr<dae::GameObject> MakeVictoryScreenVersusVisuals()
 
 	auto newGO = std::make_shared<dae::GameObject>();
 
+	// Add the title
 	auto font = dae::ResourceManager::GetInstance().LoadFont("Minecraft.ttf", 60);
 	auto* titleAComp = new dae::TextComponent("PLAYER 1", font);
 	titleAComp->SetPosition(titleAPosX, titleAPosY);
@@ -622,11 +684,13 @@ std::shared_ptr<dae::GameObject> MakeVictoryScreenVersusVisuals()
 	titleBComp->SetPosition(titleBPosX, titleBPosY);
 	newGO->AddComponent(titleBComp);
 
+	// Add the score text (the "SCORE:", not the actual number)
 	font = dae::ResourceManager::GetInstance().LoadFont("Minecraft.ttf", 38);
 	auto* scoreComp = new dae::TextComponent("SCORE", font);
 	scoreComp->SetPosition(scoreTextPosX, scoreTextPosY);
 	newGO->AddComponent(scoreComp);
 
+	// And add the bottom text explaining how to return to the start menu
 	font = dae::ResourceManager::GetInstance().LoadFont("Minecraft.ttf", 16);
 	auto* goBackComp = new dae::TextComponent("Press ESC or START to go back to the main menu", font);
 	goBackComp->SetPosition(goBackPosX, goBackPosY);
@@ -634,6 +698,9 @@ std::shared_ptr<dae::GameObject> MakeVictoryScreenVersusVisuals()
 
 	return newGO;
 }
+
+
+///
 
 
 std::shared_ptr<dae::GameObject> MakeDeathScreenSoloVisuals()
@@ -649,13 +716,54 @@ std::shared_ptr<dae::GameObject> MakeDeathScreenSoloVisuals()
 
 	auto newGO = std::make_shared<dae::GameObject>();
 
+	// Add the title
 	newGO->AddComponent(new dae::GraphicsComponent("Game Over Title.png", titlePosX, titlePosY, width, height));
 
+	// Add the score text (the "SCORE:", not the actual number)
 	auto font = dae::ResourceManager::GetInstance().LoadFont("Minecraft.ttf", 38);
 	auto* scoreComp = new dae::TextComponent("SCORE", font);
 	scoreComp->SetPosition(scoreTextPosX, scoreTextPosY);
 	newGO->AddComponent(scoreComp);
 
+	// And add the bottom text explaining how to return to the start menu
+	font = dae::ResourceManager::GetInstance().LoadFont("Minecraft.ttf", 16);
+	auto* goBackComp = new dae::TextComponent("Press ESC or START to go back to the main menu", font);
+	goBackComp->SetPosition(goBackPosX, goBackPosY);
+	newGO->AddComponent(goBackComp);
+
+	return newGO;
+}
+
+
+std::shared_ptr<dae::GameObject> MakeDeathScreenCoopVisuals()
+{
+	const auto width = 376.f;
+	const auto height = 149.f;
+	const auto titlePosX = 130.f;
+	const auto titlePosY = 40.f;
+	const auto score1TextPosX = 90.f;
+	const auto score2TextPosX = 350.f;
+	const auto scoresTextsPosY = 240.f;
+	const auto goBackPosX = 126.f;
+	const auto goBackPosY = 400.f;
+
+	auto newGO = std::make_shared<dae::GameObject>();
+
+	// Add the title
+	newGO->AddComponent(new dae::GraphicsComponent("Game Over Title.png", titlePosX, titlePosY, width, height));
+
+	// Add the P1 score text (the "P1 SCORE:", not the actual number)
+	auto font = dae::ResourceManager::GetInstance().LoadFont("Minecraft.ttf", 38);
+	auto* score1Comp = new dae::TextComponent("P1 SCORE", font);
+	score1Comp->SetPosition(score1TextPosX, scoresTextsPosY);
+	newGO->AddComponent(score1Comp);
+
+	// Add the P2 score text (the "P2 SCORE:", not the actual number)
+	auto* score2Comp = new dae::TextComponent("P2 SCORE", font);
+	score2Comp->SetPosition(score2TextPosX, scoresTextsPosY);
+	newGO->AddComponent(score2Comp);
+
+	// And add the bottom text explaining how to return to the start menu
 	font = dae::ResourceManager::GetInstance().LoadFont("Minecraft.ttf", 16);
 	auto* goBackComp = new dae::TextComponent("Press ESC or START to go back to the main menu", font);
 	goBackComp->SetPosition(goBackPosX, goBackPosY);
@@ -678,6 +786,7 @@ std::shared_ptr<dae::GameObject> MakeDeathScreenVersusVisuals()
 
 	auto newGO = std::make_shared<dae::GameObject>();
 
+	// Add the title
 	auto font = dae::ResourceManager::GetInstance().LoadFont("Minecraft.ttf", 60);
 	auto* titleAComp = new dae::TextComponent("PLAYER 2", font);
 	titleAComp->SetPosition(titleAPosX, titleAPosY);
@@ -686,11 +795,13 @@ std::shared_ptr<dae::GameObject> MakeDeathScreenVersusVisuals()
 	titleBComp->SetPosition(titleBPosX, titleBPosY);
 	newGO->AddComponent(titleBComp);
 
+	// Add the score text (the "PLAYER 1 SCORE:", not the actual number)
 	font = dae::ResourceManager::GetInstance().LoadFont("Minecraft.ttf", 38);
 	auto* scoreComp = new dae::TextComponent("PLAYER 1 SCORE", font);
 	scoreComp->SetPosition(scoreTextPosX, scoreTextPosY);
 	newGO->AddComponent(scoreComp);
 
+	// And add the bottom text explaining how to return to the start menu
 	font = dae::ResourceManager::GetInstance().LoadFont("Minecraft.ttf", 16);
 	auto* goBackComp = new dae::TextComponent("Press ESC or START to go back to the main menu", font);
 	goBackComp->SetPosition(goBackPosX, goBackPosY);
@@ -700,7 +811,7 @@ std::shared_ptr<dae::GameObject> MakeDeathScreenVersusVisuals()
 }
 
 
-std::shared_ptr<dae::GameObject> MakeVictoryDeathScreenLogic(int startScreenSceneIdx, QBert* qBertComp)
+std::shared_ptr<dae::GameObject> MakeOneQbertVictoryDeathScreenLogic(int startScreenSceneIdx, QBert* qBertComp)
 {
 	const auto scorePosX = 255.f;
 	const auto scorePosY = 290.f;
@@ -710,11 +821,39 @@ std::shared_ptr<dae::GameObject> MakeVictoryDeathScreenLogic(int startScreenScen
 	victoryDeathScreenGO->AddComponent(new VictoryDeathScreen(startScreenSceneIdx));
 	
 	const auto font = dae::ResourceManager::GetInstance().LoadFont("Minecraft.ttf", 38);
-	auto* scoreComp = new dae::TextComponent("10250", font);
+	auto* scoreComp = new dae::TextComponent("000000", font);
 	scoreComp->SetPosition(scorePosX, scorePosY);
 	victoryDeathScreenGO->AddComponent(scoreComp);
 
 	victoryDeathScreenGO->AddComponent(new MenuScoreDisplay(qBertComp, scoreComp));
+
+	return victoryDeathScreenGO;
+}
+
+
+std::shared_ptr<dae::GameObject> MakeTwoQbertsVictoryDeathScreenLogic(int startScreenSceneIdx, std::vector<QBert*>* qBertCompVector)
+{
+	const auto scorePosY = 290.f;
+	const auto scoreP1PosX = 125.f;
+	const auto scoreP2PosX = 385.f;
+
+	auto victoryDeathScreenGO = std::make_shared<dae::GameObject>();
+
+	victoryDeathScreenGO->AddComponent(new VictoryDeathScreen(startScreenSceneIdx));
+
+
+	// Make the score for P1
+	const auto font = dae::ResourceManager::GetInstance().LoadFont("Minecraft.ttf", 38);
+	auto* scoreComp1 = new dae::TextComponent("000000", font);
+	scoreComp1->SetPosition(scoreP1PosX, scorePosY);
+	victoryDeathScreenGO->AddComponent(scoreComp1);
+	victoryDeathScreenGO->AddComponent(new MenuScoreDisplay(qBertCompVector->operator[](0), scoreComp1));
+
+	// And then one for P2
+	auto* scoreComp2 = new dae::TextComponent("000000", font);
+	scoreComp2->SetPosition(scoreP2PosX, scorePosY);
+	victoryDeathScreenGO->AddComponent(scoreComp2);
+	victoryDeathScreenGO->AddComponent(new MenuScoreDisplay(qBertCompVector->operator[](1), scoreComp2));
 
 	return victoryDeathScreenGO;
 }
