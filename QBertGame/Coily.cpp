@@ -6,8 +6,8 @@
 #include "SoundServiceLocator.h"
 #include "SoundSystem.h"
 
-Coily::Coily(const std::shared_ptr<dae::GameObject>& gameObject, std::vector<QBert*>* qBertCompVector, int gameMode, int nrRows, float cubesWidth,
-             float cubesHeight, float spriteWidth, float spriteHeight, int startingCube, float jumpInterval)
+Coily::Coily(const std::shared_ptr<dae::GameObject>& gameObject, std::vector<QBert*>* qBertCompVector, int gameMode, int nrRows,
+			float cubesWidth, float cubesHeight, float spriteWidth, float spriteHeight, int startingCube, float jumpInterval)
 	: m_GameObject(gameObject)
 	, m_QBertCompVector(qBertCompVector)
 	, m_CurrentCubeIdx(startingCube)
@@ -18,8 +18,8 @@ Coily::Coily(const std::shared_ptr<dae::GameObject>& gameObject, std::vector<QBe
 	, m_SpriteHeight(spriteHeight)
 	, m_JumpInterval(jumpInterval)
 	, m_Direction(startingCube - 1)
-	, m_TurnedToSnakeVersus(false)
 	, m_GameMode(gameMode)
+	, m_CurrentState(CoilyStates::ST_EggWaiting)
 {
 }
 
@@ -35,7 +35,7 @@ void Coily::Die() const
 }
 
 bool Coily::MoveDownLeft()
-{
+{	
 	if (m_Frozen == false && m_Airborne == false)
 	{
 		// If Coily isn't in the last pyramid row, change the pos index
@@ -46,21 +46,27 @@ bool Coily::MoveDownLeft()
 		}
 		else // Else, make them start hatching (but if they have already, make them jump out of the map)
 		{
-			if (m_IsEgg)
-				m_IsTransforming = true;
+			//if (m_IsEgg)
+			if (m_CurrentState == CoilyStates::ST_EggJumping)
+			{
+				//m_IsTransforming = true;
+				m_CurrentState = CoilyStates::ST_Transforming;
+			}
 			else
 				m_Alive = false;
 		}
 
-		if (m_IsTransforming == false)
+		auto* graphics = m_GameObject->GetComponent<dae::GraphicsComponent>();
+		if (m_CurrentState == CoilyStates::ST_EggJumping)
 		{
-			auto* graphics = m_GameObject->GetComponent<dae::GraphicsComponent>();
-
-			if (m_IsEgg)
-				graphics->SetSrcRectangle(m_SpriteWidth, 0, m_SpriteWidth, m_SpriteHeight);
-			else
-				graphics->SetSrcRectangle(m_SpriteWidth * 9, 0, m_SpriteWidth, m_SpriteHeight);
-
+			graphics->SetSrcRectangle(m_SpriteWidth, 0, m_SpriteWidth, m_SpriteHeight);
+			m_Airborne = true;
+			m_Direction = 1;
+			m_Subject->Notify(dae::Event::JumpDownLeft);
+		}
+		else if(m_CurrentState == CoilyStates::ST_SnakeJumping)
+		{
+			graphics->SetSrcRectangle(m_SpriteWidth * 9, 0, m_SpriteWidth, m_SpriteHeight);
 			m_Airborne = true;
 			m_Direction = 1;
 			m_Subject->Notify(dae::Event::JumpDownLeft);
@@ -86,21 +92,27 @@ bool Coily::MoveDownRight()
 		}
 		else // Else, make them start hatching (but if they have already, make them jump out of the map)
 		{
-			if (m_IsEgg)
-				m_IsTransforming = true;
+			//if (m_IsEgg)
+			if (m_CurrentState == CoilyStates::ST_EggJumping)
+			{
+				//m_IsTransforming = true;
+				m_CurrentState = CoilyStates::ST_Transforming;
+			}
 			else
 				m_Alive = false;
 		}
 
-		if (m_IsTransforming == false)
+		auto* graphics = m_GameObject->GetComponent<dae::GraphicsComponent>();
+		if (m_CurrentState == CoilyStates::ST_EggJumping)
 		{
-			auto* graphics = m_GameObject->GetComponent<dae::GraphicsComponent>();
-
-			if (m_IsEgg)
-				graphics->SetSrcRectangle(m_SpriteWidth, 0, m_SpriteWidth, m_SpriteHeight);
-			else
-				graphics->SetSrcRectangle(m_SpriteWidth * 7, 0, m_SpriteWidth, m_SpriteHeight);
-
+			graphics->SetSrcRectangle(m_SpriteWidth, 0, m_SpriteWidth, m_SpriteHeight);
+			m_Airborne = true;
+			m_Direction = 2;
+			m_Subject->Notify(dae::Event::JumpDownRight);
+		}
+		else if (m_CurrentState == CoilyStates::ST_SnakeJumping)
+		{
+			graphics->SetSrcRectangle(m_SpriteWidth * 7, 0, m_SpriteWidth, m_SpriteHeight);
 			m_Airborne = true;
 			m_Direction = 2;
 			m_Subject->Notify(dae::Event::JumpDownRight);
@@ -176,7 +188,7 @@ bool Coily::MoveUpRight()
 
 bool Coily::MoveDownLeftPlayer()
 {
-	if (m_IsEgg == false)
+	if (m_CurrentState == CoilyStates::ST_SnakeJumping || m_CurrentState == CoilyStates::ST_SnakeWaiting)
 		return MoveDownLeft();
 
 	return false;
@@ -184,7 +196,7 @@ bool Coily::MoveDownLeftPlayer()
 
 bool Coily::MoveDownRightPlayer()
 {
-	if (m_IsEgg == false)
+	if (m_CurrentState == CoilyStates::ST_SnakeJumping || m_CurrentState == CoilyStates::ST_SnakeWaiting)
 		return MoveDownRight();
 
 	return false;
@@ -192,7 +204,7 @@ bool Coily::MoveDownRightPlayer()
 
 bool Coily::MoveUpLeftPlayer()
 {
-	if (m_IsEgg == false)
+	if (m_CurrentState == CoilyStates::ST_SnakeJumping || m_CurrentState == CoilyStates::ST_SnakeWaiting)
 		return MoveUpLeft();
 
 	return false;
@@ -200,7 +212,7 @@ bool Coily::MoveUpLeftPlayer()
 
 bool Coily::MoveUpRightPlayer()
 {
-	if (m_IsEgg == false)
+	if (m_CurrentState == CoilyStates::ST_SnakeJumping || m_CurrentState == CoilyStates::ST_SnakeWaiting)
 		return MoveUpRight();
 
 	return false;
@@ -211,7 +223,8 @@ void Coily::JumpFinished()
 	// Set landing graphics
 	auto* graphics = m_GameObject->GetComponent<dae::GraphicsComponent>();
 
-	if (m_IsEgg)
+	//if (m_IsEgg)
+	if (m_CurrentState == CoilyStates::ST_EggJumping || m_CurrentState == CoilyStates::ST_EggWaiting)
 		graphics->SetSrcRectangle(0, 0, m_SpriteWidth, m_SpriteHeight);
 	else
 	{
@@ -229,7 +242,8 @@ void Coily::JumpFinished()
 
 	if (m_Alive)
 	{
-		if(m_IsEgg)
+		//if (m_IsEgg)
+		if (m_CurrentState == CoilyStates::ST_EggJumping || m_CurrentState == CoilyStates::ST_EggWaiting)
 			SoundServiceLocator::GetSoundSystem().Play("../Data/Sounds/Coily Egg Jump.wav", 0.1f);
 		else
 			SoundServiceLocator::GetSoundSystem().Play("../Data/Sounds/Coily Snake Jump.wav", 0.1f);
@@ -245,61 +259,79 @@ void Coily::JumpFinished()
 
 void Coily::Update(const float deltaTime)
 {
-	if (m_Alive == true && m_Frozen == false)
+	switch (m_CurrentState)
 	{
-		if(m_IsTransforming)
-		{
-			m_TransformTimer += deltaTime;
 
-			if(m_TransformTimer >= m_TransformationTime)
-			{
-				m_IsEgg = false;
-				m_IsTransforming = false;
-				m_TransformTimer = 0.f;
-			}
+	case CoilyStates::ST_EggWaiting:
+		m_JumpTimer += deltaTime;
+
+		if (m_JumpTimer >= m_JumpInterval)
+		{
+			m_JumpTimer = 0;
+			m_CurrentState = CoilyStates::ST_EggJumping;
 		}
+		break;
+
+	case CoilyStates::ST_EggJumping:
+		// A random 50/50 chance of Coily's egg falling to the right or left
+		if ((rand() % 2) + 1 == 1)
+			MoveDownRight();
 		else
+			MoveDownLeft();
+
+		if (m_CurrentState == CoilyStates::ST_EggJumping) // If the egg hasn't begun transforming
+			m_CurrentState = CoilyStates::ST_EggWaiting;
+
+		break;
+
+	case CoilyStates::ST_Transforming:
+		m_TransformTimer += deltaTime;
+
+		if (m_TransformTimer >= m_TransformationTime)
 		{
-			m_JumpTimer += deltaTime;
+			m_TransformTimer = 0.f;
 
-			if (m_JumpTimer >= m_JumpInterval)
+			if (m_GameMode != 3) // If playing any mode that not Versus
 			{
-				// This variable prevents the timer from being reset before the movement is actually complete.
-				// It will only become false if Coily's in snake mode and a QBert evades them at the last second,
-				// making both Coily and the Qbert's cube index the same, although they're not colliding (has QBert's mid-air)
-				// This is rare, but if it happens, the calculation will wait as many frames as it needs until QBert lands
-				bool movementSuceeded = true;
-				
-				if (m_IsEgg)
-				{
-					// A random 50/50 chance of Coily's egg falling to the right or left
-					if ((rand() % 2) + 1 == 1)
-						MoveDownRight();
-					else
-						MoveDownLeft();
-				}
-				else if(m_IsEgg == false)
-				{
-					if(m_GameMode == 3) // If playing Versus Mode
-					{
-						if (m_TurnedToSnakeVersus == false)
-						{
-							// Show transformation without moving, so the player knows they now have control
-							m_GameObject->GetComponent<dae::GraphicsComponent>()->SetSrcRectangle(m_SpriteWidth * 6, 0, m_SpriteWidth, m_SpriteHeight);
-							m_TurnedToSnakeVersus = true;
-						}
-					}
-					else
-					{
-						movementSuceeded = CoilySeekBehaviour();
-					}
-					
-				}
-
-				if(movementSuceeded)
-					m_JumpTimer -= m_JumpInterval;
+				m_CurrentState = CoilyStates::ST_SnakeJumping;
+			}
+			else
+			{
+				// Show transformation without moving, so the player knows they now have control
+				m_GameObject->GetComponent<dae::GraphicsComponent>()->SetSrcRectangle(m_SpriteWidth * 6, 0, m_SpriteWidth, m_SpriteHeight);
+				m_CurrentState = CoilyStates::ST_InP2Control;
 			}
 		}
+		break;
+
+	case CoilyStates::ST_InP2Control:
+		// Stop updating
+		break;
+
+	case CoilyStates::ST_SnakeWaiting:
+		m_JumpTimer += deltaTime;
+
+		if (m_JumpTimer >= m_JumpInterval)
+		{
+			m_JumpTimer -= m_JumpInterval;
+			m_CurrentState = CoilyStates::ST_SnakeJumping;
+		}
+		break;
+
+	case CoilyStates::ST_SnakeJumping:
+		// This variable prevents the timer from being reset before the movement is actually complete.
+		// It will only become false if Coily's in snake mode and a QBert evades them at the last second,
+		// making both Coily and the Qbert's cube index the same, although they're not colliding (has QBert's mid-air)
+		// This is rare, but if it happens, the calculation will wait as many frames as it needs until QBert lands
+		const bool movementSucceeded = CoilySeekBehaviour();
+
+		if (movementSucceeded)
+		{
+			m_JumpTimer = 0;
+			m_CurrentState = CoilyStates::ST_SnakeWaiting;
+		}
+
+		break;
 	}
 }
 

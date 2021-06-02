@@ -5,7 +5,6 @@ namespace dae
 	class TextComponent;
 	class GameObject;
 
-	// Need to make this editable outside of the engine
 	enum class Event
 	{
 		// Only the engine demo uses these
@@ -17,7 +16,7 @@ namespace dae
 		ColorChange,
 
 
-		// While these are only used in the game
+		// These are the actual game events
 		CoilyLanded,
 		CoilyFell,
 		
