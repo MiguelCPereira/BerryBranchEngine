@@ -14,6 +14,7 @@
 #include "ScoreDisplay.h"
 #include "Coily.h"
 #include "Disk.h"
+#include "InstructionsScreen.h"
 #include "MenuScoreDisplay.h"
 #include "StartScreen.h"
 #include "VictoryDeathScreen.h"
@@ -36,12 +37,12 @@ std::vector<std::shared_ptr<dae::GameObject>> MakeQBert(bool playerOne)
 
 	if (playerOne)
 	{
-		qBertGO->AddComponent(new dae::GraphicsComponent("QBert Spritesheet.png", initialPosX, g_InitialQbertPosY,
+		qBertGO->AddComponent(new dae::GraphicsComponent("QBert P1 Spritesheet.png", initialPosX, g_InitialQbertPosY,
 			g_QBertActualWidth, actualHeight, spriteWidth * 2, 0, spriteWidth, spriteHeight));
 	}
 	else
 	{
-		qBertGO->AddComponent(new dae::GraphicsComponent("QBert Spritesheet.png", initialPosX, g_InitialQbertPosY,
+		qBertGO->AddComponent(new dae::GraphicsComponent("QBert P2 Spritesheet.png", initialPosX, g_InitialQbertPosY,
 			g_QBertActualWidth, actualHeight, spriteWidth * 3, 0, spriteWidth, spriteHeight));
 	}
 	
@@ -536,7 +537,6 @@ std::vector<std::shared_ptr<dae::GameObject>>* MakeDiskGOsVector(int level, int 
 }
 
 
-
 ///
 
 
@@ -586,7 +586,6 @@ std::shared_ptr<dae::GameObject> MakeStartScreenLogic(int soloModeSceneIdx, int 
 
 	return startScreenGO;
 }
-
 
 
 ///
@@ -697,6 +696,125 @@ std::shared_ptr<dae::GameObject> MakeVictoryScreenVersusVisuals()
 	newGO->AddComponent(goBackComp);
 
 	return newGO;
+}
+
+
+///
+
+
+std::shared_ptr<dae::GameObject> MakeInstructionsSoloVisuals()
+{
+	const auto titlePosX = 90.f;
+	const auto titlePosY = 40.f;
+	
+	const auto descriptionX = 90.f;
+	const auto descriptionY = 110.f;
+	const auto descriptionLineSpacing = 30.f;
+	
+	const auto controlsPosX = 40.f;
+	const auto controlsPosY = 250.f;
+	const auto controlsImgWidth = 200.f;
+	const auto controlsImgHeight = 132.f;
+
+	const auto controlsOrX = 280.f;
+	const auto controlsOrY = 310.f;
+	const auto controlsTextX = 340.f;
+	const auto controlsLineSpacing = 20.f;
+
+	const auto startGamePosX = 148.f;
+	const auto startGamePosY = 440.f;
+
+	auto newGO = std::make_shared<dae::GameObject>();
+
+	// Add the Title
+	auto font = dae::ResourceManager::GetInstance().LoadFont("Minecraft.ttf", 30);
+	auto* titleComp = new dae::TextComponent("INSTRUCTIONS - SOLO MODE", font);
+	titleComp->SetPosition(titlePosX, titlePosY);
+	newGO->AddComponent(titleComp);
+
+	// Add the Text
+	font = dae::ResourceManager::GetInstance().LoadFont("Minecraft.ttf", 18);
+	auto* textComp = new dae::TextComponent("Turn all cubes of the pyramid into the same color!", font);
+	textComp->SetPosition(descriptionX + 7.f, descriptionY);
+	newGO->AddComponent(textComp);
+	textComp = new dae::TextComponent("Step on them to make them change, but be careful", font);
+	textComp->SetPosition(descriptionX, descriptionY + descriptionLineSpacing);
+	newGO->AddComponent(textComp);
+	textComp = new dae::TextComponent("to not fall or get hit by enemies while doing so.", font);
+	textComp->SetPosition(descriptionX + 28.f, descriptionY + descriptionLineSpacing * 2.f);
+	newGO->AddComponent(textComp);
+	
+
+	// Add the Controls Image
+	newGO->AddComponent(new dae::GraphicsComponent("P1 Controls.png", controlsPosX, controlsPosY, controlsImgWidth, controlsImgHeight));
+
+	// Add the Controls Extra Text
+	font = dae::ResourceManager::GetInstance().LoadFont("Minecraft.ttf", 16);
+	textComp = new dae::TextComponent("OR", font);
+	textComp->SetPosition(controlsOrX, controlsOrY);
+	newGO->AddComponent(textComp);
+
+	textComp = new dae::TextComponent("Move up/right -> DPAD UP", font);
+	textComp->SetPosition(controlsTextX + 25.f, controlsPosY + controlsLineSpacing * 2.f);
+	newGO->AddComponent(textComp);
+	textComp = new dae::TextComponent("Move up/left -> DPAD LEFT", font);
+	textComp->SetPosition(controlsTextX + 21.f, controlsPosY + controlsLineSpacing * 3.f);
+	newGO->AddComponent(textComp);
+	textComp = new dae::TextComponent("Move down/left -> DPAD DOWN", font);
+	textComp->SetPosition(controlsTextX + 8.f, controlsPosY + controlsLineSpacing * 4.f);
+	newGO->AddComponent(textComp);
+	textComp = new dae::TextComponent("Move down/right -> DPAD RIGHT", font);
+	textComp->SetPosition(controlsTextX + 2.f, controlsPosY + controlsLineSpacing * 5.f);
+	newGO->AddComponent(textComp);
+
+
+	// And add the bottom text explaining how to start the game
+	auto* goBackComp = new dae::TextComponent("Press ENTER or START to begin the 1st level", font);
+	goBackComp->SetPosition(startGamePosX, startGamePosY);
+	newGO->AddComponent(goBackComp);
+
+	
+	return newGO;
+}
+
+std::shared_ptr<dae::GameObject>  MakeInstructionsCoopVisuals()
+{
+	const auto titlePosX = 80.f;
+	const auto titlePosY = 80.f;
+
+	auto newGO = std::make_shared<dae::GameObject>();
+
+	// Add the Title
+	auto font = dae::ResourceManager::GetInstance().LoadFont("Minecraft.ttf", 30);
+	auto* titleComp = new dae::TextComponent("INSTRUCTIONS - CO-OP MODE", font);
+	titleComp->SetPosition(titlePosX, titlePosY);
+	newGO->AddComponent(titleComp);
+
+	return newGO;
+}
+
+std::shared_ptr<dae::GameObject>  MakeInstructionsVersusVisuals()
+{
+	const auto titlePosX = 85.f;
+	const auto titlePosY = 80.f;
+
+	auto newGO = std::make_shared<dae::GameObject>();
+
+	// Add the Title
+	auto font = dae::ResourceManager::GetInstance().LoadFont("Minecraft.ttf", 30);
+	auto* titleComp = new dae::TextComponent("INSTRUCTIONS - VERSUS MODE", font);
+	titleComp->SetPosition(titlePosX, titlePosY);
+	newGO->AddComponent(titleComp);
+
+	return newGO;
+}
+
+std::shared_ptr<dae::GameObject> MakeInstructionsScreenLogic()
+{
+	auto instructionsScreenGO = std::make_shared<dae::GameObject>();
+	instructionsScreenGO->AddComponent(new InstructionsScreen());
+
+	return instructionsScreenGO;
 }
 
 

@@ -3,6 +3,7 @@
 #include "Command.h"
 #include "QBert.h"
 #include "StartScreen.h"
+#include "InstructionsScreen.h"
 #include "VictoryDeathScreen.h"
 
 // Menu Commands
@@ -28,6 +29,12 @@ class MoveDownMenuCommand final : public dae::Command
 {
 public:
 	void Execute() override { GetActor()->GetComponent<StartScreen>()->ChangeSelection(false); }
+};
+
+class SkipInstructionsCommand final : public dae::Command
+{
+public:
+	void Execute() override { GetActor()->GetComponent<InstructionsScreen>()->ChangeScene(); }
 };
 
 

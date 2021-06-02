@@ -380,6 +380,8 @@ xcopy "$(SolutionDir)3rdParty\SDL2_ttf\lib\$(PlatformTarget)\*.dll" "$(OutputPat
     <ClCompile Include="Factory.cpp" />
     <ClCompile Include="GameCommands.cpp" />
     <ClCompile Include="GameObserver.cpp" />
+    <ClCompile Include="InstructionsScreen.cpp" />
+    <ClCompile Include="InstructionsScreenInput.cpp" />
     <ClCompile Include="JumpingObserver.cpp" />
     <ClCompile Include="LevelSectionObserver.cpp" />
     <ClCompile Include="LivesDisplay.cpp" />
@@ -406,6 +408,8 @@ xcopy "$(SolutionDir)3rdParty\SDL2_ttf\lib\$(PlatformTarget)\*.dll" "$(OutputPat
     <ClInclude Include="Factory.h" />
     <ClInclude Include="GameCommands.h" />
     <ClInclude Include="GameObserver.h" />
+    <ClInclude Include="InstructionsScreen.h" />
+    <ClInclude Include="InstructionsScreenInput.h" />
     <ClInclude Include="JumpingObserver.h" />
     <ClInclude Include="LevelSectionObserver.h" />
     <ClInclude Include="LivesDisplay.h" />

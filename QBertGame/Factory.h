@@ -67,6 +67,16 @@ std::shared_ptr<dae::GameObject> MakeStartScreenLogic(int soloModeSceneIdx, int 
 
 
 
+std::shared_ptr<dae::GameObject> MakeInstructionsSoloVisuals();
+
+std::shared_ptr<dae::GameObject>  MakeInstructionsCoopVisuals();
+
+std::shared_ptr<dae::GameObject>  MakeInstructionsVersusVisuals();
+
+std::shared_ptr<dae::GameObject> MakeInstructionsScreenLogic();
+
+
+
 std::shared_ptr<dae::GameObject> MakeVictoryScreenSoloVisuals();
 
 std::shared_ptr<dae::GameObject> MakeVictoryScreenCoopVisuals();

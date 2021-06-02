@@ -23,6 +23,7 @@
 #include<fstream>
 
 #include "CoopAllInput.h"
+#include "InstructionsScreenInput.h"
 
 
 // Global Variables
@@ -47,10 +48,14 @@ void SetUpQBerts();
 void PrintInstructions();
 
 void LoadStartScreen();
+
+void LoadInstructionsSolo();
 void LoadDeathScreenSolo();
 void LoadVictoryScreenSolo();
+void LoadInstructionsCoop();
 void LoadDeathScreenCoop();
 void LoadVictoryScreenCoop();
+void LoadInstructionsVersus();
 void LoadDeathScreenVersus();
 void LoadVictoryScreenVersus();
 
@@ -106,22 +111,25 @@ int main(int, char* [])
 	LoadStartScreen(); // Scene idx 00
 	
 	LoadDeathScreenSolo(); // Scene idx 01
-	LoadLevelsBinaries("Level01Solo.bin"); // Scene idx 02-06
-	LoadLevelsBinaries("Level02Solo.bin"); // Scene idx 07-11
-	LoadLevelsBinaries("Level03Solo.bin"); // Scene idx 12-16
-	LoadVictoryScreenSolo(); // Scene idx 17
+	LoadInstructionsSolo(); // Scene idx 02
+	LoadLevelsBinaries("Level01Solo.bin"); // Scene idx 03-07
+	LoadLevelsBinaries("Level02Solo.bin"); // Scene idx 08-12
+	LoadLevelsBinaries("Level03Solo.bin"); // Scene idx 13-17
+	LoadVictoryScreenSolo(); // Scene idx 18
 	
-	LoadDeathScreenCoop(); // Scene idx 18
-	LoadLevelsBinaries("Level01Coop.bin"); // Scene idx 19-23
-	LoadLevelsBinaries("Level02Coop.bin"); // Scene idx 24-28
-	LoadLevelsBinaries("Level03Coop.bin"); // Scene idx 29-33
-	LoadVictoryScreenCoop(); // Scene idx 34
+	LoadDeathScreenCoop(); // Scene idx 19
+	LoadInstructionsCoop(); // Scene idx 20
+	LoadLevelsBinaries("Level01Coop.bin"); // Scene idx 21-25
+	LoadLevelsBinaries("Level02Coop.bin"); // Scene idx 26-30
+	LoadLevelsBinaries("Level03Coop.bin"); // Scene idx 31-35
+	LoadVictoryScreenCoop(); // Scene idx 36
 	
-	LoadDeathScreenVersus(); // Scene idx 35
-	LoadLevelsBinaries("Level01Versus.bin"); // Scene idx 36-40
-	LoadLevelsBinaries("Level02Versus.bin"); // Scene idx 41-45
-	LoadLevelsBinaries("Level03Versus.bin"); // Scene idx 46-50
-	LoadVictoryScreenVersus(); // Scene idx 51
+	LoadDeathScreenVersus(); // Scene idx 37
+	LoadInstructionsVersus(); // Scene idx 38
+	LoadLevelsBinaries("Level01Versus.bin"); // Scene idx 39-43
+	LoadLevelsBinaries("Level02Versus.bin"); // Scene idx 44-48
+	LoadLevelsBinaries("Level03Versus.bin"); // Scene idx 49-53
+	LoadVictoryScreenVersus(); // Scene idx 54
 	
 	PrintInstructions();
 
@@ -153,7 +161,6 @@ void PrintInstructions()
 	std::cout << "   S or DPad Down   | Move Down/Left\n";
 	std::cout << "   D or DPad Right  | Move Down/Right\n\n";
 }
-
 
 
 
@@ -324,6 +331,8 @@ void CreateBinaryLevel03Solo()
 }
 
 
+
+
 void CreateBinaryLevel01Coop()
 {
 	std::ofstream levelOne("Level01Coop.bin", std::ios::out | std::ios::binary);
@@ -488,6 +497,8 @@ void CreateBinaryLevel03Coop()
 	if (!levelThree.good())
 		std::cout << "Level 03 Co-op file wasn't properly written\n";
 }
+
+
 
 
 void CreateBinaryLevel01Versus()
@@ -658,8 +669,6 @@ void CreateBinaryLevel03Versus()
 
 
 
-
-
 void LoadLevelsBinaries(const std::string& fileName)
 {
 	const int nrRounds = 4;
@@ -765,9 +774,9 @@ void LoadLevelsBinaries(const std::string& fileName)
 		if (round.gameMode == 1) // Solo
 			deathSceneIdx = 1;
 		else if (round.gameMode == 2) // Co-op
-			deathSceneIdx = 18;
+			deathSceneIdx = 19;
 		else					// Versus
-			deathSceneIdx = 35;
+			deathSceneIdx = 37;
 
 		auto sectionObserverGO = std::make_shared<dae::GameObject>();
 		sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertsCompVector, g_QBertsGraphicsVector, pyramid, disksVector, deathSceneIdx, round.level,
@@ -791,7 +800,6 @@ void LoadLevelsBinaries(const std::string& fileName)
 
 
 
-
 void LoadStartScreen()
 {
 	// Create Scene
@@ -799,7 +807,7 @@ void LoadStartScreen()
 
 	// Add All Needed Game Objects
 	startScreenScene.Add(MakeStartScreenVisuals());
-	const auto startScreenGO = MakeStartScreenLogic(2, 19, 36);
+	const auto startScreenGO = MakeStartScreenLogic(2, 20, 38);
 	startScreenScene.Add(startScreenGO);
 
 	// Add The Start Menu Player Input
@@ -809,6 +817,25 @@ void LoadStartScreen()
 
 	// Initialize Scene
 	startScreenScene.Initialize();
+}
+
+
+
+
+void LoadInstructionsSolo()
+{
+	// Create Scene
+	auto& instructionsScreenScene = dae::SceneManager::GetInstance().CreateScene("InstructionsSolo");
+
+	// Add All Needed Game Objects
+	instructionsScreenScene.Add(MakeInstructionsSoloVisuals());
+	const auto instructionsScreenGO = MakeInstructionsScreenLogic();
+	instructionsScreenScene.Add(instructionsScreenGO);
+
+	// Add The Player Input
+	auto instructionsScreenInputGO = std::make_shared<dae::GameObject>();
+	instructionsScreenInputGO->AddComponent(new InstructionsScreenInput(instructionsScreenGO));
+	instructionsScreenScene.Add(instructionsScreenInputGO);
 }
 
 void LoadDeathScreenSolo()
@@ -843,6 +870,25 @@ void LoadVictoryScreenSolo()
 	victoryScene.Add(menuPlayerInputGO);
 }
 
+
+
+
+void LoadInstructionsCoop()
+{
+	// Create Scene
+	auto& instructionsScreenScene = dae::SceneManager::GetInstance().CreateScene("InstructionsCoop");
+
+	// Add All Needed Game Objects
+	instructionsScreenScene.Add(MakeInstructionsCoopVisuals());
+	const auto instructionsScreenGO = MakeInstructionsScreenLogic();
+	instructionsScreenScene.Add(instructionsScreenGO);
+
+	// Add The Player Input
+	auto instructionsScreenInputGO = std::make_shared<dae::GameObject>();
+	instructionsScreenInputGO->AddComponent(new InstructionsScreenInput(instructionsScreenGO));
+	instructionsScreenScene.Add(instructionsScreenInputGO);
+}
+
 void LoadDeathScreenCoop()
 {
 	// Create Scene
@@ -873,6 +919,25 @@ void LoadVictoryScreenCoop()
 	auto menuPlayerInputGO = std::make_shared<dae::GameObject>();
 	menuPlayerInputGO->AddComponent(new VictoryDeathScreenInput(victoryScreenGO));
 	victoryScene.Add(menuPlayerInputGO);
+}
+
+
+
+
+void LoadInstructionsVersus()
+{
+	// Create Scene
+	auto& instructionsScreenScene = dae::SceneManager::GetInstance().CreateScene("InstructionsVersus");
+
+	// Add All Needed Game Objects
+	instructionsScreenScene.Add(MakeInstructionsVersusVisuals());
+	const auto instructionsScreenGO = MakeInstructionsScreenLogic();
+	instructionsScreenScene.Add(instructionsScreenGO);
+
+	// Add The Player Input
+	auto instructionsScreenInputGO = std::make_shared<dae::GameObject>();
+	instructionsScreenInputGO->AddComponent(new InstructionsScreenInput(instructionsScreenGO));
+	instructionsScreenScene.Add(instructionsScreenInputGO);
 }
 
 void LoadDeathScreenVersus()

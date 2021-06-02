@@ -1,7 +1,5 @@
 #include "MenuScoreDisplay.h"
-
 #include <string>
-
 #include "QBert.h"
 #include "TextComponent.h"
 

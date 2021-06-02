@@ -17,11 +17,18 @@ void VictoryDeathScreenInput::Initialize()
 	dae::InputManager::GetInstance().AddCommand(SDLK_ESCAPE, std::move(goBackKeyboard));
 
 
-	auto goBackController = std::make_unique<GoBackMenuCommand>();
-	goBackController->SetActor(m_MenuComponentGO);
-	goBackController->SetButtonPressType(dae::ButtonPress::PressedDown);
-	const std::pair<unsigned, dae::ControllerButton> controllerKey(0, dae::ControllerButton::Start);
-	dae::InputManager::GetInstance().AddCommand(controllerKey, std::move(goBackController));
+	auto goBackController1 = std::make_unique<GoBackMenuCommand>();
+	goBackController1->SetActor(m_MenuComponentGO);
+	goBackController1->SetButtonPressType(dae::ButtonPress::PressedDown);
+	std::pair<unsigned, dae::ControllerButton> controllerKey(0, dae::ControllerButton::Start);
+	dae::InputManager::GetInstance().AddCommand(controllerKey, std::move(goBackController1));
+
+
+	auto goBackController2 = std::make_unique<GoBackMenuCommand>();
+	goBackController2->SetActor(m_MenuComponentGO);
+	goBackController2->SetButtonPressType(dae::ButtonPress::PressedDown);
+	controllerKey.first = 1;
+	dae::InputManager::GetInstance().AddCommand(controllerKey, std::move(goBackController2));
 }
 
 void VictoryDeathScreenInput::Update(const float)

@@ -102,6 +102,12 @@
     <ClCompile Include="CoopAllInput.cpp">
       <Filter>Components\Player Input</Filter>
     </ClCompile>
+    <ClCompile Include="InstructionsScreenInput.cpp">
+      <Filter>Components\Player Input</Filter>
+    </ClCompile>
+    <ClCompile Include="InstructionsScreen.cpp">
+      <Filter>Components\Menu Screens</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Pyramid.h">
@@ -172,6 +178,12 @@
     </ClInclude>
     <ClInclude Include="CoopAllInput.h">
       <Filter>Components\Player Input</Filter>
+    </ClInclude>
+    <ClInclude Include="InstructionsScreenInput.h">
+      <Filter>Components\Player Input</Filter>
+    </ClInclude>
+    <ClInclude Include="InstructionsScreen.h">
+      <Filter>Components\Menu Screens</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
