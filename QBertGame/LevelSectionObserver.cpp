@@ -44,14 +44,12 @@ LevelSectionObserver::LevelSectionObserver(float transitionTime, std::vector<QBe
 	, m_UggWrongSpawnInterval()
 	, m_UggWrongMoveInterval()
 
-	, m_SectionComplete()
 	, m_AnimationTimer()
 	, m_FullAnimationTime()
 	, m_FlashingTimer()
 	, m_FlashingColorTime()
 	, m_ClearDisksTimer()
 	, m_ClearDisksPause()
-	, m_StartPostAnimationPause()
 	, m_PostAnimationTimer()
 	, m_PostAnimationPause()
 	, m_CurrentFlashingColor()
@@ -63,7 +61,6 @@ LevelSectionObserver::LevelSectionObserver(float transitionTime, std::vector<QBe
 	, m_DeadQbertP1Timer()
 	, m_DeadQbertP2Timer()
 	, m_DeadQbertMaxTime()
-	, m_DeathEmptyScene()
 	, m_DeathEmptySceneTimer()
 	, m_DeathEmptySceneMaxTime()
 
@@ -74,7 +71,8 @@ LevelSectionObserver::LevelSectionObserver(float transitionTime, std::vector<QBe
 	, m_CoopP1SpawnPosX()
 	, m_CoopP2SpawnPosX()
 	, m_CoopSpawnPosY()
-	, m_SceneAlreadyChanging()
+
+	, m_CurrentState(LevelSectionState::ST_InterLevelAnimation)
 {
 }
 
@@ -112,14 +110,12 @@ LevelSectionObserver::LevelSectionObserver(const std::shared_ptr<dae::GameObject
 	, m_UggWrongSpawnInterval(uggWrongSpawnInterval)
 	, m_UggWrongMoveInterval(1.f)
 
-	, m_SectionComplete(false)
 	, m_AnimationTimer(0.f)
 	, m_FullAnimationTime(2.f)
 	, m_FlashingTimer(0.1f)
 	, m_FlashingColorTime(0.1f)
 	, m_ClearDisksTimer(0.f)
 	, m_ClearDisksPause(1.f)
-	, m_StartPostAnimationPause(false)
 	, m_PostAnimationTimer(0.f)
 	, m_PostAnimationPause(1.f)
 	, m_CurrentFlashingColor(3)
@@ -131,7 +127,6 @@ LevelSectionObserver::LevelSectionObserver(const std::shared_ptr<dae::GameObject
 	, m_DeadQbertP1Timer(0.f)
 	, m_DeadQbertP2Timer(0.f)
 	, m_DeadQbertMaxTime(2.f)
-	, m_DeathEmptyScene(false)
 	, m_DeathEmptySceneTimer(0.f)
 	, m_DeathEmptySceneMaxTime(1.f)
 
@@ -142,7 +137,8 @@ LevelSectionObserver::LevelSectionObserver(const std::shared_ptr<dae::GameObject
 	, m_CoopP1SpawnPosX(coopP1SpawnPosX)
 	, m_CoopP2SpawnPosX(coopP2SpawnPosX)
 	, m_CoopSpawnPosY(coopSpawnPosY)
-	, m_SceneAlreadyChanging(false)
+
+	, m_CurrentState(LevelSectionState::ST_NormalSpawning)
 {
 
 	// So it only takes 2 secs for the first Ugg/Wrongway to spawn
@@ -223,14 +219,13 @@ void LevelSectionObserver::Initialize()
 
 	// This statement will only run if the instance of this class was created with
 	// the first constructor - which means it's only gonna be used for a level transition
-	if (m_LevelTitleScreenTime > 0.f)
+	if (m_CurrentState == LevelSectionState::ST_InterLevelAnimation)
 	{
 		m_LevelTitleTimer = 0.f;
 		SoundServiceLocator::GetSoundSystem().Play("../Data/Sounds/Level Screen Tune.wav", 0.1f);
 	}
 	else
 	{
-		m_SectionComplete = false;
 		m_QBertP1JustFell = false;
 		m_SpawnCoily = true;
 		m_CoilySpawnTimer = 5.f;
@@ -240,7 +235,6 @@ void LevelSectionObserver::Initialize()
 		m_AnimationTimer = 0.f;
 		m_FlashingTimer = 0.1f;
 		m_ClearDisksTimer = 0.f;
-		m_StartPostAnimationPause = false;
 		m_PostAnimationTimer = 0.f;
 		m_CurrentFlashingColor = 3;
 		m_EverythingClear = false;
@@ -248,9 +242,8 @@ void LevelSectionObserver::Initialize()
 		m_DeadQbertP2 = false;
 		m_DeadQbertP1Timer = 0.f;
 		m_DeadQbertP2Timer = 0.f;
-		m_DeathEmptyScene = false;
 		m_DeathEmptySceneTimer = 0.f;
-		m_SceneAlreadyChanging = false;
+		m_CurrentState = LevelSectionState::ST_NormalSpawning;
 
 		if (m_QBertCompVector->empty() == false && m_GameMode == 2)
 		{
@@ -258,6 +251,10 @@ void LevelSectionObserver::Initialize()
 			m_QBertGraphicsVector->operator[](0)->SetPosition(m_CoopP1SpawnPosX, m_CoopSpawnPosY);
 			m_QBertCompVector->operator[](1)->SetNewPositionIndexes(28, 7);
 			m_QBertGraphicsVector->operator[](1)->SetPosition(m_CoopP2SpawnPosX, m_CoopSpawnPosY);
+			m_QBertCompVector->operator[](0)->BackToGround();
+			m_QBertCompVector->operator[](0)->SetFrozen(false);
+			m_QBertCompVector->operator[](1)->BackToGround();
+			m_QBertCompVector->operator[](1)->SetFrozen(false);
 		}
 		
 		if (m_DisksVector != nullptr)
@@ -380,68 +377,76 @@ void LevelSectionObserver::OnNotify(const dae::Event& event)
 
 	// This if statement will only not run if the instance of this class was created with
 	// the first constructor - which means it's only gonna be used for a level transition
-	if (m_LevelTitleScreenTime == 0.f)
+	if (m_CurrentState != LevelSectionState::ST_InterLevelAnimation)
 	{
 		switch (event)
 		{
 
 		case dae::Event::QBertLandedP1:
-			// 1 is subtracted from the idx, because the cubes are numbered from 1 to 28
-			// But they're stored counting from 0 in the vector
-			cubeTurned = m_Pyramid->m_CubeGOVector[m_QBertCompVector->operator[](0)->GetPositionIndex() - 1]->GetComponent<Cube>()->TurnCube();
-
-			if (cubeTurned)
-				m_QBertCompVector->operator[](0)->ScoreIncrease(25);
-
-			if (CheckAllCubesTurned())
-				WinSection();
-
-			KillCollidingSlickSam();
-
-			if (m_DeadQbertP1 == false)
+			// If P2 died before P1 lands, the landing should have no consequences, as well as if the round was won before
+			if (m_DeadQbertP2 == false && m_CurrentState == LevelSectionState::ST_NormalSpawning)
 			{
-				if (CheckCollidingUggWrong(0) || CheckCollidingCoily(0))
+				// 1 is subtracted from the idx, because the cubes are numbered from 1 to 28
+				// But they're stored counting from 0 in the vector
+				cubeTurned = m_Pyramid->m_CubeGOVector[m_QBertCompVector->operator[](0)->GetPositionIndex() - 1]->GetComponent<Cube>()->TurnCube();
+
+				if (cubeTurned)
+					m_QBertCompVector->operator[](0)->ScoreIncrease(25);
+
+				if (CheckAllCubesTurned())
+					WinSection();
+
+				KillCollidingSlickSam();
+
+				if (m_DeadQbertP1 == false && m_DeadQbertP2 == false) // So once one dies, the other can't die until the map has been clean
 				{
-					SoundServiceLocator::GetSoundSystem().Play("../Data/Sounds/QBert Hit.wav", 0.07f);
-					ChangeFreezeEverything(true);
-					m_DeadQbertP1 = true;
+					if (CheckCollidingUggWrong(0) || CheckCollidingCoily(0))
+					{
+						SoundServiceLocator::GetSoundSystem().Play("../Data/Sounds/QBert Hit.wav", 0.07f);
+						ChangeFreezeEverything(true);
+						m_DeadQbertP1 = true;
 
-					m_QBertCompVector->operator[](0)->Die();
+						m_QBertCompVector->operator[](0)->Die();
 
-					// Make QBert curse
-					SoundServiceLocator::GetSoundSystem().Play("../Data/Sounds/Swearing.wav", 0.1f);
-					m_QBertCompVector->operator[](0)->SetCursesHidden(false);
+						// Make QBert curse
+						SoundServiceLocator::GetSoundSystem().Play("../Data/Sounds/Swearing.wav", 0.1f);
+						m_QBertCompVector->operator[](0)->SetCursesHidden(false);
+					}
 				}
 			}
 			break;
 
 
 		case dae::Event::QBertLandedP2:
-			// 1 is subtracted from the idx, because the cubes are numbered from 1 to 28
-			// But they're stored counting from 0 in the vector
-			cubeTurned = m_Pyramid->m_CubeGOVector[m_QBertCompVector->operator[](1)->GetPositionIndex() - 1]->GetComponent<Cube>()->TurnCube();
-
-			if (cubeTurned)
-				m_QBertCompVector->operator[](1)->ScoreIncrease(25);
-
-			if (CheckAllCubesTurned())
-				WinSection();
-
-			KillCollidingSlickSam();
-
-			if (m_DeadQbertP2 == false)
+			// If P1 died before P2 lands, the landing should have no consequences, as well as if the round was won before
+			if (m_DeadQbertP1 == false && m_CurrentState == LevelSectionState::ST_NormalSpawning)
 			{
-				if (CheckCollidingUggWrong(1) || CheckCollidingCoily(1))
+				// 1 is subtracted from the idx, because the cubes are numbered from 1 to 28
+				// But they're stored counting from 0 in the vector
+				cubeTurned = m_Pyramid->m_CubeGOVector[m_QBertCompVector->operator[](1)->GetPositionIndex() - 1]->GetComponent<Cube>()->TurnCube();
+
+				if (cubeTurned)
+					m_QBertCompVector->operator[](1)->ScoreIncrease(25);
+
+				if (CheckAllCubesTurned())
+					WinSection();
+
+				KillCollidingSlickSam();
+
+				if (m_DeadQbertP1 == false && m_DeadQbertP2 == false) // So once one dies, the other can't die until the map has been clean
 				{
-					SoundServiceLocator::GetSoundSystem().Play("../Data/Sounds/QBert Hit.wav", 0.07f);
-					ChangeFreezeEverything(true);
-					m_DeadQbertP2 = true;
+					if (CheckCollidingUggWrong(1) || CheckCollidingCoily(1))
+					{
+						SoundServiceLocator::GetSoundSystem().Play("../Data/Sounds/QBert Hit.wav", 0.07f);
+						ChangeFreezeEverything(true);
+						m_DeadQbertP2 = true;
 
-					m_QBertCompVector->operator[](1)->Die();
+						m_QBertCompVector->operator[](1)->Die();
 
-					// Make QBert curse
-					SoundServiceLocator::GetSoundSystem().Play("../Data/Sounds/Swearing.wav", 0.1f);
-					m_QBertCompVector->operator[](1)->SetCursesHidden(false);
+						// Make QBert curse
+						SoundServiceLocator::GetSoundSystem().Play("../Data/Sounds/Swearing.wav", 0.1f);
+						m_QBertCompVector->operator[](1)->SetCursesHidden(false);
+					}
 				}
 			}
 			break;
@@ -452,13 +457,18 @@ void LevelSectionObserver::OnNotify(const dae::Event& event)
 			m_QBertCompVector->operator[](0)->BackToGround();
 			m_QBertCompVector->operator[](0)->SetNewPositionIndexes(1, 1);
 			m_QBertCompVector->operator[](0)->SetFrozen(false);
-			cubeTurned = m_Pyramid->m_CubeGOVector[m_QBertCompVector->operator[](0)->GetPositionIndex() - 1]->GetComponent<Cube>()->TurnCube();
 
-			if (cubeTurned)
-				m_QBertCompVector->operator[](0)->ScoreIncrease(25);
+			// If P2 died before P1 lands, the landing should have no consequences, as well as if the round was won before
+			if (m_DeadQbertP2 == false && m_CurrentState == LevelSectionState::ST_NormalSpawning)
+			{
+				cubeTurned = m_Pyramid->m_CubeGOVector[m_QBertCompVector->operator[](0)->GetPositionIndex() - 1]->GetComponent<Cube>()->TurnCube();
 
-			if (CheckAllCubesTurned())
-				WinSection();
+				if (cubeTurned)
+					m_QBertCompVector->operator[](0)->ScoreIncrease(25);
+
+				if (CheckAllCubesTurned())
+					WinSection();
+			}
 
 			break;
 
@@ -468,96 +478,121 @@ void LevelSectionObserver::OnNotify(const dae::Event& event)
 			m_QBertCompVector->operator[](1)->BackToGround();
 			m_QBertCompVector->operator[](1)->SetNewPositionIndexes(1, 1);
 			m_QBertCompVector->operator[](1)->SetFrozen(false);
-			cubeTurned = m_Pyramid->m_CubeGOVector[m_QBertCompVector->operator[](1)->GetPositionIndex() - 1]->GetComponent<Cube>()->TurnCube();
 
-			if (cubeTurned)
-				m_QBertCompVector->operator[](1)->ScoreIncrease(25);
+			// If P1 died before P2 lands, the landing should have no consequences, as well as if the round was won before
+			if (m_DeadQbertP1 == false && m_CurrentState == LevelSectionState::ST_NormalSpawning)
+			{
+				cubeTurned = m_Pyramid->m_CubeGOVector[m_QBertCompVector->operator[](1)->GetPositionIndex() - 1]->GetComponent<Cube>()->TurnCube();
 
-			if (CheckAllCubesTurned())
-				WinSection();
+				if (cubeTurned)
+					m_QBertCompVector->operator[](1)->ScoreIncrease(25);
+
+				if (CheckAllCubesTurned())
+					WinSection();
+			}
 
 			break;
 
 
 		case dae::Event::QBertFellP1:
-			m_QBertP1JustTookDisk = false;
-			for (size_t i = 0; i < m_DisksVector->size(); i++)
+			// If P2 died before P1 falls, the fall should have no consequences, as well as if the round was won before
+			if (m_DeadQbertP1 == false && m_DeadQbertP2 == false && m_CurrentState == LevelSectionState::ST_NormalSpawning)
 			{
-				auto* disk = m_DisksVector->operator[](i);
-				if (disk->GetHasBeenUsed() == false && disk->GetRow() == m_QBertCompVector->operator[](0)->GetCurrentRow())
+				m_QBertP1JustTookDisk = false;
+				for (size_t i = 0; i < m_DisksVector->size(); i++)
 				{
-					if (disk->GetIsLeft() && m_QBertCompVector->operator[](0)->GetLastJumpedOffLeft() && m_QBertCompVector->operator[](0)->GetLastJumpedOffDown() == false)
+					auto* disk = m_DisksVector->operator[](i);
+					if (disk->GetHasBeenUsed() == false && disk->GetRow() == m_QBertCompVector->operator[](0)->GetCurrentRow())
 					{
-						m_QBertP1JustTookDisk = true;
-						disk->Activate(m_QBertCompVector->operator[](0), m_QBertGraphicsVector->operator[](0), true);
-						break;
-					}
-					if (disk->GetIsLeft() == false && m_QBertCompVector->operator[](0)->GetLastJumpedOffLeft() == false && m_QBertCompVector->operator[](0)->GetLastJumpedOffDown() == false)
-					{
-						m_QBertP1JustTookDisk = true;
-						disk->Activate(m_QBertCompVector->operator[](0), m_QBertGraphicsVector->operator[](0), true);
-						break;
+						if (disk->GetIsLeft() && m_QBertCompVector->operator[](0)->GetLastJumpedOffLeft() && m_QBertCompVector->operator[](0)->GetLastJumpedOffDown() == false)
+						{
+							m_QBertP1JustTookDisk = true;
+							disk->Activate(m_QBertCompVector->operator[](0), m_QBertGraphicsVector->operator[](0), true);
+							break;
+						}
+						if (disk->GetIsLeft() == false && m_QBertCompVector->operator[](0)->GetLastJumpedOffLeft() == false && m_QBertCompVector->operator[](0)->GetLastJumpedOffDown() == false)
+						{
+							m_QBertP1JustTookDisk = true;
+							disk->Activate(m_QBertCompVector->operator[](0), m_QBertGraphicsVector->operator[](0), true);
+							break;
+						}
 					}
 				}
-			}
 
-			if (m_QBertP1JustFell == false && m_QBertP1JustTookDisk == false)
+				if (m_QBertP1JustFell == false && m_QBertP1JustTookDisk == false)
+				{
+					SoundServiceLocator::GetSoundSystem().Play("../Data/Sounds/QBert Fall.wav", 0.5f);
+					ChangeFreezeEverything(true);
+					m_DeadQbertP1 = true;
+
+					m_QBertCompVector->operator[](0)->Die();
+
+					m_QBertP1JustFell = true;
+
+					// Make QBert curse
+					SoundServiceLocator::GetSoundSystem().Play("../Data/Sounds/Swearing.wav", 0.1f);
+					m_QBertCompVector->operator[](0)->SetCursesHidden(false);
+					break;
+				}
+			}
+			else
 			{
-				SoundServiceLocator::GetSoundSystem().Play("../Data/Sounds/QBert Fall.wav", 0.5f);
-				ChangeFreezeEverything(true);
-				m_DeadQbertP1 = true;
-
-				m_QBertCompVector->operator[](0)->Die();
-
+				// P1 fell, but after P2 already died (so P1 jumped a tiny bit before P2 got hit / fell too)
+				// In this case, P1 should receive no punishment, but they still need to re-spawn in their last position
+				// So the "justfell" bool must still be changed
 				m_QBertP1JustFell = true;
-
-				// Make QBert curse
-				SoundServiceLocator::GetSoundSystem().Play("../Data/Sounds/Swearing.wav", 0.1f);
-				m_QBertCompVector->operator[](0)->SetCursesHidden(false);
-				break;
 			}
-
 			break;
 
 
 		case dae::Event::QBertFellP2:
-			m_QBertP2JustTookDisk = false;
-			for (size_t i = 0; i < m_DisksVector->size(); i++)
+			// If P1 died before P2 falls, the fall should have no consequences, as well as if the round was won before
+			if (m_DeadQbertP1 == false && m_DeadQbertP2 == false && m_CurrentState == LevelSectionState::ST_NormalSpawning)
 			{
-				auto* disk = m_DisksVector->operator[](i);
-				if (disk->GetHasBeenUsed() == false && disk->GetRow() == m_QBertCompVector->operator[](1)->GetCurrentRow())
+				m_QBertP2JustTookDisk = false;
+				for (size_t i = 0; i < m_DisksVector->size(); i++)
 				{
-					if (disk->GetIsLeft() && m_QBertCompVector->operator[](1)->GetLastJumpedOffLeft() && m_QBertCompVector->operator[](1)->GetLastJumpedOffDown() == false)
+					auto* disk = m_DisksVector->operator[](i);
+					if (disk->GetHasBeenUsed() == false && disk->GetRow() == m_QBertCompVector->operator[](1)->GetCurrentRow())
 					{
-						m_QBertP2JustTookDisk = true;
-						disk->Activate(m_QBertCompVector->operator[](1), m_QBertGraphicsVector->operator[](1), false);
-						break;
-					}
-					if (disk->GetIsLeft() == false && m_QBertCompVector->operator[](1)->GetLastJumpedOffLeft() == false && m_QBertCompVector->operator[](1)->GetLastJumpedOffDown() == false)
-					{
-						m_QBertP2JustTookDisk = true;
-						disk->Activate(m_QBertCompVector->operator[](1), m_QBertGraphicsVector->operator[](1), false);
-						break;
+						if (disk->GetIsLeft() && m_QBertCompVector->operator[](1)->GetLastJumpedOffLeft() && m_QBertCompVector->operator[](1)->GetLastJumpedOffDown() == false)
+						{
+							m_QBertP2JustTookDisk = true;
+							disk->Activate(m_QBertCompVector->operator[](1), m_QBertGraphicsVector->operator[](1), false);
+							break;
+						}
+						if (disk->GetIsLeft() == false && m_QBertCompVector->operator[](1)->GetLastJumpedOffLeft() == false && m_QBertCompVector->operator[](1)->GetLastJumpedOffDown() == false)
+						{
+							m_QBertP2JustTookDisk = true;
+							disk->Activate(m_QBertCompVector->operator[](1), m_QBertGraphicsVector->operator[](1), false);
+							break;
+						}
 					}
 				}
-			}
 
-			if (m_QBertP2JustFell == false && m_QBertP2JustTookDisk == false)
+				if (m_QBertP2JustFell == false && m_QBertP2JustTookDisk == false)
+				{
+					SoundServiceLocator::GetSoundSystem().Play("../Data/Sounds/QBert Fall.wav", 0.5f);
+					ChangeFreezeEverything(true);
+					m_DeadQbertP2 = true;
+
+					m_QBertCompVector->operator[](1)->Die();
+
+					m_QBertP2JustFell = true;
+
+					// Make QBert curse
+					SoundServiceLocator::GetSoundSystem().Play("../Data/Sounds/Swearing.wav", 0.1f);
+					m_QBertCompVector->operator[](1)->SetCursesHidden(false);
+					break;
+				}
+			}
+			else
 			{
-				SoundServiceLocator::GetSoundSystem().Play("../Data/Sounds/QBert Fall.wav", 0.5f);
-				ChangeFreezeEverything(true);
-				m_DeadQbertP2 = true;
-
-				m_QBertCompVector->operator[](1)->Die();
-
+				// P2 fell, but after P1 already died (so P2 jumped a tiny bit before P1 got hit / fell too)
+				// In this case, P2 should receive no punishment, but they still need to re-spawn in their last position
+				// So the "justfell" bool must still be changed
 				m_QBertP2JustFell = true;
-
-				// Make QBert curse
-				SoundServiceLocator::GetSoundSystem().Play("../Data/Sounds/Swearing.wav", 0.1f);
-				m_QBertCompVector->operator[](1)->SetCursesHidden(false);
-				break;
 			}
-
 			break;
 
 
@@ -575,7 +610,7 @@ void LevelSectionObserver::OnNotify(const dae::Event& event)
 
 
 		case dae::Event::UggWrongwayLanded:
-			if (m_DeadQbertP1 == false)
+			if (m_DeadQbertP1 == false && m_DeadQbertP2 == false) // So once one dies, the other can't die until the map has been clean
 			{
 				// Check P1
 				if (CheckCollidingUggWrong(0))
@@ -589,11 +624,10 @@ void LevelSectionObserver::OnNotify(const dae::Event& event)
 					// Make QBert curse
 					SoundServiceLocator::GetSoundSystem().Play("../Data/Sounds/Swearing.wav", 0.1f);
 					m_QBertCompVector->operator[](0)->SetCursesHidden(false);
-				}
-			}
 
-			if (m_GameMode == 2 && m_DeadQbertP2 == false)
-			{
+					break;
+				}
+
 				// Check P2
 				if (CheckCollidingUggWrong(1))
 				{
@@ -616,7 +650,7 @@ void LevelSectionObserver::OnNotify(const dae::Event& event)
 			break;
 
 		case dae::Event::CoilyLanded:
-			if (m_DeadQbertP1 == false)
+			if (m_DeadQbertP1 == false && m_DeadQbertP2 == false) // So once one dies, the other can't die until the map has been clean
 			{
 				// Check For P1
 				if (CheckCollidingCoily(0))
@@ -630,11 +664,10 @@ void LevelSectionObserver::OnNotify(const dae::Event& event)
 					// Make QBert curse
 					SoundServiceLocator::GetSoundSystem().Play("../Data/Sounds/Swearing.wav", 0.1f);
 					m_QBertCompVector->operator[](0)->SetCursesHidden(false);
-				}
-			}
 
-			if (m_GameMode == 2 && m_DeadQbertP2 == false)
-			{
+					break;
+				}
+
 				// Check For P2
 				if (CheckCollidingCoily(1))
 				{
@@ -722,7 +755,6 @@ void LevelSectionObserver::DestroyUsedDisk() const
 			disk->SetHide(true);
 			break;
 		}
-
 	}
 }
 
@@ -850,11 +882,11 @@ void LevelSectionObserver::ClearRemainingDisks() const
 
 void LevelSectionObserver::WinSection()
 {
-	if (m_SectionComplete == false)
+	if (m_CurrentState != LevelSectionState::ST_RoundWon)
 	{
 		SoundServiceLocator::GetSoundSystem().Play("../Data/Sounds/Round Complete Tune.wav", 0.1f);
 		ChangeFreezeEverything(true);
-		m_SectionComplete = true;
+		m_CurrentState = LevelSectionState::ST_RoundWon;
 	}
 }
 
@@ -876,11 +908,9 @@ void LevelSectionObserver::ChangeFreezeEverything(bool freeze) const
 
 void LevelSectionObserver::ChangeSection(int newSectionIdx) const
 {
-	//if (m_QBertComp != nullptr)
-	//{
-		// This if statement will only run if the instance of this class was created with
-		// the first constructor - which means it's only gonna be used for a level transition
-	if (m_LevelTitleScreenTime > 0.f)
+	// This if statement will only run if the instance of this class was created with
+	// the first constructor - which means it's only gonna be used for a level transition
+	if (m_CurrentState == LevelSectionState::ST_InterLevelAnimation)
 	{
 		for (auto i = 0; i < int(m_QBertCompVector->size()); i++)
 		{
@@ -899,7 +929,7 @@ void LevelSectionObserver::ChangeSection(int newSectionIdx) const
 
 
 
-			// Stop observing everything once the round ends
+		// Stop observing everything once the round ends
 
 			if (m_QBertCompVector->operator[](i) != nullptr)
 				m_QBertCompVector->operator[](i)->GetSubject()->RemoveObserver(m_ThisObserver);
@@ -937,7 +967,6 @@ void LevelSectionObserver::ChangeSection(int newSectionIdx) const
 			}
 		}
 	}
-	//}
 
 	auto& scene = dae::SceneManager::GetInstance();
 	if (newSectionIdx != 0)
@@ -948,141 +977,166 @@ void LevelSectionObserver::ChangeSection(int newSectionIdx) const
 
 void LevelSectionObserver::Update(const float deltaTime)
 {
-	// This first if statement will only not run if the instance of this class was created with
-	// the first constructor - which means it's only gonna be used for a level transition
-	if (m_LevelTitleScreenTime <= 0.f)
+	switch (m_CurrentState)
 	{
-		if (m_SectionComplete == false)
-		{
-			if (m_DeadQbertP1 || m_DeadQbertP2)
-			{
-				if (m_DeadQbertP1)
-					DeadP1Update(deltaTime);
-
-				if (m_DeadQbertP2)
-					DeadP2Update(deltaTime);
-			}
-			else
-			{
-				if (m_DeathEmptyScene)
-				{
-					m_DeathEmptySceneTimer += deltaTime;
-					if (m_DeathEmptySceneTimer >= m_DeathEmptySceneMaxTime)
-					{
-						if (m_QBertP1JustFell)
-							m_QBertP1JustFell = false;
-
-						if (m_QBertP2JustFell)
-							m_QBertP2JustFell = false;
-
-						for (auto i = 0; i < int(m_QBertCompVector->size()); i++)
-						{
-							m_QBertCompVector->operator[](i)->BackToGround();
-							
-							if(m_QBertCompVector->operator[](i)->AreGraphicsHidden())
-								m_QBertCompVector->operator[](i)->SetHideGraphics(false);
-							
-							m_QBertCompVector->operator[](i)->SetFrozen(false);
-						}
-
-						m_DeathEmptySceneTimer = 0.f;
-						m_DeathEmptyScene = false;
-					}
-				}
-				else
-				{
-					if (m_SpawnCoily)
-					{
-						m_CoilySpawnTimer += deltaTime;
-
-						if (m_CoilySpawnTimer >= m_CoilySpawnDelay)
-						{
-							// A random 50/50 chance of spawning either a left or right
-							bool isLeft = false;
-							if ((rand() % 2) + 1 == 1)
-								isLeft = true;
-
-							m_CoilySpawnTimer = 0.f;
-							m_SpawnCoily = false;
-							AddCoily(isLeft);
-						}
-					}
-
-
-					if (m_SpawnSlickSams)
-					{
-						m_SlickSamSpawnTimer += deltaTime;
-
-						if (m_SlickSamSpawnTimer >= m_SlickSamSpawnInterval)
-						{
-							bool isSlick = false;
-							bool isLeft = false;
-
-							// A random 50/50 chance of spawning either a Slick or a Sam
-							if ((rand() % 2) + 1 == 1)
-								isSlick = true;
-
-							// A random 50/50 chance of spawning either a left or right
-							if ((rand() % 2) + 1 == 1)
-								isLeft = true;
-
-							AddSlickSam(isSlick, isLeft);
-							m_SlickSamSpawnTimer -= m_SlickSamSpawnInterval;
-						}
-					}
-
-					if (m_SpawnUggWrongs)
-					{
-						m_UggWrongSpawnTimer1 += deltaTime;
-						m_UggWrongSpawnTimer2 += deltaTime;
-
-						if (m_UggWrongSpawnTimer1 >= m_UggWrongSpawnInterval)
-						{
-							bool isUgg = false;
-
-							if ((rand() % 2) + 1 == 1)
-								isUgg = true;
-
-							AddUggWrongway(isUgg, true);
-							m_UggWrongSpawnTimer1 -= m_UggWrongSpawnInterval;
-						}
-
-						// An extra second is added so the right spawner has a tiny delay compared to the left one
-						if (m_UggWrongSpawnTimer2 >= m_UggWrongSpawnInterval + 2.1f)
-						{
-							bool isUgg = false;
-
-							if ((rand() % 2) + 1 == 1)
-								isUgg = true;
-
-							AddUggWrongway(isUgg, false);
-							m_UggWrongSpawnTimer2 -= m_UggWrongSpawnInterval;
-						}
-					}
-				}
-			}
-		}
-		else
-		{
-			LevelWonAnimation(deltaTime);
-		}
-	}
-	else
-	{
+	case LevelSectionState::ST_InterLevelAnimation:
 		m_LevelTitleTimer += deltaTime;
 
 		if (m_LevelTitleTimer >= m_LevelTitleScreenTime)
 			ChangeSection();
+		break;
+
+		
+	case LevelSectionState::ST_RoundWon:
+		if(RoundWonAnimation(deltaTime))
+		{
+			ClearRemainingDisks();
+			m_CurrentState = LevelSectionState::ST_PauseBeforeNextRound;
+		}
+		break;
+
+
+	case LevelSectionState::ST_PauseBeforeNextRound:
+		m_PostAnimationTimer += deltaTime;
+		if (m_PostAnimationTimer >= m_PostAnimationPause)
+		{
+			for (auto i = 0; i < int(m_QBertCompVector->size()); i++)
+				m_QBertCompVector->operator[](i)->SetFrozen(false);
+
+			ChangeSection();
+		}
+		break;
+
+
+	case LevelSectionState::ST_PlayerDying:
+		if (m_DeadQbertP1)
+		{
+			if (DeadP1Update(deltaTime)) // This will only return true once the dying animation is done
+				m_CurrentState = LevelSectionState::ST_PostDeathEmptyScene;
+		}
+
+		if (m_DeadQbertP2)
+		{
+			if (DeadP2Update(deltaTime))  // This will only return true once the dying animation is done
+				m_CurrentState = LevelSectionState::ST_PostDeathEmptyScene;
+		}
+		break;
+
+		
+	case LevelSectionState::ST_PostDeathEmptyScene:
+		m_DeathEmptySceneTimer += deltaTime;
+		if (m_DeathEmptySceneTimer >= m_DeathEmptySceneMaxTime)
+		{
+			if (m_QBertP1JustFell)
+				m_QBertP1JustFell = false;
+
+			if (m_QBertP2JustFell)
+				m_QBertP2JustFell = false;
+
+			for (auto i = 0; i < int(m_QBertCompVector->size()); i++)
+			{
+				m_QBertCompVector->operator[](i)->BackToGround();
+
+				if (m_QBertCompVector->operator[](i)->AreGraphicsHidden())
+					m_QBertCompVector->operator[](i)->SetHideGraphics(false);
+
+				m_QBertCompVector->operator[](i)->SetFrozen(false);
+			}
+
+			m_DeathEmptySceneTimer = 0.f;
+			m_CurrentState = LevelSectionState::ST_NormalSpawning;
+		}
+		break;
+
+		
+	case LevelSectionState::ST_NormalSpawning:
+		if (m_DeadQbertP1 || m_DeadQbertP2)
+		{
+			m_CurrentState = LevelSectionState::ST_PlayerDying;
+			break;
+		}
+		
+		if (m_SpawnCoily)
+		{
+			m_CoilySpawnTimer += deltaTime;
+
+			if (m_CoilySpawnTimer >= m_CoilySpawnDelay)
+			{
+				// A random 50/50 chance of spawning either a left or right
+				bool isLeft = false;
+				if ((rand() % 2) + 1 == 1)
+					isLeft = true;
+
+				m_CoilySpawnTimer = 0.f;
+				m_SpawnCoily = false;
+				AddCoily(isLeft);
+			}
+		}
+
+
+		if (m_SpawnSlickSams)
+		{
+			m_SlickSamSpawnTimer += deltaTime;
+
+			if (m_SlickSamSpawnTimer >= m_SlickSamSpawnInterval)
+			{
+				bool isSlick = false;
+				bool isLeft = false;
+
+				// A random 50/50 chance of spawning either a Slick or a Sam
+				if ((rand() % 2) + 1 == 1)
+					isSlick = true;
+
+				// A random 50/50 chance of spawning either a left or right
+				if ((rand() % 2) + 1 == 1)
+					isLeft = true;
+
+				AddSlickSam(isSlick, isLeft);
+				m_SlickSamSpawnTimer -= m_SlickSamSpawnInterval;
+			}
+		}
+
+		if (m_SpawnUggWrongs)
+		{
+			m_UggWrongSpawnTimer1 += deltaTime;
+			m_UggWrongSpawnTimer2 += deltaTime;
+
+			if (m_UggWrongSpawnTimer1 >= m_UggWrongSpawnInterval)
+			{
+				bool isUgg = false;
+
+				if ((rand() % 2) + 1 == 1)
+					isUgg = true;
+
+				AddUggWrongway(isUgg, true);
+				m_UggWrongSpawnTimer1 -= m_UggWrongSpawnInterval;
+			}
+
+			// An extra second is added so the right spawner has a tiny delay compared to the left one
+			if (m_UggWrongSpawnTimer2 >= m_UggWrongSpawnInterval + 2.1f)
+			{
+				bool isUgg = false;
+
+				if ((rand() % 2) + 1 == 1)
+					isUgg = true;
+
+				AddUggWrongway(isUgg, false);
+				m_UggWrongSpawnTimer2 -= m_UggWrongSpawnInterval;
+			}
+		}
+		break;
 	}
 }
 
-void LevelSectionObserver::DeadP1Update(const float deltaTime)
+bool LevelSectionObserver::DeadP1Update(const float deltaTime)
 {
 	m_DeadQbertP1Timer += deltaTime;
 	if (m_DeadQbertP1Timer >= m_DeadQbertMaxTime)
 	{
 		if (m_QBertP1JustFell)
 			m_QBertCompVector->operator[](0)->RevertToLastPosition();
+		if (m_QBertP2JustFell)
+			m_QBertCompVector->operator[](1)->RevertToLastPosition();
 
 		if (m_QBertCompVector->operator[](0)->AreGraphicsHidden() == false)
 			m_QBertCompVector->operator[](0)->SetHideGraphics(true);
@@ -1092,10 +1146,8 @@ void LevelSectionObserver::DeadP1Update(const float deltaTime)
 		m_QBertCompVector->operator[](0)->SetCursesHidden(true);
 		ClearAllEnemies();
 
-		if (m_QBertCompVector->operator[](0)->GetCurrentLives() <= 0 && m_SceneAlreadyChanging == false)
+		if (m_QBertCompVector->operator[](0)->GetCurrentLives() <= 0)
 		{
-			m_SceneAlreadyChanging = true;
-			
 			if (m_QBertP1JustFell)
 				m_QBertP1JustFell = false;
 
@@ -1107,21 +1159,26 @@ void LevelSectionObserver::DeadP1Update(const float deltaTime)
 			m_QBertCompVector->operator[](1)->SetCursesHidden(true);
 
 			ChangeSection(m_DeathSceneIdx);
+			return false;
 		}
 		else
 		{
 			m_DeadQbertP1Timer = 0.f;
 			m_DeadQbertP1 = false;
-			m_DeathEmptyScene = true;
+			return true;
 		}
 	}
+
+	return false;;
 }
 
-void LevelSectionObserver::DeadP2Update(const float deltaTime)
+bool LevelSectionObserver::DeadP2Update(const float deltaTime)
 {
 	m_DeadQbertP2Timer += deltaTime;
 	if (m_DeadQbertP2Timer >= m_DeadQbertMaxTime)
 	{
+		if (m_QBertP1JustFell)
+			m_QBertCompVector->operator[](0)->RevertToLastPosition();
 		if (m_QBertP2JustFell)
 			m_QBertCompVector->operator[](1)->RevertToLastPosition();
 
@@ -1133,10 +1190,8 @@ void LevelSectionObserver::DeadP2Update(const float deltaTime)
 		m_QBertCompVector->operator[](1)->SetCursesHidden(true);
 		ClearAllEnemies();
 
-		if (m_QBertCompVector->operator[](1)->GetCurrentLives() <= 0 && m_SceneAlreadyChanging == false)
+		if (m_QBertCompVector->operator[](1)->GetCurrentLives() <= 0)
 		{
-			m_SceneAlreadyChanging = true;
-			
 			if (m_QBertP2JustFell)
 				m_QBertP2JustFell = false;
 
@@ -1148,17 +1203,20 @@ void LevelSectionObserver::DeadP2Update(const float deltaTime)
 			m_QBertCompVector->operator[](1)->SetCursesHidden(true);
 
 			ChangeSection(m_DeathSceneIdx);
+			return false;
 		}
 		else
 		{
 			m_DeadQbertP2Timer = 0.f;
 			m_DeadQbertP2 = false;
-			m_DeathEmptyScene = true;
+			return true;
 		}
 	}
+
+	return false;;
 }
 
-void LevelSectionObserver::LevelWonAnimation(const float deltaTime)
+bool LevelSectionObserver::RoundWonAnimation(const float deltaTime)
 {
 	m_AnimationTimer += deltaTime;
 	m_FlashingTimer += deltaTime;
@@ -1219,22 +1277,9 @@ void LevelSectionObserver::LevelWonAnimation(const float deltaTime)
 		}
 
 		m_ClearDisksTimer += deltaTime;
-		if (m_ClearDisksTimer >= m_ClearDisksPause && m_StartPostAnimationPause == false)
-		{
-			ClearRemainingDisks();
-			m_StartPostAnimationPause = true;
-		}
-
-		if (m_StartPostAnimationPause)
-		{
-			m_PostAnimationTimer += deltaTime;
-			if (m_PostAnimationTimer >= m_PostAnimationPause)
-			{
-				for (auto i = 0; i < int(m_QBertCompVector->size()); i++)
-					m_QBertCompVector->operator[](i)->SetFrozen(false);
-
-				ChangeSection();
-			}
-		}
+		if (m_ClearDisksTimer >= m_ClearDisksPause)
+			return true;
 	}
+	
+	return false;
 }

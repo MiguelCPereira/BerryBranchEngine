@@ -6,9 +6,10 @@
 #include "Scene.h"
 #include "Factory.h"
 
-LivesDisplay::LivesDisplay(QBert* qBertComp, std::vector<dae::GraphicsComponent*>* heartGraphics)
+LivesDisplay::LivesDisplay(QBert* qBertComp, std::vector<dae::GraphicsComponent*>* heartGraphics, float heartsPosX)
 	: m_QBertComp(qBertComp)
 	, m_Graphics(heartGraphics)
+	, m_HeartsPosX(heartsPosX)
 {
 }
 
@@ -29,23 +30,22 @@ void LivesDisplay::Initialize()
 	{
 		m_QBertComp->GetSubject()->AddObserver(this);
 		m_QBertComp->SetFrozen(false);
-	}
 
-	// Re-show all heart if they're hidden already
-	for (auto i = 0; i < int(m_Graphics->size()); i++)
-	{
-		auto* heart = m_Graphics->operator[](i);
+		// Re-show all heart, in case they're hidden
+		for (auto i = 0; i < int(m_Graphics->size()); i++)
+		{
+			auto* heart = m_Graphics->operator[](i);
 
-		if (heart->GetPosX() < 0)
-			heart->SetPosition(heart->GetPosX() + 2000, heart->GetPosY());
-	}
+			heart->SetPosition(m_HeartsPosX, heart->GetPosY());
+		}
 
-	// Hide as many as lives Qbert has lost
-	const auto heartsToHide = int(m_Graphics->size()) - m_QBertComp->GetCurrentLives();
-	for (auto i = 0; i < heartsToHide; i++)
-	{
-		auto* heart = m_Graphics->operator[](m_Graphics->size() - 1 - i);
-		heart->SetPosition(heart->GetPosX() - 2000, heart->GetPosY());
+		// Hide as many as lives Qbert has lost
+		const auto heartsToHide = int(m_Graphics->size()) - m_QBertComp->GetCurrentLives();
+		for (auto i = 0; i < heartsToHide; i++)
+		{
+			auto* heart = m_Graphics->operator[](m_Graphics->size() - 1 - i);
+			heart->SetPosition(-2000, heart->GetPosY());
+		}
 	}
 }
 

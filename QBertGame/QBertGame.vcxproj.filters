@@ -48,9 +48,6 @@
     <ClCompile Include="LevelSectionObserver.cpp">
       <Filter>Components\Observers</Filter>
     </ClCompile>
-    <ClCompile Include="GameObserver.cpp">
-      <Filter>Components\Observers</Filter>
-    </ClCompile>
     <ClCompile Include="SlickSam.cpp">
       <Filter>Components\Characters</Filter>
     </ClCompile>
@@ -123,9 +120,6 @@
       <Filter>Components</Filter>
     </ClInclude>
     <ClInclude Include="LevelSectionObserver.h">
-      <Filter>Components\Observers</Filter>
-    </ClInclude>
-    <ClInclude Include="GameObserver.h">
       <Filter>Components\Observers</Filter>
     </ClInclude>
     <ClInclude Include="SlickSam.h">

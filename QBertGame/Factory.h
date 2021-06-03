@@ -41,9 +41,9 @@ std::shared_ptr<dae::GameObject> MakeFPSCounter();
 
 
 
-std::shared_ptr<dae::GameObject> MakeHeartForDisplay(bool playerOne, float posY);
+std::shared_ptr<dae::GameObject> MakeHeartForDisplay(float posX, float posY);
 
-std::vector<std::shared_ptr<dae::GameObject>>* MakeLivesDisplayVisuals(bool playerOne, int livesAmount);
+std::vector<std::shared_ptr<dae::GameObject>>* MakeLivesDisplayVisuals(float posX, int livesAmount);
 
 std::shared_ptr<dae::GameObject> MakeScoreDisplayVisuals(bool playerOne);
 

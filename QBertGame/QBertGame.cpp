@@ -112,7 +112,7 @@ int main(int, char* [])
 	
 	LoadDeathScreenSolo(); // Scene idx 01
 	LoadInstructionsSolo(); // Scene idx 02
-	//LoadLevelsBinaries("Level01Solo.bin"); // Scene idx 03-07
+	LoadLevelsBinaries("Level01Solo.bin"); // Scene idx 03-07
 	LoadLevelsBinaries("Level02Solo.bin"); // Scene idx 08-12
 	LoadLevelsBinaries("Level03Solo.bin"); // Scene idx 13-17
 	LoadVictoryScreenSolo(); // Scene idx 18

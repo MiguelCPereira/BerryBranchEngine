@@ -33,8 +33,8 @@ public:
 	void Update(const float deltaTime) override;
 	void OnNotify(const dae::Event& event) override;
 
-	void DeadP1Update(const float deltaTime);
-	void DeadP2Update(const float deltaTime);
+	bool DeadP1Update(const float deltaTime);
+	bool DeadP2Update(const float deltaTime);
 
 
 	bool CheckAllCubesTurned() const;
@@ -49,7 +49,7 @@ public:
 	void ClearRemainingDisks() const;
 
 	void WinSection();
-	void LevelWonAnimation(const float deltaTime);
+	bool RoundWonAnimation(const float deltaTime);
 	void ChangeFreezeEverything(bool freeze) const;
 	void ChangeSection(int newSectionIdx = 0) const;
 
@@ -58,6 +58,16 @@ public:
 	void AddUggWrongway(bool isUgg, bool isLeft);
 
 private:
+	enum class LevelSectionState
+	{
+		ST_InterLevelAnimation,
+		ST_RoundWon,
+		ST_PauseBeforeNextRound,
+		ST_PlayerDying,
+		ST_PostDeathEmptyScene,
+		ST_NormalSpawning
+	};
+	
 	std::shared_ptr<dae::GameObject> m_GameObject{};
 	Observer* m_ThisObserver{};
 	std::vector<QBert*>* m_QBertCompVector;
@@ -83,11 +93,9 @@ private:
 	std::vector<UggWrongway*>* m_UggWrongCompVector;
 	float m_UggWrongSpawnTimer1, m_UggWrongSpawnTimer2, m_UggWrongSpawnInterval, m_UggWrongMoveInterval;
 
-	bool m_SectionComplete;
 	float m_AnimationTimer, m_FullAnimationTime;
 	float m_FlashingTimer, m_FlashingColorTime;
 	float m_ClearDisksTimer, m_ClearDisksPause;
-	bool m_StartPostAnimationPause;
 	float m_PostAnimationTimer, m_PostAnimationPause;
 	int m_CurrentFlashingColor;
 	bool m_EverythingClear;
@@ -95,7 +103,6 @@ private:
 
 	bool m_DeadQbertP1, m_DeadQbertP2;
 	float m_DeadQbertP1Timer, m_DeadQbertP2Timer, m_DeadQbertMaxTime;
-	bool m_DeathEmptyScene;
 	float m_DeathEmptySceneTimer, m_DeathEmptySceneMaxTime;
 
 	float m_LevelTitleTimer, m_LevelTitleScreenTime;
@@ -104,6 +111,7 @@ private:
 	const float m_CoopP1SpawnPosX;
 	const float m_CoopP2SpawnPosX;
 	const float m_CoopSpawnPosY;
-	bool m_SceneAlreadyChanging;
+
+	LevelSectionState m_CurrentState;
 };
 

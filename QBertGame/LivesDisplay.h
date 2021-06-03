@@ -13,7 +13,7 @@ namespace dae
 class LivesDisplay final : public dae::BaseComponent, public dae::Observer
 {
 public:
-	explicit LivesDisplay(QBert* qBertComp, std::vector<dae::GraphicsComponent*>* heartGraphics);
+	explicit LivesDisplay(QBert* qBertComp, std::vector<dae::GraphicsComponent*>* heartGraphics, float heartsPosX);
 	~LivesDisplay() override;
 
 	void SetQBert(QBert* qBertComp);
@@ -25,5 +25,6 @@ public:
 private:
 	QBert* m_QBertComp;
 	std::vector<dae::GraphicsComponent*>* m_Graphics;
+	const float m_HeartsPosX;
 };
 
