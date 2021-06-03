@@ -22,6 +22,12 @@ public:
 	void Update(const float deltaTime) override;
 
 private:
+	enum class SlickSamState
+	{
+		ST_Jumping,
+		ST_Waiting
+	};
+	
 	std::shared_ptr<dae::GameObject> m_GameObject{};
 	bool m_Airborne{ false };
 	bool m_Frozen{ false };
@@ -34,5 +40,7 @@ private:
 	const float m_JumpInterval;
 	bool m_Alive{ true };
 	bool m_IsSlick;
+
+	SlickSamState m_CurrentState;
 };
 

@@ -3,6 +3,8 @@
 #include "GraphicsComponent.h"
 #include "SceneManager.h"
 #include "Scene.h"
+#include "SoundServiceLocator.h"
+#include "SoundSystem.h"
 
 
 StartScreen::StartScreen(int soloModeSceneIdx, int coopModeSceneIdx, int versusModeSceneIdx, dae::GraphicsComponent* selectionGraphics, float buttonDistance)
@@ -43,6 +45,8 @@ void StartScreen::ChangeSelection(bool up)
 			m_Selection++;
 		}
 	}
+
+	SoundServiceLocator::GetSoundSystem().Play("../Data/Sounds/Change Selection.wav", 0.3f);
 }
 
 void StartScreen::StartGame() const

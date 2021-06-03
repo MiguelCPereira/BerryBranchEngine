@@ -236,7 +236,7 @@ void CreateBinaryLevel02Solo()
 	rounds[0].spawnSlickSams = true;
 	rounds[0].spawnUggWrongs = true;
 	rounds[0].slickSamsSpawnInterval = 15.f;
-	rounds[0].uggWrongSpawnInterval = 15.f;
+	rounds[0].uggWrongSpawnInterval = 13.f;
 	rounds[0].gameMode = 1;
 
 	rounds[1].roundNumber = 2;
@@ -404,7 +404,7 @@ void CreateBinaryLevel02Coop()
 	rounds[0].spawnSlickSams = true;
 	rounds[0].spawnUggWrongs = true;
 	rounds[0].slickSamsSpawnInterval = 15.f;
-	rounds[0].uggWrongSpawnInterval = 15.f;
+	rounds[0].uggWrongSpawnInterval = 13.f;
 	rounds[0].gameMode = 2;
 
 	rounds[1].roundNumber = 2;
@@ -572,7 +572,7 @@ void CreateBinaryLevel02Versus()
 	rounds[0].spawnSlickSams = true;
 	rounds[0].spawnUggWrongs = true;
 	rounds[0].slickSamsSpawnInterval = 15.f;
-	rounds[0].uggWrongSpawnInterval = 15.f;
+	rounds[0].uggWrongSpawnInterval = 13.f;
 	rounds[0].gameMode = 3;
 
 	rounds[1].roundNumber = 2;

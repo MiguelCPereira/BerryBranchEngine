@@ -17,6 +17,7 @@ SlickSam::SlickSam(const std::shared_ptr<dae::GameObject>& gameObject, int nrRow
 	, m_SpriteHeight(spriteHeight)
 	, m_JumpInterval(jumpInterval)
 	, m_IsSlick(isSlick)
+	, m_CurrentState(SlickSamState::ST_Waiting)
 {}
 
 void SlickSam::SetFrozen(bool frozen)
@@ -111,21 +112,28 @@ void SlickSam::JumpFinished()
 
 void SlickSam::Update(const float deltaTime)
 {
-	if (m_Alive == true && m_Frozen == false)
+	switch (m_CurrentState)
 	{
+	case SlickSamState::ST_Waiting:
 		m_JumpTimer += deltaTime;
 
 		if (m_JumpTimer >= m_JumpInterval)
 		{
-			// A random 50/50 chance of Slick/Sam falling to the right or left
-
-			if ((rand() % 2) + 1 == 1)
-				MoveDownRight();
-			else
-				MoveDownLeft();
-
-			m_JumpTimer -= m_JumpInterval;
+			m_JumpTimer = 0;
+			m_CurrentState = SlickSamState::ST_Jumping;
 		}
+		break;
+
+	case SlickSamState::ST_Jumping:
+		// A random 50/50 chance of Slick/Sam falling to the right or left
+		if ((rand() % 2) + 1 == 1)
+			MoveDownRight();
+		else
+			MoveDownLeft();
+
+		m_CurrentState = SlickSamState::ST_Waiting;
+
+		break;
 	}
 }
 

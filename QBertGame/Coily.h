@@ -35,7 +35,7 @@ public:
 	void Update(const float deltaTime) override;
 
 private:
-	enum class CoilyStates
+	enum class CoilyState
 	{
 		ST_EggJumping,
 		ST_EggWaiting,
@@ -62,6 +62,6 @@ private:
 	int m_Direction; // 1 is left/down, 2 is right/down, 3 is left/up and 4 is right/up
 	int m_GameMode; // 1 is solo, 2 is Co-op, 3 is Versus
 
-	CoilyStates m_CurrentState;
+	CoilyState m_CurrentState;
 };
 

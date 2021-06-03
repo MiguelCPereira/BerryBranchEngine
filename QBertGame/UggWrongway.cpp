@@ -19,6 +19,7 @@ UggWrongway::UggWrongway(const std::shared_ptr<dae::GameObject>& gameObject, int
 	, m_JumpInterval(jumpInterval)
 	, m_IsUgg(isUgg)
 	, m_StartingLeft(startingLeft)
+	, m_CurrentState(UggWrongState::ST_Waiting)
 {}
 
 void UggWrongway::SetFrozen(bool frozen)
@@ -170,33 +171,38 @@ void UggWrongway::JumpFinished()
 
 void UggWrongway::Update(const float deltaTime)
 {
-	if (m_Alive)
+	switch (m_CurrentState)
 	{
-		if (m_Frozen == false)
+
+	case UggWrongState::ST_Waiting:
+		m_JumpTimer += deltaTime;
+
+		if (m_JumpTimer >= m_JumpInterval)
 		{
-			m_JumpTimer += deltaTime;
-
-			if (m_JumpTimer >= m_JumpInterval)
-			{
-				// A random 50/50 chance of Ugg/Wrongway moving to the side or up
-
-				if ((rand() % 2) + 1 == 1)
-				{
-					if (m_StartingLeft)
-						MoveUpRight();
-					else
-						MoveUpLeft();
-				}
-				else
-				{
-					if (m_StartingLeft)
-						MoveRight();
-					else
-						MoveLeft();
-				}
-
-				m_JumpTimer -= m_JumpInterval;
-			}
+			m_JumpTimer = 0;
+			m_CurrentState = UggWrongState::ST_Jumping;
 		}
+		break;
+
+	case UggWrongState::ST_Jumping:
+		// A random 50/50 chance of Ugg/Wrongway moving to the side or up
+		if ((rand() % 2) + 1 == 1)
+		{
+			if (m_StartingLeft)
+				MoveUpRight();
+			else
+				MoveUpLeft();
+		}
+		else
+		{
+			if (m_StartingLeft)
+				MoveRight();
+			else
+				MoveLeft();
+		}
+
+		m_CurrentState = UggWrongState::ST_Waiting;
+
+		break;
 	}
 }
