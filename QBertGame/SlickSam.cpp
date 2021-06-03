@@ -6,18 +6,33 @@
 #include "SoundSystem.h"
 
 
-SlickSam::SlickSam(const std::shared_ptr<dae::GameObject>& gameObject, int nrRows, float cubesWidth, float cubesHeight,
-                   float spriteWidth, float spriteHeight, int startingCube, float jumpInterval, bool isSlick)
+SlickSam::SlickSam(const std::shared_ptr<dae::GameObject>& gameObject, int nrRows, float spriteWidth, float spriteHeight,
+	int startingCube, float jumpInterval, bool isSlick)
 	: m_GameObject(gameObject)
+
+	, m_Alive(true)
+	, m_Airborne(true)
+	, m_Frozen(false)
+
 	, m_CurrentCubeIdx(startingCube)
+	, m_CurrentRow(2)
 	, m_LastRow(nrRows)
-	, m_CubesWidth(cubesWidth)
-	, m_CubesHeight(cubesHeight)
+
 	, m_SpriteWidth(spriteWidth)
 	, m_SpriteHeight(spriteHeight)
+
+	, m_JumpTimer(0.f)
 	, m_JumpInterval(jumpInterval)
+
 	, m_IsSlick(isSlick)
-	, m_CurrentState(SlickSamState::ST_Waiting)
+	, m_CurrentState(SlickSamState::ST_FallingIntoSpawn)
+
+	, m_FallTime(0.8f)
+	, m_FallHeight(155.f)
+	, m_FallTimer(0.f)
+	, m_FinalLandingPosY()
+	, m_TimeSinceLastFrame(0.f)
+	, m_FPS(50)
 {}
 
 void SlickSam::SetFrozen(bool frozen)
@@ -110,10 +125,52 @@ void SlickSam::JumpFinished()
 		m_Subject->Notify(dae::Event::SlickSamFell);
 }
 
+bool SlickSam::FallIntoSpawnPos(float deltaTime)
+{
+	auto* graphics = m_GameObject->GetComponent<dae::GraphicsComponent>();
+	const auto toTravelInSec = m_FallHeight / m_FallTime;
+
+	m_TimeSinceLastFrame += deltaTime;
+	m_FallTimer += deltaTime;
+
+	// Change the position every 50 times per frame (or whoever much m_FPS is set as)
+	if (m_TimeSinceLastFrame >= 1.f / float(m_FPS) && m_FallTimer < m_FallTime)
+	{
+		m_TimeSinceLastFrame -= 1.f / float(m_FPS);
+		graphics->SetPosition(graphics->GetPosX(), graphics->GetPosY() + toTravelInSec / float(m_FPS));
+	}
+
+	// Stop the animation if the movement is complete
+	if (m_FallTimer >= m_FallTime)
+	{
+		m_FallTimer = 0.f;
+		graphics->SetPosition(graphics->GetPosX(), m_FinalLandingPosY);
+		m_Airborne = false;
+		return true;
+	}
+
+	return false;
+}
+
+void SlickSam::Initialize()
+{
+	auto* graphics = m_GameObject->GetComponent<dae::GraphicsComponent>();
+	m_FinalLandingPosY = graphics->GetPosY();
+	graphics->SetPosition(graphics->GetPosX(), graphics->GetPosY() - m_FallHeight);
+}
+
 void SlickSam::Update(const float deltaTime)
 {
 	switch (m_CurrentState)
 	{
+	case SlickSamState::ST_FallingIntoSpawn:
+		if (FallIntoSpawnPos(deltaTime)) // This function will only return true if the fall animation is done
+		{
+			m_CurrentState = SlickSamState::ST_Waiting;
+			JumpFinished();
+		}
+		break;
+		
 	case SlickSamState::ST_Waiting:
 		m_JumpTimer += deltaTime;
 

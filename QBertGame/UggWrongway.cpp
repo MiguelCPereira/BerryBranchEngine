@@ -6,20 +6,34 @@
 #include "SoundSystem.h"
 
 
-UggWrongway::UggWrongway(const std::shared_ptr<dae::GameObject>& gameObject, int nrRows, float cubesWidth, float cubesHeight,
-                         float spriteWidth, float spriteHeight, int startingCube, float jumpInterval, bool isUgg, bool startingLeft)
+UggWrongway::UggWrongway(const std::shared_ptr<dae::GameObject>& gameObject, int nrRows, float spriteWidth, float spriteHeight,
+	int startingCube, float jumpInterval, bool isUgg, bool startingLeft)
 	: m_GameObject(gameObject)
+
+	, m_Alive(true)
+	, m_Airborne(true)
+	, m_Frozen(false)
+
 	, m_CurrentCubeIdx(startingCube)
 	, m_CurrentRow(nrRows)
-	, m_LastRow(nrRows)
-	, m_CubesWidth(cubesWidth) 
-	, m_CubesHeight(cubesHeight)
+
 	, m_SpriteWidth(spriteWidth)
 	, m_SpriteHeight(spriteHeight)
+
+	, m_JumpTimer(0.f)
 	, m_JumpInterval(jumpInterval)
+
 	, m_IsUgg(isUgg)
 	, m_StartingLeft(startingLeft)
-	, m_CurrentState(UggWrongState::ST_Waiting)
+	, m_CurrentState(UggWrongState::ST_FallingIntoSpawn)
+
+	, m_FallTime(0.46f)
+	, m_FallHeightWidth(90.f)
+	, m_FallTimer(0.f)
+	, m_FinalLandingPosX()
+	, m_FinalLandingPosY()
+	, m_TimeSinceLastFrame(0.f)
+	, m_FPS(50)
 {}
 
 void UggWrongway::SetFrozen(bool frozen)
@@ -169,11 +183,62 @@ void UggWrongway::JumpFinished()
 		m_Subject->Notify(dae::Event::UggWrongwayFell);
 }
 
+bool UggWrongway::FallIntoSpawnPos(float deltaTime)
+{
+	auto* graphics = m_GameObject->GetComponent<dae::GraphicsComponent>();
+	const auto toTravelInSec = m_FallHeightWidth / m_FallTime;
+
+	m_TimeSinceLastFrame += deltaTime;
+	m_FallTimer += deltaTime;
+
+	// Change the position every 50 times per frame (or whoever much m_FPS is set as)
+	if (m_TimeSinceLastFrame >= 1.f / float(m_FPS) && m_FallTimer < m_FallTime)
+	{
+		m_TimeSinceLastFrame -= 1.f / float(m_FPS);
+		const float toTravelInFrame = toTravelInSec / float(m_FPS);
+		
+		if(m_StartingLeft)
+			graphics->SetPosition(graphics->GetPosX() + toTravelInFrame, graphics->GetPosY() - toTravelInFrame);
+		else
+			graphics->SetPosition(graphics->GetPosX() - toTravelInFrame, graphics->GetPosY() - toTravelInFrame);
+	}
+
+	// Stop the animation if the movement is complete
+	if (m_FallTimer >= m_FallTime)
+	{
+		m_FallTimer = 0.f;
+		graphics->SetPosition(m_FinalLandingPosX, m_FinalLandingPosY);
+		m_Airborne = false;
+		return true;
+	}
+
+	return false;
+}
+
+void UggWrongway::Initialize()
+{
+	auto* graphics = m_GameObject->GetComponent<dae::GraphicsComponent>();
+	m_FinalLandingPosX = graphics->GetPosX();
+	m_FinalLandingPosY = graphics->GetPosY();
+
+	if(m_StartingLeft)
+		graphics->SetPosition(graphics->GetPosX() - m_FallHeightWidth, graphics->GetPosY() + m_FallHeightWidth);
+	else
+		graphics->SetPosition(graphics->GetPosX() + m_FallHeightWidth, graphics->GetPosY() + m_FallHeightWidth);
+}
+
 void UggWrongway::Update(const float deltaTime)
 {
 	switch (m_CurrentState)
 	{
-
+	case UggWrongState::ST_FallingIntoSpawn:
+		if (FallIntoSpawnPos(deltaTime)) // This function will only return true if the fall animation is done
+		{
+			m_CurrentState = UggWrongState::ST_Waiting;
+			JumpFinished();
+		}
+		break;
+		
 	case UggWrongState::ST_Waiting:
 		m_JumpTimer += deltaTime;
 

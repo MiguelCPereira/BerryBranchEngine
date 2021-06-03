@@ -7,19 +7,36 @@
 #include "SoundSystem.h"
 
 Coily::Coily(const std::shared_ptr<dae::GameObject>& gameObject, std::vector<QBert*>* qBertCompVector, int gameMode, int nrRows,
-			float cubesWidth, float cubesHeight, float spriteWidth, float spriteHeight, int startingCube, float jumpInterval)
+	float spriteWidth, float spriteHeight, int startingCube, float jumpInterval)
 	: m_GameObject(gameObject)
 	, m_QBertCompVector(qBertCompVector)
+
+	, m_Alive(true)
+	, m_Airborne(true)
+	, m_Frozen(false)
+
 	, m_CurrentCubeIdx(startingCube)
+	, m_CurrentRow(2)
 	, m_LastRow(nrRows)
-	, m_CubesWidth(cubesWidth)
-	, m_CubesHeight(cubesHeight)
+
 	, m_SpriteWidth(spriteWidth)
 	, m_SpriteHeight(spriteHeight)
+
+	, m_JumpTimer(0.f)
 	, m_JumpInterval(jumpInterval)
+	, m_TransformTimer(0.f)
+	, m_TransformationTime(0.9f)
+
 	, m_Direction(startingCube - 1)
 	, m_GameMode(gameMode)
-	, m_CurrentState(CoilyState::ST_EggWaiting)
+	, m_CurrentState(CoilyState::ST_FallingIntoSpawn)
+
+	, m_FallTime(0.8f)
+	, m_FallHeight(155.f)
+	, m_FallTimer(0.f)
+	, m_FinalLandingPosY()
+	, m_TimeSinceLastFrame(0.f)
+	, m_FPS(50)
 {
 }
 
@@ -247,11 +264,26 @@ void Coily::JumpFinished()
 	}
 }
 
+void Coily::Initialize()
+{
+	auto* graphics = m_GameObject->GetComponent<dae::GraphicsComponent>();
+	m_FinalLandingPosY = graphics->GetPosY();
+	graphics->SetPosition(graphics->GetPosX(), graphics->GetPosY() - m_FallHeight);
+	graphics->SetSrcRectangle(m_SpriteWidth, 0, m_SpriteWidth, m_SpriteHeight);
+}
+
 void Coily::Update(const float deltaTime)
 {
 	switch (m_CurrentState)
 	{
-
+	case CoilyState::ST_FallingIntoSpawn:
+		if (FallIntoSpawnPos(deltaTime)) // This function will only return true if the fall animation is done
+		{
+			m_CurrentState = CoilyState::ST_EggWaiting;
+			JumpFinished();
+		}
+		break;
+		
 	case CoilyState::ST_EggWaiting:
 		m_JumpTimer += deltaTime;
 
@@ -325,6 +357,32 @@ void Coily::Update(const float deltaTime)
 	}
 }
 
+bool Coily::FallIntoSpawnPos(float deltaTime)
+{
+	auto* graphics = m_GameObject->GetComponent<dae::GraphicsComponent>();
+	const auto toTravelInSec = m_FallHeight / m_FallTime;
+
+	m_TimeSinceLastFrame += deltaTime;
+	m_FallTimer += deltaTime;
+
+	// Change the position every 50 times per frame (or whoever much m_FPS is set as)
+	if (m_TimeSinceLastFrame >= 1.f / float(m_FPS) && m_FallTimer < m_FallTime)
+	{
+		m_TimeSinceLastFrame -= 1.f / float(m_FPS);
+		graphics->SetPosition(graphics->GetPosX(), graphics->GetPosY() + toTravelInSec / float(m_FPS));
+	}
+
+	// Stop the animation if the movement is complete
+	if (m_FallTimer >= m_FallTime)
+	{
+		m_FallTimer = 0.f;
+		graphics->SetPosition(graphics->GetPosX(), m_FinalLandingPosY);
+		m_Airborne = false;
+		return true;
+	}
+
+	return false;
+}
 
 bool Coily::CoilySeekBehaviour()
 {
