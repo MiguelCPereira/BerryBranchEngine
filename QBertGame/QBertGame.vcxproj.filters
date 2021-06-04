@@ -96,6 +96,9 @@
     <ClCompile Include="QBertGame.cpp">
       <Filter>Others</Filter>
     </ClCompile>
+    <ClCompile Include="ColorObjectiveDisplay.cpp">
+      <Filter>Components\Observers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="QBert.h">
@@ -169,6 +172,9 @@
     </ClInclude>
     <ClInclude Include="Pyramid.h">
       <Filter>Others</Filter>
+    </ClInclude>
+    <ClInclude Include="ColorObjectiveDisplay.h">
+      <Filter>Components\Observers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

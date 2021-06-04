@@ -51,7 +51,9 @@ std::shared_ptr<dae::GameObject> MakeLevelDisplayVisuals(bool coOpOn);
 
 std::shared_ptr<dae::GameObject> MakeRoundDisplayVisuals(bool coOpOn);
 
-std::vector<std::shared_ptr<dae::GameObject>> MakeUI(std::vector<QBert*>* qBertCompVector, bool coOpOn);
+std::shared_ptr<dae::GameObject> MakeColorObjectiveDisplayVisuals();
+
+std::vector<std::shared_ptr<dae::GameObject>> MakeUI(std::vector<QBert*>* qBertCompVector, bool coOpOn, int colorIdx, int level, int round);
 
 
 

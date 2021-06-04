@@ -41,8 +41,6 @@ void QBert::Die()
 void QBert::ResetGameVariables()
 {
 	m_Lives = m_MaxLives;
-	m_Level = 0;
-	m_Round = 1;
 	m_Score = 0;
 }
 
@@ -116,18 +114,6 @@ void QBert::ScoreIncrease(int gainedPoints)
 		m_Subject->Notify(dae::Event::ScoreIncreasedP1);
 	else
 		m_Subject->Notify(dae::Event::ScoreIncreasedP2);
-}
-
-void QBert::SetLevel(int actualLevel)
-{
-	m_Level = actualLevel;
-	m_Subject->Notify(dae::Event::LevelUpdated);
-}
-
-void QBert::SetRound(int actualRound)
-{
-	m_Round = actualRound;
-	m_Subject->Notify(dae::Event::RoundUpdated);
 }
 
 void QBert::SetIsInDisk(bool inDisk)

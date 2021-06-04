@@ -29,8 +29,6 @@ public:
 	bool GetLastJumpedOffLeft() const { return m_LastJumpedOffLeft; }
 	bool GetLastJumpedOffDown() const { return m_LastJumpedOffDown; }
 	bool GetIsInDisk() const { return m_IsInDisk;  }
-	int GetLevel() const { return m_Level; }
-	int GetRound() const { return m_Round; }
 
 	bool AreGraphicsHidden() const;
 	
@@ -45,8 +43,6 @@ public:
 
 	void SetNewPositionIndexes(int cubeIdx, int rowNr);
 	void ScoreIncrease(int gainedPoints);
-	void SetLevel(int actualLevel);
-	void SetRound(int actualRound);
 	void SetIsInDisk(bool inDisk);
 
 	bool IsInLeftBorder() const;
@@ -85,9 +81,6 @@ private:
 	float m_QBertSpriteWidth, m_QBertSpriteHeight;
 	float m_QBertInitialPosX, m_QBertInitialPosY;
 	float m_PosXBeforeHidden, m_PosYBeforeHidden;
-	
-	int m_Level{ 0 };
-	int m_Round{ 1 };
 
 	bool m_IsPlayerOne;
 };

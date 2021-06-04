@@ -374,6 +374,7 @@ xcopy "$(SolutionDir)3rdParty\SDL2_ttf\lib\$(PlatformTarget)\*.dll" "$(OutputPat
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Coily.cpp" />
+    <ClCompile Include="ColorObjectiveDisplay.cpp" />
     <ClCompile Include="CoopAllInput.cpp" />
     <ClCompile Include="Cube.cpp" />
     <ClCompile Include="Disk.cpp" />
@@ -401,6 +402,7 @@ xcopy "$(SolutionDir)3rdParty\SDL2_ttf\lib\$(PlatformTarget)\*.dll" "$(OutputPat
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Coily.h" />
+    <ClInclude Include="ColorObjectiveDisplay.h" />
     <ClInclude Include="CoopAllInput.h" />
     <ClInclude Include="Cube.h" />
     <ClInclude Include="Disk.h" />

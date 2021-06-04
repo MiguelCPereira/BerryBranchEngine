@@ -16,14 +16,13 @@
 #include "Disk.h"
 #include "StartScreenInput.h"
 #include "SoloVersusP1Input.h"
+#include "CoopAllInput.h"
+#include "InstructionsScreenInput.h"
 #include "VictoryDeathScreenInput.h"
 #include "GraphicsComponent.h"
 
 // To create and read binary files
 #include<fstream>
-
-#include "CoopAllInput.h"
-#include "InstructionsScreenInput.h"
 
 
 // Global Variables
@@ -715,7 +714,6 @@ void LoadLevelsBinaries(const std::string& fileName)
 
 
 	//// Create A Scene And Fill It Properly For Each Round
-
 	for (const auto& round : rounds)
 	{
 		// Create Scene
@@ -762,9 +760,9 @@ void LoadLevelsBinaries(const std::string& fileName)
 		std::vector<std::shared_ptr<dae::GameObject>> uiGOs;
 
 		if (round.gameMode == 2)
-			uiGOs = MakeUI(g_QBertsCompVector, true);
+			uiGOs = MakeUI(g_QBertsCompVector, true, round.colorIdx, round.level, round.roundNumber);
 		else
-			uiGOs = MakeUI(g_QBertsCompVector, false);
+			uiGOs = MakeUI(g_QBertsCompVector, false, round.colorIdx, round.level, round.roundNumber);
 
 		for (const auto& gameObject : uiGOs)
 			scene.Add(gameObject);

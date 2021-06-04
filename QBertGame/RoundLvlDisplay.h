@@ -1,13 +1,10 @@
 #pragma once
 #include "BaseComponent.h"
-#include "Observer.h"
 
-class QBert;
-
-class RoundLvlDisplay : public dae::BaseComponent, public dae::Observer
+class RoundLvlDisplay : public dae::BaseComponent
 {
 public:
-	explicit RoundLvlDisplay(QBert* qBertComp, bool isCoOp, dae::TextComponent* levelTextComp, dae::TextComponent* roundTextComp);
+	explicit RoundLvlDisplay(dae::TextComponent* levelTextComp, dae::TextComponent* roundTextComp, int level, int round);
 	~RoundLvlDisplay() override;
 
 	RoundLvlDisplay(const RoundLvlDisplay& other) = delete;
@@ -15,19 +12,15 @@ public:
 	RoundLvlDisplay& operator=(const RoundLvlDisplay& other) = delete;
 	RoundLvlDisplay& operator=(RoundLvlDisplay&& other) noexcept = delete;
 
-	void SetQBert(QBert* qBertComp);
-
 	void Initialize() override;
 	void Update(const float deltaTime) override;
-	void OnNotify(const dae::Event& event) override;
 
 	void UpdateLevelText() const;
 	void UpdateRoundText() const;
 
 private:
-	QBert* m_QBertComp;
 	dae::TextComponent* m_LevelTextComp;
 	dae::TextComponent* m_RoundTextComp;
-	const bool m_IsCoOp;
+	const int m_Level, m_Round;
 };
 

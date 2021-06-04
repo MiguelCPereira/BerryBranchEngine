@@ -13,6 +13,7 @@
 #include "TextComponent.h"
 #include "ScoreDisplay.h"
 #include "Coily.h"
+#include "ColorObjectiveDisplay.h"
 #include "Disk.h"
 #include "InstructionsScreen.h"
 #include "MenuScoreDisplay.h"
@@ -285,8 +286,8 @@ std::shared_ptr<dae::GameObject> MakeHeartForDisplay(float posX, float posY)
 
 std::vector<std::shared_ptr<dae::GameObject>>* MakeLivesDisplayVisuals(float posX, int livesAmount)
 {
-	auto posY = 130.f;
 	const auto spacingBetweenHearts = 40.f;
+	auto posY = 185.f;
 
 	auto* returnVector = new std::vector< std::shared_ptr<dae::GameObject>>();
 	
@@ -319,15 +320,16 @@ std::shared_ptr<dae::GameObject> MakeScoreDisplayVisuals(bool playerOne)
 	auto scoreGO = std::make_shared<dae::GameObject>();
 	auto font = dae::ResourceManager::GetInstance().LoadFont("Minecraft.ttf", 23);
 	scoreGO->AddComponent(new dae::TextComponent("SCORE: FAIL", font, 237, 164, 69));
-	scoreGO->GetComponent<dae::TextComponent>()->SetPosition(posX, posYScore);
 
 	if (playerOne)
 	{
+		scoreGO->GetComponent<dae::TextComponent>()->SetPosition(posX, posYScore);
 		scoreGO->AddComponent(new dae::GraphicsComponent("Player Titles.png", posX, posYPlayerTitle,
 			titleActualWidth, titleActualHeight, 0, 0, titleSpriteWidth, titleSpriteHeight));
 	}
 	else
 	{
+		scoreGO->GetComponent<dae::TextComponent>()->SetPosition(posX + 35.f, posYScore);
 		scoreGO->AddComponent(new dae::GraphicsComponent("Player Titles.png", posX, posYPlayerTitle,
 			titleActualWidth, titleActualHeight, 0, titleSpriteHeight, titleSpriteWidth, titleSpriteHeight));
 	}
@@ -387,21 +389,50 @@ std::shared_ptr<dae::GameObject> MakeRoundDisplayVisuals(bool coOpOn)
 }
 
 
-std::vector<std::shared_ptr<dae::GameObject>> MakeUI(std::vector<QBert*>* qBertCompVector, bool coOpOn)
+std::shared_ptr<dae::GameObject> MakeColorObjectiveDisplayVisuals()
+{
+	const auto posX = 20.f;
+	const auto posY = 135.f;
+	const auto actualWidth = 28.f;
+	const auto actualHeight = 24.f;
+	const auto spriteWidth = 14.f;
+	const auto spriteHeight = 12.f;
+
+	auto colorGO = std::make_shared<dae::GameObject>();
+	auto font = dae::ResourceManager::GetInstance().LoadFont("Minecraft.ttf", 16);
+	colorGO->AddComponent(new dae::TextComponent("CHANGE TO", font, 245, 189, 93));  //217, 134, 52
+	colorGO->GetComponent<dae::TextComponent>()->SetPosition(posX, posY);
+	colorGO->AddComponent(new dae::GraphicsComponent("Color Icons Spritesheet.png", posX + 110.f, posY - 5.f,
+		actualWidth, actualHeight, 0, 0, spriteWidth, spriteHeight));
+
+	return colorGO;
+}
+
+
+std::vector<std::shared_ptr<dae::GameObject>> MakeUI(std::vector<QBert*>* qBertCompVector, bool coOpOn, int colorIdx, int level, int round)
 {
 	const auto playerOneHeartsPosX = 20.f;
 	const auto playerTwoHeartsPosX = 590.f;
+	const auto colorIconSpriteWidth = 14.f;
+	const auto colorIconSpriteHeight = 12.f;
 	
 	std::vector< std::shared_ptr<dae::GameObject>> returnVector;
 
 
+	// Make Color Objective Display
+	auto colorObjectiveVisualsGO = MakeColorObjectiveDisplayVisuals();
+	auto colorObjectiveGO = std::make_shared<dae::GameObject>();
+	colorObjectiveGO->AddComponent(new ColorObjectiveDisplay(colorObjectiveVisualsGO->GetComponent<dae::GraphicsComponent>(), colorIdx, level, colorIconSpriteWidth, colorIconSpriteHeight));
+	returnVector.push_back(std::move(colorObjectiveVisualsGO));
+	returnVector.push_back(std::move(colorObjectiveGO));
+	
 	
 	// Make the Level/Round Display
 	auto levelVisualsGO = MakeLevelDisplayVisuals(coOpOn);
 	auto roundVisualsGO = MakeRoundDisplayVisuals(coOpOn);
 	auto roundLevelGO = std::make_shared<dae::GameObject>();
-	roundLevelGO->AddComponent(new RoundLvlDisplay(qBertCompVector->operator[](0), coOpOn, levelVisualsGO->GetComponent<dae::TextComponent>(),
-		roundVisualsGO->GetComponent<dae::TextComponent>()));
+	roundLevelGO->AddComponent(new RoundLvlDisplay(levelVisualsGO->GetComponent<dae::TextComponent>(), 
+		roundVisualsGO->GetComponent<dae::TextComponent>(),level, round));
 	returnVector.push_back(std::move(levelVisualsGO));
 	returnVector.push_back(std::move(roundVisualsGO));
 	returnVector.push_back(std::move(roundLevelGO));

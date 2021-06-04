@@ -27,6 +27,7 @@ public:
 
 	int GetRow() const { return m_RowIdx; }
 	bool GetHasBeenUsed() const { return m_HasBeenUsed; }
+	bool GetActivated() const { return m_Activated; }
 	bool GetIsLeft() const { return m_IsLeft; }
 
 	void Update(const float deltaTime) override;

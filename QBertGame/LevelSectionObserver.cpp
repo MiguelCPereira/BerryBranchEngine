@@ -502,7 +502,7 @@ void LevelSectionObserver::OnNotify(const dae::Event& event)
 				for (size_t i = 0; i < m_DisksVector->size(); i++)
 				{
 					auto* disk = m_DisksVector->operator[](i);
-					if (disk->GetHasBeenUsed() == false && disk->GetRow() == m_QBertCompVector->operator[](0)->GetCurrentRow())
+					if (disk->GetHasBeenUsed() == false && disk->GetActivated() == false && disk->GetRow() == m_QBertCompVector->operator[](0)->GetCurrentRow())
 					{
 						if (disk->GetIsLeft() && m_QBertCompVector->operator[](0)->GetLastJumpedOffLeft() && m_QBertCompVector->operator[](0)->GetLastJumpedOffDown() == false)
 						{
@@ -553,7 +553,7 @@ void LevelSectionObserver::OnNotify(const dae::Event& event)
 				for (size_t i = 0; i < m_DisksVector->size(); i++)
 				{
 					auto* disk = m_DisksVector->operator[](i);
-					if (disk->GetHasBeenUsed() == false && disk->GetRow() == m_QBertCompVector->operator[](1)->GetCurrentRow())
+					if (disk->GetHasBeenUsed() == false && disk->GetActivated() == false && disk->GetRow() == m_QBertCompVector->operator[](1)->GetCurrentRow())
 					{
 						if (disk->GetIsLeft() && m_QBertCompVector->operator[](1)->GetLastJumpedOffLeft() && m_QBertCompVector->operator[](1)->GetLastJumpedOffDown() == false)
 						{
@@ -916,23 +916,12 @@ void LevelSectionObserver::ChangeFreezeEverything(bool freeze) const
 
 void LevelSectionObserver::ChangeSection(int newSectionIdx) const
 {
-	// This if statement will only run if the instance of this class was created with
-	// the first constructor - which means it's only gonna be used for a level transition
-	if (m_CurrentState == LevelSectionState::ST_InterLevelAnimation)
-	{
-		for (auto i = 0; i < int(m_QBertCompVector->size()); i++)
-		{
-			m_QBertCompVector->operator[](i)->SetRound(1);
-			m_QBertCompVector->operator[](i)->SetLevel(m_QBertCompVector->operator[](i)->GetLevel() + 1);
-		}
-	}
-	else
+	if (m_CurrentState != LevelSectionState::ST_InterLevelAnimation)
 	{
 		for (auto i = 0; i < int(m_QBertCompVector->size()); i++)
 		{
 			m_QBertCompVector->operator[](i)->ResetPosition();
 			m_QBertCompVector->operator[](i)->SetFrozen(true);
-			m_QBertCompVector->operator[](i)->SetRound(m_QBertCompVector->operator[](i)->GetRound() + 1);
 
 
 
