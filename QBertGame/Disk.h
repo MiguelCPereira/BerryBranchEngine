@@ -14,7 +14,7 @@ class Disk final : public dae::BaseComponent
 public:
 	explicit Disk(const std::shared_ptr<dae::GameObject>& gameObject, int rowIdx, bool isLeft, int colorIdx,
 		float finalPosX, float finalPosY, float finalQbertPosY, float spriteWidth, float spriteHeight);
-	~Disk();
+	~Disk() override;
 
 	Disk(const Disk& other) = delete;
 	Disk(Disk&& other) noexcept = delete;

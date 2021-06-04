@@ -7,7 +7,13 @@ class SlickSam final : public dae::BaseComponent
 public:
 	explicit SlickSam(const std::shared_ptr<dae::GameObject>& gameObject, int nrRows, float spriteWidth, float spriteHeight,
 		int startingCube, float jumpInterval, bool isSlick);
+	~SlickSam() override = default;
 
+	SlickSam(const SlickSam& other) = delete;
+	SlickSam(SlickSam&& other) = delete;
+	SlickSam& operator=(const SlickSam& other) = delete;
+	SlickSam& operator=(SlickSam&& other) = delete;
+	
 	int GetPositionIndex() const { return m_CurrentCubeIdx; }
 	bool GetIsAlive() const { return m_Alive; }
 	bool GetAirborne() const { return m_Airborne; }

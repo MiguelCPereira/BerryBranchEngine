@@ -10,6 +10,11 @@ public:
 	explicit ScoreDisplay(QBert* qBertComp, dae::TextComponent* textComp);
 	~ScoreDisplay() override;
 
+	ScoreDisplay(const ScoreDisplay& other) = delete;
+	ScoreDisplay(ScoreDisplay&& other) noexcept = delete;
+	ScoreDisplay& operator=(const ScoreDisplay& other) = delete;
+	ScoreDisplay& operator=(ScoreDisplay&& other) noexcept = delete;
+
 	void SetQBert(QBert* qBertComp);
 
 	void Initialize() override;

@@ -40,6 +40,7 @@ Coily::Coily(const std::shared_ptr<dae::GameObject>& gameObject, std::vector<QBe
 {
 }
 
+
 void Coily::SetFrozen(bool frozen)
 {
 	m_Frozen = frozen;
@@ -77,7 +78,7 @@ bool Coily::MoveDownLeft()
 			m_Direction = 1;
 			m_Subject->Notify(dae::Event::JumpDownLeft);
 		}
-		else if(m_CurrentState == CoilyState::ST_SnakeJumping)
+		else if(m_CurrentState == CoilyState::ST_SnakeJumping || m_CurrentState == CoilyState::ST_InP2Control)
 		{
 			graphics->SetSrcRectangle(m_SpriteWidth * 9, 0, m_SpriteWidth, m_SpriteHeight);
 			m_Airborne = true;
@@ -119,7 +120,7 @@ bool Coily::MoveDownRight()
 			m_Direction = 2;
 			m_Subject->Notify(dae::Event::JumpDownRight);
 		}
-		else if (m_CurrentState == CoilyState::ST_SnakeJumping)
+		else if (m_CurrentState == CoilyState::ST_SnakeJumping || m_CurrentState == CoilyState::ST_InP2Control)
 		{
 			graphics->SetSrcRectangle(m_SpriteWidth * 7, 0, m_SpriteWidth, m_SpriteHeight);
 			m_Airborne = true;
@@ -197,7 +198,7 @@ bool Coily::MoveUpRight()
 
 bool Coily::MoveDownLeftPlayer()
 {
-	if (m_CurrentState == CoilyState::ST_SnakeJumping || m_CurrentState == CoilyState::ST_SnakeWaiting)
+	if (m_CurrentState == CoilyState::ST_InP2Control)
 		return MoveDownLeft();
 
 	return false;
@@ -205,7 +206,7 @@ bool Coily::MoveDownLeftPlayer()
 
 bool Coily::MoveDownRightPlayer()
 {
-	if (m_CurrentState == CoilyState::ST_SnakeJumping || m_CurrentState == CoilyState::ST_SnakeWaiting)
+	if (m_CurrentState == CoilyState::ST_InP2Control)
 		return MoveDownRight();
 
 	return false;
@@ -213,7 +214,7 @@ bool Coily::MoveDownRightPlayer()
 
 bool Coily::MoveUpLeftPlayer()
 {
-	if (m_CurrentState == CoilyState::ST_SnakeJumping || m_CurrentState == CoilyState::ST_SnakeWaiting)
+	if (m_CurrentState == CoilyState::ST_InP2Control)
 		return MoveUpLeft();
 
 	return false;
@@ -221,7 +222,7 @@ bool Coily::MoveUpLeftPlayer()
 
 bool Coily::MoveUpRightPlayer()
 {
-	if (m_CurrentState == CoilyState::ST_SnakeJumping || m_CurrentState == CoilyState::ST_SnakeWaiting)
+	if (m_CurrentState == CoilyState::ST_InP2Control)
 		return MoveUpRight();
 
 	return false;

@@ -23,6 +23,11 @@ public:
 	explicit JumpingObserver(UggWrongway* uggWrongComp, dae::GraphicsComponent* graphicsComp, float cubesWidth, float cubesHeight);
 	~JumpingObserver() override;
 
+	JumpingObserver(const JumpingObserver& other) = delete;
+	JumpingObserver(JumpingObserver&& other) noexcept = delete;
+	JumpingObserver& operator=(const JumpingObserver& other) = delete;
+	JumpingObserver& operator=(JumpingObserver&& other) noexcept = delete;
+
 	void SetQBert(QBert* qBertComp);
 	void SetCoily(Coily* coilyComp);
 	void SetSlickSam(SlickSam* slickSamComp);

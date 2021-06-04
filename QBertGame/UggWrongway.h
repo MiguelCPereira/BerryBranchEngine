@@ -7,7 +7,13 @@ class UggWrongway final : public dae::BaseComponent
 public:
 	explicit UggWrongway(const std::shared_ptr<dae::GameObject>& gameObject, int nrRows, float spriteWidth, float spriteHeight,
 		int startingCube, float jumpInterval, bool isUgg, bool startingLeft);
-
+	~UggWrongway() override = default;
+	
+	UggWrongway(const UggWrongway& other) = delete;
+	UggWrongway(UggWrongway&& other) = delete;
+	UggWrongway& operator=(const UggWrongway& other) = delete;
+	UggWrongway& operator=(UggWrongway&& other) = delete;
+	
 	int GetPositionIndex() const { return m_CurrentCubeIdx; }
 	bool GetIsAlive() const { return m_Alive; }
 	bool GetStartedLeft() const { return m_StartingLeft; }

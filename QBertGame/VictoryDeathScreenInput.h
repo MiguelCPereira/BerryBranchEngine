@@ -8,6 +8,11 @@ public:
 	explicit VictoryDeathScreenInput(const std::shared_ptr<dae::GameObject>& menuComponentGO);
 	~VictoryDeathScreenInput() override = default;
 
+	VictoryDeathScreenInput(const VictoryDeathScreenInput& other) = delete;
+	VictoryDeathScreenInput(VictoryDeathScreenInput&& other) noexcept = delete;
+	VictoryDeathScreenInput& operator=(const VictoryDeathScreenInput& other) = delete;
+	VictoryDeathScreenInput& operator=(VictoryDeathScreenInput&& other) noexcept = delete;
+
 	void Initialize() override;
 	void Update(const float deltaTime) override;
 

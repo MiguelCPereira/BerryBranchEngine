@@ -10,6 +10,12 @@ class Coily final : public dae::BaseComponent
 public:
 	explicit Coily(const std::shared_ptr<dae::GameObject>& gameObject, std::vector<QBert*>* qBertCompVector, int gameMode, int nrRows,
 		float spriteWidth, float spriteHeight, int startingCube, float jumpInterval);
+	~Coily() override = default;
+
+	Coily(const Coily& other) = delete;
+	Coily(Coily&& other) = delete;
+	Coily& operator=(const Coily& other) = delete;
+	Coily& operator=(Coily&& other) = delete;
 
 	int GetPositionIndex() const { return m_CurrentCubeIdx; }
 	bool GetIsAlive() const { return m_Alive; }

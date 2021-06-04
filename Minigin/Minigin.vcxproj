@@ -426,7 +426,6 @@
     <ClInclude Include="..\3rdParty\imgui-1.81\imstb_textedit.h" />
     <ClInclude Include="..\3rdParty\imgui-1.81\imstb_truetype.h" />
     <ClInclude Include="audio.h" />
-    <ClInclude Include="AudioComponent.h" />
     <ClInclude Include="BaseComponent.h" />
     <ClInclude Include="Command.h" />
     <ClInclude Include="Font.h" />
@@ -434,7 +433,6 @@
     <ClInclude Include="HPDisplay.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GraphicsComponent.h" />
-    <ClInclude Include="InputComponent.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="LifeComponent.h" />
     <ClInclude Include="LivesDisplayComponent.h" />
@@ -443,7 +441,6 @@
     <ClInclude Include="MiniginLibType.h" />
     <ClInclude Include="MiniginPCH.h" />
     <ClInclude Include="Observer.h" />
-    <ClInclude Include="PhysicsComponent.h" />
     <ClInclude Include="PointsDisplayComponent.h" />
     <ClInclude Include="QBertComponent.h" />
     <ClInclude Include="Renderer.h" />
@@ -532,7 +529,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='ReleaseDLL|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="audio.cpp" />
-    <ClCompile Include="AudioComponent.cpp" />
     <ClCompile Include="BaseComponent.cpp" />
     <ClCompile Include="Command.cpp" />
     <ClCompile Include="Font.cpp" />
@@ -540,7 +536,6 @@
     <ClCompile Include="HPDisplay.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GraphicsComponent.cpp" />
-    <ClCompile Include="InputComponent.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="LifeComponent.cpp" />
     <ClCompile Include="LivesDisplayComponent.cpp" />
@@ -560,7 +555,6 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='DebugDLL|Win32'">MiniginPCH.h</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="Observer.cpp" />
-    <ClCompile Include="PhysicsComponent.cpp" />
     <ClCompile Include="PointsDisplayComponent.cpp" />
     <ClCompile Include="QBertComponent.cpp" />
     <ClCompile Include="Renderer.cpp" />

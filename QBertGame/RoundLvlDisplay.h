@@ -10,6 +10,11 @@ public:
 	explicit RoundLvlDisplay(QBert* qBertComp, bool isCoOp, dae::TextComponent* levelTextComp, dae::TextComponent* roundTextComp);
 	~RoundLvlDisplay() override;
 
+	RoundLvlDisplay(const RoundLvlDisplay& other) = delete;
+	RoundLvlDisplay(RoundLvlDisplay&& other) noexcept = delete;
+	RoundLvlDisplay& operator=(const RoundLvlDisplay& other) = delete;
+	RoundLvlDisplay& operator=(RoundLvlDisplay&& other) noexcept = delete;
+
 	void SetQBert(QBert* qBertComp);
 
 	void Initialize() override;

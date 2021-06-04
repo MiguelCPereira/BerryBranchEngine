@@ -24,6 +24,11 @@ public:
 		Pyramid* pyramid, std::vector<Disk*>* disksVector, int deathSceneIdx, int level, int gameMode, float coopP1SpawnPosX, float coopP2SpawnPosX, float coopSpawnPosY,
 		bool spawnSlickSams, bool spawnUggWrongs, float slickSamSpawnInterval = 0, float uggWrongSpawnInterval = 0);
 
+	LevelSectionObserver(const LevelSectionObserver& other) = delete;
+	LevelSectionObserver(LevelSectionObserver&& other) noexcept = delete;
+	LevelSectionObserver& operator=(const LevelSectionObserver& other) = delete;
+	LevelSectionObserver& operator=(LevelSectionObserver&& other) noexcept = delete;
+
 	~LevelSectionObserver() override;
 
 	void SetQBertVector(std::vector<QBert*>* qBertCompVector);

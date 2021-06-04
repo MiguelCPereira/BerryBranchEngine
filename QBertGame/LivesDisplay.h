@@ -16,6 +16,11 @@ public:
 	explicit LivesDisplay(QBert* qBertComp, std::vector<dae::GraphicsComponent*>* heartGraphics, float heartsPosX);
 	~LivesDisplay() override;
 
+	LivesDisplay(const LivesDisplay& other) = delete;
+	LivesDisplay(LivesDisplay&& other) noexcept = delete;
+	LivesDisplay& operator=(const LivesDisplay& other) = delete;
+	LivesDisplay& operator=(LivesDisplay&& other) noexcept = delete;
+
 	void SetQBert(QBert* qBertComp);
 	
 	void Initialize() override;

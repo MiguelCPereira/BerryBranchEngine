@@ -12,6 +12,12 @@ class QBert final : public dae::BaseComponent
 public:
 	explicit QBert(const std::shared_ptr<dae::GameObject>& gameObject, const std::shared_ptr<dae::GameObject>& cursesGameObject,
 		int nrRows, float qBertSpriteWidth, float qBertSpriteHeight, bool isPlayerOne);
+	~QBert() override = default;
+
+	QBert(const QBert& other) = delete;
+	QBert(QBert&& other) = delete;
+	QBert& operator=(const QBert& other) = delete;
+	QBert& operator=(QBert&& other) = delete;
 
 	int GetCurrentLives() const { return m_Lives; }
 	int GetPositionIndex() const { return m_CurrentCubeIdx; }
