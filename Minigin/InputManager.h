@@ -55,6 +55,8 @@ namespace dae
 		void MINIGIN_ENTRY AddCommand(ControllerKey button, std::unique_ptr<Command> command);
 		void MINIGIN_ENTRY AddCommand(SDL_Keycode key, std::unique_ptr<Command> command);
 		void MINIGIN_ENTRY ClearAllCommands();
+		void MINIGIN_ENTRY RemoveCommand(ControllerKey button);
+		void MINIGIN_ENTRY RemoveCommand(SDL_Keycode key);
 		bool ProcessInput();
 		bool IsPressed(ControllerButton button) const;
 		void ExecuteButton(ControllerButton button) const;

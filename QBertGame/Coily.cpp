@@ -48,7 +48,6 @@ void Coily::SetFrozen(bool frozen)
 
 void Coily::Die() const
 {
-	//Play Sound
 	m_GameObject->RemoveAllComponents();
 }
 
@@ -263,6 +262,11 @@ void Coily::JumpFinished()
 		SoundServiceLocator::GetSoundSystem().Play("../Data/Sounds/Coily Fall.wav", 0.1f);
 		m_Subject->Notify(dae::Event::CoilyFell);
 	}
+}
+
+void Coily::QBertHit()
+{
+	m_Subject->Notify(dae::Event::CoilyHitQBert);
 }
 
 void Coily::Initialize()

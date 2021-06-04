@@ -46,7 +46,9 @@ namespace dae
 		RoundUpdated,
 		
 		DiskFlightEndedP1,
-		DiskFlightEndedP2
+		DiskFlightEndedP2,
+
+		CoilyHitQBert,
 	};
 
 	class Observer

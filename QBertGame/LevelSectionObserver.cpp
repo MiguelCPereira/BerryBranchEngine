@@ -706,8 +706,14 @@ bool LevelSectionObserver::CheckCollidingCoily(int qBertIdx) const
 {
 	if (m_QBertCompVector->operator[](qBertIdx)->GetAirborne() == false && m_CoilyComp != nullptr)
 	{
-		if (m_QBertCompVector->operator[](qBertIdx)->GetPositionIndex() == m_CoilyComp->GetPositionIndex())
+		if (m_QBertCompVector->operator[](qBertIdx)->GetPositionIndex() == m_CoilyComp->GetPositionIndex() && m_CoilyComp->GetAirborne() == false)
 		{
+			// This function only needs to be called in Versus Mode, as what it actually does is just notifying P2CoilyInput
+			// to reset the Coily controllers and delete its components (and the deletion of said components, in the other 2 modes
+			// is done by this class)
+			if(m_GameMode == 3)
+				m_CoilyComp->QBertHit();
+			
 			return true;
 		}
 	}
@@ -722,20 +728,17 @@ bool LevelSectionObserver::CheckCollidingUggWrong(int qBertIdx) const
 		for (size_t i = 0; i < m_UggWrongCompVector->size(); i++)
 		{
 			auto* uggWrong = m_UggWrongCompVector->operator[](i);
-			if (uggWrong->GetStartedLeft())
+			if (uggWrong->GetAirborne() == false)
 			{
-				if (m_QBertCompVector->operator[](qBertIdx)->GetPositionIndex() == uggWrong->GetPositionIndex() + uggWrong->GetCurrentRow() &&
-					uggWrong->GetAirborne() == false)
+				if (uggWrong->GetStartedLeft())
 				{
-					return true;
+					if (m_QBertCompVector->operator[](qBertIdx)->GetPositionIndex() == uggWrong->GetPositionIndex() + uggWrong->GetCurrentRow())
+						return true;
 				}
-			}
-			else
-			{
-				if (m_QBertCompVector->operator[](qBertIdx)->GetPositionIndex() == uggWrong->GetPositionIndex() + uggWrong->GetCurrentRow() + 1 &&
-					uggWrong->GetAirborne() == false)
+				else
 				{
-					return true;
+					if (m_QBertCompVector->operator[](qBertIdx)->GetPositionIndex() == uggWrong->GetPositionIndex() + uggWrong->GetCurrentRow() + 1)
+						return true;
 				}
 			}
 		}
@@ -767,7 +770,6 @@ void LevelSectionObserver::KillCollidingSlickSam() const
 			auto nrSlickSams = m_SlickSamCompVector->size();
 			for (size_t j = 0; j < nrSlickSams; j++)
 			{
-
 				if (m_QBertCompVector->operator[](i)->GetPositionIndex() == m_SlickSamCompVector->operator[](j)->GetPositionIndex() &&
 					m_SlickSamCompVector->operator[](j)->GetAirborne() == false)
 				{
@@ -818,9 +820,15 @@ void LevelSectionObserver::KillFallenUggWrong() const
 
 void LevelSectionObserver::KillFallenCoily()
 {
-	auto* deadCoily = m_CoilyComp;
+	// If in Solo Mode, calling Coily's Die() function is P2CoilyInput's responsibility
+	if (m_GameMode != 3)
+	{
+		auto* deadCoily = m_CoilyComp;
+		m_CoilyComp = nullptr;
+		deadCoily->Die();
+	}
+
 	m_CoilyComp = nullptr;
-	deadCoily->Die();
 	m_SpawnCoily = true;
 
 	for (auto i = 0; i < int(m_QBertCompVector->size()); i++)

@@ -24,9 +24,6 @@ bool dae::InputManager::ProcessInput()
 			ExecuteKey(e.key.keysym.sym, false);
 		if (e.type == SDL_MOUSEBUTTONUP)
 			ExecuteKey(e.key.keysym.sym, true);
-		if (e.type == SDL_MOUSEMOTION) {
-			// Process Mouse Movement
-		}
 	}
 	
 	return true;
@@ -163,5 +160,25 @@ void dae::InputManager::ClearAllCommands()
 {
 	m_ControllerCommands.clear();
 	m_KeyboardCommands.clear();
+}
+
+void dae::InputManager::RemoveCommand(ControllerKey button)
+{
+	const auto removedCommandIt = m_ControllerCommands.find(button);
+	
+	if (removedCommandIt != m_ControllerCommands.end())
+		m_ControllerCommands.erase(removedCommandIt);
+	else
+		std::cout << "Trying to remove a command that wasn't assigned in the first place\n";
+}
+
+void dae::InputManager::RemoveCommand(SDL_Keycode key)
+{
+	const auto removedCommandIt = m_KeyboardCommands.find(key);
+
+	if (removedCommandIt != m_KeyboardCommands.end())
+		m_KeyboardCommands.erase(removedCommandIt);
+	else
+		std::cout << "Trying to remove a command that wasn't assigned in the first place\n";
 }
 

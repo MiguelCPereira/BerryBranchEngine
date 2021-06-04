@@ -34,6 +34,8 @@ public:
 	bool MoveUpRightPlayer();
 	void JumpFinished();
 
+	void QBertHit();
+
 	bool CoilySeekBehaviour();
 	bool ChaseQBert(int qBertRow, int qBertNrInRow, int coilyNrInRow, bool isPlayerOne);
 	int CalculateQBertDistance(int qBertRow, int qBertNrInRow, int coilyNrInRow) const;
