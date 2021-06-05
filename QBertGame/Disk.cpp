@@ -110,6 +110,10 @@ void Disk::ResetDisk()
 	m_Hidden = false;
 }
 
+void Disk::Die() const
+{
+	m_GameObject->RemoveAllComponents();
+}
 
 void Disk::Update(const float deltaTime)
 {

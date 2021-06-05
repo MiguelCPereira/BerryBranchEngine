@@ -725,23 +725,14 @@ void LoadLevelsBinaries(const std::string& fileName)
 		for (const std::shared_ptr<dae::GameObject>& cube : pyramid->m_CubeGOVector)
 			scene.Add(cube);
 
-		// Disks
-		auto* diskGOsVector = MakeDiskGOsVector(round.level, round.colorIdx);
-		auto* disksVector = new std::vector<Disk*>();
-		for (size_t i = 0; i < diskGOsVector->size(); i++)
-		{
-			disksVector->push_back(diskGOsVector->operator[](i)->GetComponent<Disk>());
-			scene.Add(diskGOsVector->operator[](i));
-		}
-
 		// Transfer QBert(s)
 		for (const auto& gameObject : g_QBertP1GOs)
-			scene.Add(gameObject);
+			scene.Add(gameObject, true);
 
 		if (round.gameMode == 2)
 		{
 			for (const auto& gameObject : g_QBertP2GOs)
-				scene.Add(gameObject);
+				scene.Add(gameObject, true);
 		}
 
 		// Make UI
@@ -766,11 +757,12 @@ void LoadLevelsBinaries(const std::string& fileName)
 
 		auto pauseScreenGO = MakePauseScreenVisuals();
 		auto sectionObserverGO = std::make_shared<dae::GameObject>();
-		sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertsCompVector, g_QBertsGraphicsVector, pyramid, disksVector, deathSceneIdx,
-			pauseScreenGO->GetComponent<dae::GraphicsComponent>(), round.level, round.gameMode, g_CoopP1SpawnPosX, g_CoopP2SpawnPosX, g_CoopSpawnPosY,
-			round.spawnSlickSams, round.spawnUggWrongs, round.slickSamsSpawnInterval, round.uggWrongSpawnInterval));
+		sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertsCompVector, g_QBertsGraphicsVector, pyramid,
+			deathSceneIdx, pauseScreenGO->GetComponent<dae::GraphicsComponent>(), round.level, round.gameMode, round.colorIdx, 
+			g_CoopP1SpawnPosX, g_CoopP2SpawnPosX, g_CoopSpawnPosY, round.spawnSlickSams, round.spawnUggWrongs,
+			round.slickSamsSpawnInterval, round.uggWrongSpawnInterval));
 
-		scene.Add(pauseScreenGO);
+		scene.Add(pauseScreenGO, true);
 		scene.Add(sectionObserverGO);
 
 		// Add The Mode's Player Input

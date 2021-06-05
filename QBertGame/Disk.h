@@ -25,6 +25,8 @@ public:
 	void SetHide(bool isHidden);
 	void SetFrozen(bool isFrozen);
 	void ResetDisk();
+	void Die() const;
+	
 
 	int GetRow() const { return m_RowIdx; }
 	bool GetHasBeenUsed() const { return m_HasBeenUsed; }

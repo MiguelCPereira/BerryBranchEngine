@@ -56,6 +56,7 @@ LevelSectionObserver::LevelSectionObserver(float transitionTime, std::vector<QBe
 	, m_CurrentFlashingColor()
 	, m_EverythingClear()
 	, m_Level()
+	, m_ColorIdx()
 
 	, m_DeadQbertP1()
 	, m_DeadQbertP2()
@@ -79,16 +80,15 @@ LevelSectionObserver::LevelSectionObserver(float transitionTime, std::vector<QBe
 }
 
 
-
 LevelSectionObserver::LevelSectionObserver(const std::shared_ptr<dae::GameObject>& gameObject, std::vector<QBert*>* qBertCompVector,
-	std::vector<dae::GraphicsComponent*>* qBertGraphicsVector, Pyramid* pyramid, std::vector<Disk*>* disksVector, int deathSceneIdx,
-	dae::GraphicsComponent* pauseScreenGraphics, int level, int gameMode, float coopP1SpawnPosX, float coopP2SpawnPosX, float coopSpawnPosY,
+	std::vector<dae::GraphicsComponent*>* qBertGraphicsVector, Pyramid* pyramid, int deathSceneIdx, dae::GraphicsComponent* pauseScreenGraphics,
+	int level, int gameMode, int colorIdx, float coopP1SpawnPosX, float coopP2SpawnPosX, float coopSpawnPosY,
 	bool spawnSlickSams, bool spawnUggWrongs, float slickSamSpawnInterval, float uggWrongSpawnInterval)
 	: m_GameObject(gameObject)
 	, m_QBertCompVector(qBertCompVector)
 	, m_QBertGraphicsVector(qBertGraphicsVector)
 	, m_Pyramid(pyramid)
-	, m_DisksVector(disksVector)
+	, m_DisksVector()
 	, m_DeathSceneIdx(deathSceneIdx)
 	, m_PauseScreenGraphics(pauseScreenGraphics)
 
@@ -125,6 +125,7 @@ LevelSectionObserver::LevelSectionObserver(const std::shared_ptr<dae::GameObject
 	, m_CurrentFlashingColor(3)
 	, m_EverythingClear(false)
 	, m_Level(level)
+	, m_ColorIdx(colorIdx)
 
 	, m_DeadQbertP1(false)
 	, m_DeadQbertP2(false)
@@ -231,6 +232,7 @@ void LevelSectionObserver::Initialize()
 	}
 	else
 	{
+		// All the modifiable variable should be re-set to their default values, in case the scene has been played before
 		m_QBertP1JustFell = false;
 		m_SpawnCoily = true;
 		m_CoilySpawnTimer = 5.f;
@@ -250,6 +252,8 @@ void LevelSectionObserver::Initialize()
 		m_DeathEmptySceneTimer = 0.f;
 		m_CurrentState = LevelSectionState::ST_NormalSpawning;
 
+		
+		// If in Co-op Mode, the positions of the QBerts must be changed to the bottom corners of the pyramid
 		if (m_QBertCompVector->empty() == false && m_GameMode == 2)
 		{
 			m_QBertCompVector->operator[](0)->SetNewPositionIndexes(22, 7);
@@ -261,24 +265,36 @@ void LevelSectionObserver::Initialize()
 			m_QBertCompVector->operator[](1)->BackToGround();
 			m_QBertCompVector->operator[](1)->SetFrozen(false);
 		}
-		
-		if (m_DisksVector != nullptr)
-		{
-			if (m_DisksVector->empty() == false)
-			{
-				for (size_t i = 0; i < m_DisksVector->size(); i++)
-				{
-					auto* disk = m_DisksVector->operator[](i);
 
-					if (disk != nullptr)
-					{
-						disk->GetSubject()->AddObserver(this);
-						disk->ResetDisk();
-					}
+		
+		// If the scene is being loaded for the first time, we need to initialize the disk vector
+		if (m_DisksVector == nullptr)
+			m_DisksVector = new std::vector<Disk*>;
+
+		// Then we fill this vector with the adequate amount of disks and add them to the scene
+		auto* diskGOsVector = MakeDiskGOsVector(m_Level, m_ColorIdx);
+		for (size_t i = 0; i < diskGOsVector->size(); i++)
+		{
+			m_DisksVector->push_back(diskGOsVector->operator[](i)->GetComponent<Disk>());
+			dae::SceneManager::GetInstance().GetCurrentScene()->Add(diskGOsVector->operator[](i));
+		}
+
+		// And we start observing said disks
+		if (m_DisksVector->empty() == false)
+		{
+			for (size_t i = 0; i < m_DisksVector->size(); i++)
+			{
+				auto* disk = m_DisksVector->operator[](i);
+
+				if (disk != nullptr)
+				{
+					disk->GetSubject()->AddObserver(this);
 				}
 			}
 		}
 
+		
+		// And finally, all the pyramid cubes should be reset, in case the scene has been played before
 		if (m_Pyramid != nullptr)
 		{
 			for (auto cube : m_Pyramid->m_CubeGOVector)
@@ -900,12 +916,20 @@ void LevelSectionObserver::ClearAllEnemies()
 	m_UggWrongSpawnTimer2 = -2.f;
 }
 
-void LevelSectionObserver::ClearRemainingDisks() const
+void LevelSectionObserver::ClearRemainingDisks(bool addPoints) const
 {
-	SoundServiceLocator::GetSoundSystem().Play("../Data/Sounds/Clear Disks.wav", 0.1f);
-
 	int nrActiveDisks = 0;
-	for (size_t i = 0; i < m_DisksVector->size(); i++)
+	
+	auto nrComponents = int(m_DisksVector->size());
+	for (auto i = 0; i < nrComponents; i++)
+	{
+		auto* disk = m_DisksVector->operator[](0);
+		m_DisksVector->erase(m_DisksVector->begin());
+		disk->Die();
+		nrActiveDisks++;
+	}
+	
+	/*for (size_t i = 0; i < m_DisksVector->size(); i++)
 	{
 		auto* disk = m_DisksVector->operator[](i);
 		if (disk->GetHasBeenUsed() == false)
@@ -913,11 +937,14 @@ void LevelSectionObserver::ClearRemainingDisks() const
 			disk->SetHide(true);
 			nrActiveDisks++;
 		}
+	}*/
 
+	if (addPoints)
+	{
+		SoundServiceLocator::GetSoundSystem().Play("../Data/Sounds/Clear Disks.wav", 0.1f);
+		for (auto i = 0; i < int(m_QBertCompVector->size()); i++)
+			m_QBertCompVector->operator[](i)->ScoreIncrease(nrActiveDisks * 50);
 	}
-
-	for (auto i = 0; i < int(m_QBertCompVector->size()); i++)
-		m_QBertCompVector->operator[](i)->ScoreIncrease(nrActiveDisks * 50);
 }
 
 void LevelSectionObserver::WinSection()
@@ -997,6 +1024,8 @@ void LevelSectionObserver::ChangeSection(int newSectionIdx) const
 					m_DisksVector->operator[](i)->GetSubject()->RemoveObserver(m_ThisObserver);
 				}
 			}
+
+			ClearRemainingDisks();
 		}
 	}
 
@@ -1013,6 +1042,7 @@ void LevelSectionObserver::ChangeSection(int newSectionIdx) const
 			if(qBert->AreGraphicsHidden())
 				qBert->SetHideGraphics(false);
 			qBert->SetCursesHidden(true);
+			ChangeFreezeEverything(false);
 		}
 	}
 	
@@ -1091,6 +1121,8 @@ void LevelSectionObserver::Update(const float deltaTime)
 
 				m_QBertCompVector->operator[](i)->SetFrozen(false);
 			}
+
+			ChangeFreezeEverything(false);
 
 			m_DeathEmptySceneTimer = 0.f;
 			m_CurrentState = LevelSectionState::ST_NormalSpawning;

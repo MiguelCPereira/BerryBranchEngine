@@ -21,8 +21,8 @@ class LevelSectionObserver final : public dae::BaseComponent, public dae::Observ
 public:
 	explicit LevelSectionObserver(float transitionTime, std::vector<QBert*>* qBertCompVector, int gameMode); // An empty observer just for the level title scenes
 	explicit LevelSectionObserver(const std::shared_ptr<dae::GameObject>& gameObject, std::vector<QBert*>* qBertCompVector,
-		std::vector<dae::GraphicsComponent*>* qBertGraphicsVector, Pyramid* pyramid, std::vector<Disk*>* disksVector, int deathSceneIdx,
-		dae::GraphicsComponent* pauseScreenGraphics, int level, int gameMode, float coopP1SpawnPosX, float coopP2SpawnPosX, float coopSpawnPosY,
+		std::vector<dae::GraphicsComponent*>* qBertGraphicsVector, Pyramid* pyramid, int deathSceneIdx, dae::GraphicsComponent* pauseScreenGraphics,
+		int level, int gameMode, int colorIdx, float coopP1SpawnPosX, float coopP2SpawnPosX, float coopSpawnPosY,
 		bool spawnSlickSams, bool spawnUggWrongs, float slickSamSpawnInterval = 0, float uggWrongSpawnInterval = 0);
 
 	LevelSectionObserver(const LevelSectionObserver& other) = delete;
@@ -52,7 +52,7 @@ public:
 	void KillFallenUggWrong() const;
 	void KillFallenCoily();
 	void ClearAllEnemies();
-	void ClearRemainingDisks() const;
+	void ClearRemainingDisks(bool addPoints = true) const;
 
 	void WinSection();
 	bool RoundWonAnimation(const float deltaTime);
@@ -108,6 +108,7 @@ private:
 	int m_CurrentFlashingColor;
 	bool m_EverythingClear;
 	const int m_Level;
+	const int m_ColorIdx;
 
 	bool m_DeadQbertP1, m_DeadQbertP2;
 	float m_DeadQbertP1Timer, m_DeadQbertP2Timer, m_DeadQbertMaxTime;
