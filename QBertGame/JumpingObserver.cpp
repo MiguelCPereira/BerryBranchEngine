@@ -25,6 +25,7 @@ JumpingObserver::JumpingObserver(QBert* qBertComp, dae::GraphicsComponent* graph
 	, m_JumpTime(0.3f)
 	, m_MidFlightTime(0.f)
 	, m_TimeSinceLastFrame(0.f)
+	, m_Frozen(false)
 {}
 
 JumpingObserver::JumpingObserver(Coily* coilyComp, dae::GraphicsComponent* graphicsComp, float cubesWidth, float cubesHeight)
@@ -46,6 +47,7 @@ JumpingObserver::JumpingObserver(Coily* coilyComp, dae::GraphicsComponent* graph
 	, m_JumpTime(0.3f)
 	, m_MidFlightTime(0.f)
 	, m_TimeSinceLastFrame(0.f)
+	, m_Frozen(false)
 {}
 
 JumpingObserver::JumpingObserver(SlickSam* slickSamComp, dae::GraphicsComponent* graphicsComp, float cubesWidth, float cubesHeight)
@@ -67,6 +69,7 @@ JumpingObserver::JumpingObserver(SlickSam* slickSamComp, dae::GraphicsComponent*
 	, m_JumpTime(0.3f)
 	, m_MidFlightTime(0.f)
 	, m_TimeSinceLastFrame(0.f)
+	, m_Frozen(false)
 {}
 
 JumpingObserver::JumpingObserver(UggWrongway* uggWrongComp, dae::GraphicsComponent* graphicsComp, float cubesWidth, float cubesHeight)
@@ -88,6 +91,7 @@ JumpingObserver::JumpingObserver(UggWrongway* uggWrongComp, dae::GraphicsCompone
 	, m_JumpTime(0.3f)
 	, m_MidFlightTime(0.f)
 	, m_TimeSinceLastFrame(0.f)
+	, m_Frozen(false)
 {}
 
 JumpingObserver::~JumpingObserver()
@@ -175,6 +179,26 @@ void JumpingObserver::OnNotify(const dae::Event& event)
 {
 	switch (event)
 	{
+	case dae::Event::EntityFrozen:
+		m_Frozen = true;
+		break;
+
+
+	case dae::Event::EntityUnfrozen:
+		m_Frozen = false;
+		break;
+
+
+	case dae::Event::EntityAnimationStopped:
+		if (m_Jumping)
+		{
+			m_GraphicsComp->SetPosition(m_LiftoffPosX, m_LiftoffPosY);
+			m_Jumping = false;
+			m_MidFlightTime = 0.f;
+		}
+		break;
+
+		
 	case dae::Event::JumpUpRight:
 		m_LiftoffPosX = m_GraphicsComp->GetPosX();
 		m_LiftoffPosY = m_GraphicsComp->GetPosY();
@@ -244,7 +268,7 @@ void JumpingObserver::OnNotify(const dae::Event& event)
 
 void JumpingObserver::Update(const float deltaTime)
 {
-	if(m_Jumping)
+	if(m_Jumping == true && m_Frozen == false)
 	{
 		const auto toTravelInSecX = (m_LandingPosX - m_LiftoffPosX) / m_JumpTime;
 		const auto toTravelInSecY = (m_LandingPosY - m_LiftoffPosY) / m_JumpTime;

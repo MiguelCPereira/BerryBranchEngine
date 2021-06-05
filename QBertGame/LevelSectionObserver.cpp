@@ -22,6 +22,7 @@ LevelSectionObserver::LevelSectionObserver(float transitionTime, std::vector<QBe
 	, m_QBertGraphicsVector()
 	, m_Pyramid()
 	, m_DeathSceneIdx()
+	, m_PauseScreenGraphics()
 
 	, m_QBertP1JustFell()
 	, m_QBertP1JustTookDisk()
@@ -73,13 +74,15 @@ LevelSectionObserver::LevelSectionObserver(float transitionTime, std::vector<QBe
 	, m_CoopSpawnPosY()
 
 	, m_CurrentState(LevelSectionState::ST_InterLevelAnimation)
+	, m_StateBeforePause()
 {
 }
 
 
 
-LevelSectionObserver::LevelSectionObserver(const std::shared_ptr<dae::GameObject>& gameObject, std::vector<QBert*>* qBertCompVector, std::vector<dae::GraphicsComponent*>* qBertGraphicsVector,
-	Pyramid* pyramid, std::vector<Disk*>* disksVector, int deathSceneIdx, int level, int gameMode, float coopP1SpawnPosX, float coopP2SpawnPosX, float coopSpawnPosY,
+LevelSectionObserver::LevelSectionObserver(const std::shared_ptr<dae::GameObject>& gameObject, std::vector<QBert*>* qBertCompVector,
+	std::vector<dae::GraphicsComponent*>* qBertGraphicsVector, Pyramid* pyramid, std::vector<Disk*>* disksVector, int deathSceneIdx,
+	dae::GraphicsComponent* pauseScreenGraphics, int level, int gameMode, float coopP1SpawnPosX, float coopP2SpawnPosX, float coopSpawnPosY,
 	bool spawnSlickSams, bool spawnUggWrongs, float slickSamSpawnInterval, float uggWrongSpawnInterval)
 	: m_GameObject(gameObject)
 	, m_QBertCompVector(qBertCompVector)
@@ -87,6 +90,7 @@ LevelSectionObserver::LevelSectionObserver(const std::shared_ptr<dae::GameObject
 	, m_Pyramid(pyramid)
 	, m_DisksVector(disksVector)
 	, m_DeathSceneIdx(deathSceneIdx)
+	, m_PauseScreenGraphics(pauseScreenGraphics)
 
 	, m_QBertP1JustFell(false)
 	, m_QBertP1JustTookDisk(false)
@@ -139,6 +143,7 @@ LevelSectionObserver::LevelSectionObserver(const std::shared_ptr<dae::GameObject
 	, m_CoopSpawnPosY(coopSpawnPosY)
 
 	, m_CurrentState(LevelSectionState::ST_NormalSpawning)
+	, m_StateBeforePause()
 {
 
 	// So it only takes 2 secs for the first Ugg/Wrongway to spawn
@@ -381,6 +386,33 @@ void LevelSectionObserver::OnNotify(const dae::Event& event)
 	{
 		switch (event)
 		{
+		case dae::Event::PausePressed:
+			if(m_CurrentState != LevelSectionState::ST_GamePaused)
+			{
+				m_StateBeforePause = m_CurrentState;
+				m_CurrentState = LevelSectionState::ST_GamePaused;
+				m_PauseScreenGraphics->SetPosition(0, 0);
+				ChangeFreezeEverything(true);
+			}
+			else
+			{
+				m_CurrentState = m_StateBeforePause;
+				m_PauseScreenGraphics->SetPosition(-2000, -2000);
+				ChangeFreezeEverything(false);
+			}
+			break;
+
+		case dae::Event::BackToMenu:
+			if (m_CurrentState == LevelSectionState::ST_GamePaused)
+			{
+				m_CurrentState = LevelSectionState::ST_NormalSpawning;
+				m_PauseScreenGraphics->SetPosition(-2000, -2000);
+				ChangeFreezeEverything(false);
+				ClearAllEnemies();
+				ChangeSection(0);
+			}
+			break;
+
 
 		case dae::Event::QBertLandedP1:
 			// If P2 died before P1 lands, the landing should have no consequences, as well as if the round was won before
@@ -912,6 +944,9 @@ void LevelSectionObserver::ChangeFreezeEverything(bool freeze) const
 	for (size_t i = 0; i < m_UggWrongCompVector->size(); i++)
 		m_UggWrongCompVector->operator[](i)->SetFrozen(freeze);
 
+	for (size_t i = 0; i < m_DisksVector->size(); i++)
+		m_DisksVector->operator[](i)->SetFrozen(freeze);
+
 }
 
 void LevelSectionObserver::ChangeSection(int newSectionIdx) const
@@ -965,11 +1000,24 @@ void LevelSectionObserver::ChangeSection(int newSectionIdx) const
 		}
 	}
 
+	// If going back to the Main Menu, reset QBerts scores
+	if(newSectionIdx == 0)
+	{
+		for (auto i = 0; i < int(m_QBertCompVector->size()); i++)
+		{
+			auto qBert = m_QBertCompVector->operator[](i);
+			qBert->ResetGameVariables();
+			qBert->AnimationStopped();
+			qBert->ResetPosition();
+			qBert->BackToGround();
+			if(qBert->AreGraphicsHidden())
+				qBert->SetHideGraphics(false);
+			qBert->SetCursesHidden(true);
+		}
+	}
+	
 	auto& scene = dae::SceneManager::GetInstance();
-	if (newSectionIdx != 0)
-		scene.ChangeScene(newSectionIdx);
-	else
-		scene.ChangeScene(scene.GetCurrentSceneIdx() + 1);
+	scene.ChangeScene(newSectionIdx);
 }
 
 void LevelSectionObserver::Update(const float deltaTime)
@@ -980,10 +1028,14 @@ void LevelSectionObserver::Update(const float deltaTime)
 		m_LevelTitleTimer += deltaTime;
 
 		if (m_LevelTitleTimer >= m_LevelTitleScreenTime)
-			ChangeSection();
+			ChangeSection(dae::SceneManager::GetInstance().GetCurrentSceneIdx() + 1);
 		break;
 
 		
+	case LevelSectionState::ST_GamePaused:
+		// Stop updating everything until paused is pressed again
+		break;
+
 	case LevelSectionState::ST_RoundWon:
 		if(RoundWonAnimation(deltaTime))
 		{
@@ -1000,7 +1052,7 @@ void LevelSectionObserver::Update(const float deltaTime)
 			for (auto i = 0; i < int(m_QBertCompVector->size()); i++)
 				m_QBertCompVector->operator[](i)->SetFrozen(false);
 
-			ChangeSection();
+			ChangeSection(dae::SceneManager::GetInstance().GetCurrentSceneIdx() + 1);
 		}
 		break;
 
@@ -1136,9 +1188,15 @@ bool LevelSectionObserver::DeadP1Update(const float deltaTime)
 			m_QBertCompVector->operator[](1)->RevertToLastPosition();
 
 		if (m_QBertCompVector->operator[](0)->AreGraphicsHidden() == false)
+		{
+			m_QBertCompVector->operator[](0)->AnimationStopped();
 			m_QBertCompVector->operator[](0)->SetHideGraphics(true);
+		}
 		if (m_QBertCompVector->operator[](1)->AreGraphicsHidden() == false)
+		{
+			m_QBertCompVector->operator[](1)->AnimationStopped();
 			m_QBertCompVector->operator[](1)->SetHideGraphics(true);
+		}
 		
 		m_QBertCompVector->operator[](0)->SetCursesHidden(true);
 		ClearAllEnemies();
@@ -1180,9 +1238,16 @@ bool LevelSectionObserver::DeadP2Update(const float deltaTime)
 			m_QBertCompVector->operator[](1)->RevertToLastPosition();
 
 		if (m_QBertCompVector->operator[](0)->AreGraphicsHidden() == false)
+		{
+			m_QBertCompVector->operator[](0)->AnimationStopped();
 			m_QBertCompVector->operator[](0)->SetHideGraphics(true);
+		}
+		
 		if (m_QBertCompVector->operator[](1)->AreGraphicsHidden() == false)
+		{
+			m_QBertCompVector->operator[](1)->AnimationStopped();
 			m_QBertCompVector->operator[](1)->SetHideGraphics(true);
+		}
 		
 		m_QBertCompVector->operator[](1)->SetCursesHidden(true);
 		ClearAllEnemies();

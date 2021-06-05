@@ -88,6 +88,11 @@ void Disk::SetHide(bool isHidden)
 	m_Hidden = isHidden;
 }
 
+void Disk::SetFrozen(bool isFrozen)
+{
+	m_Frozen = isFrozen;
+}
+
 void Disk::ResetDisk()
 {
 	auto* graphics = m_GameObject->GetComponent<dae::GraphicsComponent>();
@@ -108,7 +113,7 @@ void Disk::ResetDisk()
 
 void Disk::Update(const float deltaTime)
 {
-	if (m_HasBeenUsed == false && m_Hidden == false)
+	if (m_HasBeenUsed == false && m_Hidden == false && m_Frozen == false)
 	{
 		// Idle Spinning Animation
 		m_TimeSinceLastFrameIdle += deltaTime;

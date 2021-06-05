@@ -48,6 +48,11 @@ void P2CoilyInput::Initialize()
 		moveRightKeyboard->SetButtonPressType(dae::ButtonPress::PressedDown);
 		dae::InputManager::GetInstance().AddCommand(SDLK_RIGHT, std::move(moveRightKeyboard));
 
+		auto backToMenuKeyboard = std::make_unique<CoilyBackToMenuCommand>();
+		backToMenuKeyboard->SetActor(m_CoilyGO);
+		backToMenuKeyboard->SetButtonPressType(dae::ButtonPress::PressedDown);
+		dae::InputManager::GetInstance().AddCommand(SDLK_ESCAPE, std::move(backToMenuKeyboard));
+
 
 
 		auto moveUpController = std::make_unique<CoilyMoveUpCommand>();
@@ -73,6 +78,18 @@ void P2CoilyInput::Initialize()
 		moveRightController->SetButtonPressType(dae::ButtonPress::PressedDown);
 		controllerKey.second = dae::ControllerButton::DPadRight;
 		dae::InputManager::GetInstance().AddCommand(controllerKey, std::move(moveRightController));
+
+		auto pauseController = std::make_unique<CoilyPauseGameCommand>();
+		pauseController->SetActor(m_CoilyGO);
+		pauseController->SetButtonPressType(dae::ButtonPress::PressedDown);
+		controllerKey.second = dae::ControllerButton::ButtonB;
+		dae::InputManager::GetInstance().AddCommand(controllerKey, std::move(pauseController));
+
+		auto backToMenuController = std::make_unique<CoilyBackToMenuCommand>();
+		backToMenuController->SetActor(m_CoilyGO);
+		backToMenuController->SetButtonPressType(dae::ButtonPress::PressedDown);
+		controllerKey.second = dae::ControllerButton::ButtonB;
+		dae::InputManager::GetInstance().AddCommand(controllerKey, std::move(backToMenuController));
 	}
 }
 

@@ -20,8 +20,9 @@ class LevelSectionObserver final : public dae::BaseComponent, public dae::Observ
 {
 public:
 	explicit LevelSectionObserver(float transitionTime, std::vector<QBert*>* qBertCompVector, int gameMode); // An empty observer just for the level title scenes
-	explicit LevelSectionObserver(const std::shared_ptr<dae::GameObject>& gameObject, std::vector<QBert*>* qBertCompVector, std::vector<dae::GraphicsComponent*>* qBertGraphicsVector,
-		Pyramid* pyramid, std::vector<Disk*>* disksVector, int deathSceneIdx, int level, int gameMode, float coopP1SpawnPosX, float coopP2SpawnPosX, float coopSpawnPosY,
+	explicit LevelSectionObserver(const std::shared_ptr<dae::GameObject>& gameObject, std::vector<QBert*>* qBertCompVector,
+		std::vector<dae::GraphicsComponent*>* qBertGraphicsVector, Pyramid* pyramid, std::vector<Disk*>* disksVector, int deathSceneIdx,
+		dae::GraphicsComponent* pauseScreenGraphics, int level, int gameMode, float coopP1SpawnPosX, float coopP2SpawnPosX, float coopSpawnPosY,
 		bool spawnSlickSams, bool spawnUggWrongs, float slickSamSpawnInterval = 0, float uggWrongSpawnInterval = 0);
 
 	LevelSectionObserver(const LevelSectionObserver& other) = delete;
@@ -56,7 +57,7 @@ public:
 	void WinSection();
 	bool RoundWonAnimation(const float deltaTime);
 	void ChangeFreezeEverything(bool freeze) const;
-	void ChangeSection(int newSectionIdx = 0) const;
+	void ChangeSection(int newSectionIdx) const;
 
 	void AddCoily(bool isLeft);
 	void AddSlickSam(bool isSlick, bool isLeft);
@@ -66,6 +67,7 @@ private:
 	enum class LevelSectionState
 	{
 		ST_InterLevelAnimation,
+		ST_GamePaused,
 		ST_RoundWon,
 		ST_PauseBeforeNextRound,
 		ST_PlayerDying,
@@ -80,6 +82,7 @@ private:
 	Pyramid* m_Pyramid;
 	std::vector<Disk*>* m_DisksVector;
 	const int m_DeathSceneIdx;
+	dae::GraphicsComponent* m_PauseScreenGraphics;
 
 	bool m_QBertP1JustFell;
 	bool m_QBertP1JustTookDisk;
@@ -118,5 +121,6 @@ private:
 	const float m_CoopSpawnPosY;
 
 	LevelSectionState m_CurrentState;
+	LevelSectionState m_StateBeforePause;
 };
 

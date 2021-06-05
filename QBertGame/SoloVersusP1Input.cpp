@@ -31,6 +31,16 @@ void SoloVersusP1Input::Initialize()
 	moveRightKeyboard->SetButtonPressType(dae::ButtonPress::PressedDown);
 	dae::InputManager::GetInstance().AddCommand(SDLK_d, std::move(moveRightKeyboard));
 
+	auto pauseKeyboard = std::make_unique<QBertPauseGameCommand>();
+	pauseKeyboard->SetActor(m_QBertGO);
+	pauseKeyboard->SetButtonPressType(dae::ButtonPress::PressedDown);
+	dae::InputManager::GetInstance().AddCommand(SDLK_p, std::move(pauseKeyboard));
+
+	auto backToMenuKeyboard = std::make_unique<QBertBackToMenuCommand>();
+	backToMenuKeyboard->SetActor(m_QBertGO);
+	backToMenuKeyboard->SetButtonPressType(dae::ButtonPress::PressedDown);
+	dae::InputManager::GetInstance().AddCommand(SDLK_ESCAPE, std::move(backToMenuKeyboard));
+
 
 	
 	auto moveUpController = std::make_unique<QBertMoveUpCommand>();
@@ -56,6 +66,18 @@ void SoloVersusP1Input::Initialize()
 	moveRightController->SetButtonPressType(dae::ButtonPress::PressedDown);
 	controllerKey.second = dae::ControllerButton::DPadRight;
 	dae::InputManager::GetInstance().AddCommand(controllerKey, std::move(moveRightController));
+
+	auto pauseController = std::make_unique<QBertPauseGameCommand>();
+	pauseController->SetActor(m_QBertGO);
+	pauseController->SetButtonPressType(dae::ButtonPress::PressedDown);
+	controllerKey.second = dae::ControllerButton::Start;
+	dae::InputManager::GetInstance().AddCommand(controllerKey, std::move(pauseController));
+
+	auto backToMenuController = std::make_unique<QBertBackToMenuCommand>();
+	backToMenuController->SetActor(m_QBertGO);
+	backToMenuController->SetButtonPressType(dae::ButtonPress::PressedDown);
+	controllerKey.second = dae::ControllerButton::ButtonB;
+	dae::InputManager::GetInstance().AddCommand(controllerKey, std::move(backToMenuController));
 }
 
 void SoloVersusP1Input::Update(const float)

@@ -44,7 +44,6 @@ auto* g_QBertsGraphicsVector = new std::vector<dae::GraphicsComponent*>();
 
 // Global Functions
 void SetUpQBerts();
-void PrintInstructions();
 
 void LoadStartScreen();
 
@@ -129,8 +128,6 @@ int main(int, char* [])
 	LoadLevelsBinaries("Level02Versus.bin"); // Scene idx 44-48
 	LoadLevelsBinaries("Level03Versus.bin"); // Scene idx 49-53
 	LoadVictoryScreenVersus(); // Scene idx 54
-	
-	PrintInstructions();
 
 	engine.Run();
 
@@ -149,16 +146,6 @@ void SetUpQBerts()
 	g_QBertsCompVector->push_back(g_QBertP2GOs[0]->GetComponent<QBert>());
 	g_QBertsGraphicsVector->push_back(g_QBertP1GOs[0]->GetComponent<dae::GraphicsComponent>());
 	g_QBertsGraphicsVector->push_back(g_QBertP2GOs[0]->GetComponent<dae::GraphicsComponent>());
-}
-
-void PrintInstructions()
-{
-	std::cout << "Controls:\n";
-	std::cout << "\n";
-	std::cout << "   W or DPad Up     | Move Up/Right\n";
-	std::cout << "   A or DPad Left   | Move Up/Left\n";
-	std::cout << "   S or DPad Down   | Move Down/Left\n";
-	std::cout << "   D or DPad Right  | Move Down/Right\n\n";
 }
 
 
@@ -714,6 +701,7 @@ void LoadLevelsBinaries(const std::string& fileName)
 
 
 	//// Create A Scene And Fill It Properly For Each Round
+	
 	for (const auto& round : rounds)
 	{
 		// Create Scene
@@ -767,7 +755,7 @@ void LoadLevelsBinaries(const std::string& fileName)
 		for (const auto& gameObject : uiGOs)
 			scene.Add(gameObject);
 
-		// Level Section Observer
+		// Level Section Observer (and Pause Screen)
 		int deathSceneIdx;
 		if (round.gameMode == 1) // Solo
 			deathSceneIdx = 1;
@@ -776,11 +764,13 @@ void LoadLevelsBinaries(const std::string& fileName)
 		else					// Versus
 			deathSceneIdx = 37;
 
+		auto pauseScreenGO = MakePauseScreenVisuals();
 		auto sectionObserverGO = std::make_shared<dae::GameObject>();
-		sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertsCompVector, g_QBertsGraphicsVector, pyramid, disksVector, deathSceneIdx, round.level,
-			round.gameMode, g_CoopP1SpawnPosX, g_CoopP2SpawnPosX, g_CoopSpawnPosY,
+		sectionObserverGO->AddComponent(new LevelSectionObserver(sectionObserverGO, g_QBertsCompVector, g_QBertsGraphicsVector, pyramid, disksVector, deathSceneIdx,
+			pauseScreenGO->GetComponent<dae::GraphicsComponent>(), round.level, round.gameMode, g_CoopP1SpawnPosX, g_CoopP2SpawnPosX, g_CoopSpawnPosY,
 			round.spawnSlickSams, round.spawnUggWrongs, round.slickSamsSpawnInterval, round.uggWrongSpawnInterval));
 
+		scene.Add(pauseScreenGO);
 		scene.Add(sectionObserverGO);
 
 		// Add The Mode's Player Input

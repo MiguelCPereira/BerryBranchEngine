@@ -53,6 +53,10 @@ public:
 	bool MoveDownRight();
 	void JumpFinished();
 
+	void PauseGame() const;
+	void BackToMenu() const;
+	void AnimationStopped() const;
+
 	void Initialize() override;
 	void Update(const float deltaTime) override;
 
@@ -67,6 +71,9 @@ private:
 	
 	std::shared_ptr<dae::GameObject> m_GameObject{};
 	std::shared_ptr<dae::GameObject> m_CursesGameObject{};
+
+	int m_JumpedToCubeIdx {1 };
+	int m_JumpedToRowIdx{ 1 };
 	
 	int m_CurrentCubeIdx{ 1 };
 	int m_CurrentRow{ 1 };

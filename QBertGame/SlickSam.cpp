@@ -18,6 +18,9 @@ SlickSam::SlickSam(const std::shared_ptr<dae::GameObject>& gameObject, int nrRow
 	, m_CurrentRow(2)
 	, m_LastRow(nrRows)
 
+	, m_JumpedToCubeIdx(startingCube)
+	, m_JumpedToRowIdx(2)
+
 	, m_SpriteWidth(spriteWidth)
 	, m_SpriteHeight(spriteHeight)
 
@@ -37,6 +40,11 @@ SlickSam::SlickSam(const std::shared_ptr<dae::GameObject>& gameObject, int nrRow
 
 void SlickSam::SetFrozen(bool frozen)
 {
+	if (frozen)
+		m_Subject->Notify(dae::Event::EntityFrozen);
+	else
+		m_Subject->Notify(dae::Event::EntityUnfrozen);
+	
 	m_Frozen = frozen;
 }
 
@@ -53,8 +61,8 @@ bool SlickSam::MoveDownLeft()
 		// If Slick/Sam isn't in the last pyramid row, change the pos index
 		if (m_CurrentRow != m_LastRow)
 		{
-			m_CurrentCubeIdx = m_CurrentCubeIdx + m_CurrentRow;
-			m_CurrentRow++;
+			m_JumpedToCubeIdx = m_CurrentCubeIdx + m_CurrentRow;
+			m_JumpedToRowIdx = m_CurrentRow + 1;
 		}
 		else // Else, make them jump out of the map
 		{
@@ -86,8 +94,8 @@ bool SlickSam::MoveDownRight()
 		// If Slick/Sam isn't in the last pyramid row, change the pos index
 		if (m_CurrentRow != m_LastRow)
 		{
-			m_CurrentCubeIdx = m_CurrentCubeIdx + m_CurrentRow + 1;
-			m_CurrentRow++;
+			m_JumpedToCubeIdx = m_CurrentCubeIdx + m_CurrentRow + 1;
+			m_JumpedToRowIdx = m_CurrentRow + 1;
 		}
 		else // Else, make them jump out of the map
 		{
@@ -118,6 +126,8 @@ void SlickSam::JumpFinished()
 	
 	if (m_Alive)
 	{
+		m_CurrentCubeIdx = m_JumpedToCubeIdx;
+		m_CurrentRow = m_JumpedToRowIdx;
 		SoundServiceLocator::GetSoundSystem().Play("../Data/Sounds/Other Foes Jump.wav", 0.08f);
 		m_Subject->Notify(dae::Event::SlickSamLanded);
 	}
@@ -161,36 +171,39 @@ void SlickSam::Initialize()
 
 void SlickSam::Update(const float deltaTime)
 {
-	switch (m_CurrentState)
+	if (m_Frozen == false)
 	{
-	case SlickSamState::ST_FallingIntoSpawn:
-		if (FallIntoSpawnPos(deltaTime)) // This function will only return true if the fall animation is done
+		switch (m_CurrentState)
 		{
+		case SlickSamState::ST_FallingIntoSpawn:
+			if (FallIntoSpawnPos(deltaTime)) // This function will only return true if the fall animation is done
+			{
+				m_CurrentState = SlickSamState::ST_Waiting;
+				JumpFinished();
+			}
+			break;
+
+		case SlickSamState::ST_Waiting:
+			m_JumpTimer += deltaTime;
+
+			if (m_JumpTimer >= m_JumpInterval)
+			{
+				m_JumpTimer = 0;
+				m_CurrentState = SlickSamState::ST_Jumping;
+			}
+			break;
+
+		case SlickSamState::ST_Jumping:
+			// A random 50/50 chance of Slick/Sam falling to the right or left
+			if ((rand() % 2) + 1 == 1)
+				MoveDownRight();
+			else
+				MoveDownLeft();
+
 			m_CurrentState = SlickSamState::ST_Waiting;
-			JumpFinished();
+
+			break;
 		}
-		break;
-		
-	case SlickSamState::ST_Waiting:
-		m_JumpTimer += deltaTime;
-
-		if (m_JumpTimer >= m_JumpInterval)
-		{
-			m_JumpTimer = 0;
-			m_CurrentState = SlickSamState::ST_Jumping;
-		}
-		break;
-
-	case SlickSamState::ST_Jumping:
-		// A random 50/50 chance of Slick/Sam falling to the right or left
-		if ((rand() % 2) + 1 == 1)
-			MoveDownRight();
-		else
-			MoveDownLeft();
-
-		m_CurrentState = SlickSamState::ST_Waiting;
-
-		break;
 	}
 }
 

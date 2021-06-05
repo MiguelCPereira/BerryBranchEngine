@@ -19,6 +19,9 @@ Coily::Coily(const std::shared_ptr<dae::GameObject>& gameObject, std::vector<QBe
 	, m_CurrentRow(2)
 	, m_LastRow(nrRows)
 
+	, m_JumpedToCubeIdx(startingCube)
+	, m_JumpedToRowIdx(2)
+
 	, m_SpriteWidth(spriteWidth)
 	, m_SpriteHeight(spriteHeight)
 
@@ -43,6 +46,11 @@ Coily::Coily(const std::shared_ptr<dae::GameObject>& gameObject, std::vector<QBe
 
 void Coily::SetFrozen(bool frozen)
 {
+	if (frozen)
+		m_Subject->Notify(dae::Event::EntityFrozen);
+	else
+		m_Subject->Notify(dae::Event::EntityUnfrozen);
+	
 	m_Frozen = frozen;
 }
 
@@ -58,8 +66,8 @@ bool Coily::MoveDownLeft()
 		// If Coily isn't in the last pyramid row, change the pos index
 		if (m_CurrentRow != m_LastRow)
 		{
-			m_CurrentCubeIdx = m_CurrentCubeIdx + m_CurrentRow;
-			m_CurrentRow++;
+			m_JumpedToCubeIdx = m_CurrentCubeIdx + m_CurrentRow;
+			m_JumpedToRowIdx = m_CurrentRow + 1;
 		}
 		else // Else, make them start hatching (but if they have already, make them jump out of the map)
 		{
@@ -100,8 +108,8 @@ bool Coily::MoveDownRight()
 		// If Coily isn't in the last pyramid row, change the pos index
 		if (m_CurrentRow != m_LastRow)
 		{
-			m_CurrentCubeIdx = m_CurrentCubeIdx + m_CurrentRow + 1;
-			m_CurrentRow++;
+			m_JumpedToCubeIdx = m_CurrentCubeIdx + m_CurrentRow + 1;
+			m_JumpedToRowIdx = m_CurrentRow + 1;
 		}
 		else // Else, make them start hatching (but if they have already, make them jump out of the map)
 		{
@@ -142,8 +150,8 @@ bool Coily::MoveUpLeft()
 		// If Coily isn't in the beginning of any of the pyramid rows, change the pos index
 		if (m_CurrentCubeIdx != m_CurrentRow * (m_CurrentRow + 1) / 2 - m_CurrentRow + 1 && m_CurrentCubeIdx != 1)
 		{
-			m_CurrentCubeIdx = m_CurrentCubeIdx - m_CurrentRow;
-			m_CurrentRow--;
+			m_JumpedToCubeIdx = m_CurrentCubeIdx - m_CurrentRow;
+			m_JumpedToRowIdx = m_CurrentRow - 1;
 		}
 		else // Else, make them jump out of the map
 		{
@@ -172,8 +180,8 @@ bool Coily::MoveUpRight()
 		// If Coily isn't in the end of any of the pyramid rows, change the pos index
 		if (m_CurrentCubeIdx != m_CurrentRow * (m_CurrentRow + 1) / 2)
 		{
-			m_CurrentCubeIdx = m_CurrentCubeIdx - m_CurrentRow + 1;
-			m_CurrentRow--;
+			m_JumpedToCubeIdx = m_CurrentCubeIdx - m_CurrentRow + 1;
+			m_JumpedToRowIdx = m_CurrentRow - 1;
 		}
 		else // Else, make them jump out of the map
 		{
@@ -250,6 +258,9 @@ void Coily::JumpFinished()
 
 	if (m_Alive)
 	{
+		m_CurrentCubeIdx = m_JumpedToCubeIdx;
+		m_CurrentRow = m_JumpedToRowIdx;
+		
 		if (m_CurrentState == CoilyState::ST_EggJumping || m_CurrentState == CoilyState::ST_EggWaiting)
 			SoundServiceLocator::GetSoundSystem().Play("../Data/Sounds/Coily Egg Jump.wav", 0.1f);
 		else
@@ -264,9 +275,19 @@ void Coily::JumpFinished()
 	}
 }
 
-void Coily::QBertHit()
+void Coily::QBertHit() const
 {
 	m_Subject->Notify(dae::Event::CoilyHitQBert);
+}
+
+void Coily::PauseGame() const
+{
+	m_Subject->Notify(dae::Event::PausePressed);
+}
+
+void Coily::BackToMenu() const
+{
+	m_Subject->Notify(dae::Event::BackToMenu);
 }
 
 void Coily::Initialize()
@@ -279,86 +300,89 @@ void Coily::Initialize()
 
 void Coily::Update(const float deltaTime)
 {
-	switch (m_CurrentState)
+	if (m_Frozen == false)
 	{
-	case CoilyState::ST_FallingIntoSpawn:
-		if (FallIntoSpawnPos(deltaTime)) // This function will only return true if the fall animation is done
+		switch (m_CurrentState)
 		{
-			m_CurrentState = CoilyState::ST_EggWaiting;
-			JumpFinished();
-		}
-		break;
-		
-	case CoilyState::ST_EggWaiting:
-		m_JumpTimer += deltaTime;
-
-		if (m_JumpTimer >= m_JumpInterval)
-		{
-			m_JumpTimer = 0;
-			m_CurrentState = CoilyState::ST_EggJumping;
-		}
-		break;
-
-	case CoilyState::ST_EggJumping:
-		// A random 50/50 chance of Coily's egg falling to the right or left
-		if ((rand() % 2) + 1 == 1)
-			MoveDownRight();
-		else
-			MoveDownLeft();
-
-		if (m_CurrentState == CoilyState::ST_EggJumping) // If the egg hasn't begun transforming
-			m_CurrentState = CoilyState::ST_EggWaiting;
-
-		break;
-
-	case CoilyState::ST_Transforming:
-		m_TransformTimer += deltaTime;
-
-		if (m_TransformTimer >= m_TransformationTime)
-		{
-			m_TransformTimer = 0.f;
-
-			if (m_GameMode != 3) // If playing any mode that not Versus
+		case CoilyState::ST_FallingIntoSpawn:
+			if (FallIntoSpawnPos(deltaTime)) // This function will only return true if the fall animation is done
 			{
+				m_CurrentState = CoilyState::ST_EggWaiting;
+				JumpFinished();
+			}
+			break;
+
+		case CoilyState::ST_EggWaiting:
+			m_JumpTimer += deltaTime;
+
+			if (m_JumpTimer >= m_JumpInterval)
+			{
+				m_JumpTimer = 0;
+				m_CurrentState = CoilyState::ST_EggJumping;
+			}
+			break;
+
+		case CoilyState::ST_EggJumping:
+			// A random 50/50 chance of Coily's egg falling to the right or left
+			if ((rand() % 2) + 1 == 1)
+				MoveDownRight();
+			else
+				MoveDownLeft();
+
+			if (m_CurrentState == CoilyState::ST_EggJumping) // If the egg hasn't begun transforming
+				m_CurrentState = CoilyState::ST_EggWaiting;
+
+			break;
+
+		case CoilyState::ST_Transforming:
+			m_TransformTimer += deltaTime;
+
+			if (m_TransformTimer >= m_TransformationTime)
+			{
+				m_TransformTimer = 0.f;
+
+				if (m_GameMode != 3) // If playing any mode that not Versus
+				{
+					m_CurrentState = CoilyState::ST_SnakeJumping;
+				}
+				else
+				{
+					// Show transformation without moving, so the player knows they now have control
+					m_GameObject->GetComponent<dae::GraphicsComponent>()->SetSrcRectangle(m_SpriteWidth * 6, 0, m_SpriteWidth, m_SpriteHeight);
+					m_CurrentState = CoilyState::ST_InP2Control;
+				}
+			}
+			break;
+
+		case CoilyState::ST_InP2Control:
+			// Stop updating
+			break;
+
+		case CoilyState::ST_SnakeWaiting:
+			m_JumpTimer += deltaTime;
+
+			if (m_JumpTimer >= m_JumpInterval)
+			{
+				m_JumpTimer -= m_JumpInterval;
 				m_CurrentState = CoilyState::ST_SnakeJumping;
 			}
-			else
+			break;
+
+		case CoilyState::ST_SnakeJumping:
+			// This variable prevents the timer from being reset before the movement is actually complete.
+			// It will only become false if Coily's in snake mode and a QBert evades them at the last second,
+			// making both Coily and the Qbert's cube index the same, although they're not colliding (has QBert's mid-air)
+			// This is rare, but if it happens, the calculation will wait as many frames as it needs until QBert lands
+			const bool movementSucceeded = CoilySeekBehaviour();
+
+			if (movementSucceeded)
 			{
-				// Show transformation without moving, so the player knows they now have control
-				m_GameObject->GetComponent<dae::GraphicsComponent>()->SetSrcRectangle(m_SpriteWidth * 6, 0, m_SpriteWidth, m_SpriteHeight);
-				m_CurrentState = CoilyState::ST_InP2Control;
+				m_JumpTimer = 0;
+				m_CurrentState = CoilyState::ST_SnakeWaiting;
 			}
+
+			break;
 		}
-		break;
-
-	case CoilyState::ST_InP2Control:
-		// Stop updating
-		break;
-
-	case CoilyState::ST_SnakeWaiting:
-		m_JumpTimer += deltaTime;
-
-		if (m_JumpTimer >= m_JumpInterval)
-		{
-			m_JumpTimer -= m_JumpInterval;
-			m_CurrentState = CoilyState::ST_SnakeJumping;
-		}
-		break;
-
-	case CoilyState::ST_SnakeJumping:
-		// This variable prevents the timer from being reset before the movement is actually complete.
-		// It will only become false if Coily's in snake mode and a QBert evades them at the last second,
-		// making both Coily and the Qbert's cube index the same, although they're not colliding (has QBert's mid-air)
-		// This is rare, but if it happens, the calculation will wait as many frames as it needs until QBert lands
-		const bool movementSucceeded = CoilySeekBehaviour();
-
-		if (movementSucceeded)
-		{
-			m_JumpTimer = 0;
-			m_CurrentState = CoilyState::ST_SnakeWaiting;
-		}
-
-		break;
 	}
 }
 

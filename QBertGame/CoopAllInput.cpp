@@ -12,7 +12,21 @@ void CoopAllInput::Initialize()
 {
 	dae::InputManager::GetInstance().ClearAllCommands();
 
+	
+	// GENERAL
+	
+	auto pauseKeyboard = std::make_unique<QBertPauseGameCommand>();
+	pauseKeyboard->SetActor(m_QBert1GO);
+	pauseKeyboard->SetButtonPressType(dae::ButtonPress::PressedDown);
+	dae::InputManager::GetInstance().AddCommand(SDLK_p, std::move(pauseKeyboard));
 
+	auto backToMenuKeyboard = std::make_unique<QBertBackToMenuCommand>();
+	backToMenuKeyboard->SetActor(m_QBert1GO);
+	backToMenuKeyboard->SetButtonPressType(dae::ButtonPress::PressedDown);
+	dae::InputManager::GetInstance().AddCommand(SDLK_ESCAPE, std::move(backToMenuKeyboard));
+
+
+	
 	// PLAYER 01
 
 	auto p1MoveUpKeyboard = std::make_unique<QBertMoveUpCommand>();
@@ -60,6 +74,18 @@ void CoopAllInput::Initialize()
 	p1MoveRightController->SetButtonPressType(dae::ButtonPress::PressedDown);
 	controllerKey.second = dae::ControllerButton::DPadRight;
 	dae::InputManager::GetInstance().AddCommand(controllerKey, std::move(p1MoveRightController));
+
+	auto p1PauseController = std::make_unique<QBertPauseGameCommand>();
+	p1PauseController->SetActor(m_QBert1GO);
+	p1PauseController->SetButtonPressType(dae::ButtonPress::PressedDown);
+	controllerKey.second = dae::ControllerButton::ButtonB;
+	dae::InputManager::GetInstance().AddCommand(controllerKey, std::move(p1PauseController));
+
+	auto p1BackToMenuController = std::make_unique<QBertBackToMenuCommand>();
+	p1BackToMenuController->SetActor(m_QBert1GO);
+	p1BackToMenuController->SetButtonPressType(dae::ButtonPress::PressedDown);
+	controllerKey.second = dae::ControllerButton::ButtonB;
+	dae::InputManager::GetInstance().AddCommand(controllerKey, std::move(p1BackToMenuController));
 
 
 
@@ -111,6 +137,18 @@ void CoopAllInput::Initialize()
 	p2MoveRightController->SetButtonPressType(dae::ButtonPress::PressedDown);
 	controllerKey.second = dae::ControllerButton::DPadRight;
 	dae::InputManager::GetInstance().AddCommand(controllerKey, std::move(p2MoveRightController));
+
+	auto p2PauseController = std::make_unique<QBertPauseGameCommand>();
+	p2PauseController->SetActor(m_QBert2GO);
+	p2PauseController->SetButtonPressType(dae::ButtonPress::PressedDown);
+	controllerKey.second = dae::ControllerButton::ButtonB;
+	dae::InputManager::GetInstance().AddCommand(controllerKey, std::move(p2PauseController));
+
+	auto p2BackToMenuController = std::make_unique<QBertBackToMenuCommand>();
+	p2BackToMenuController->SetActor(m_QBert2GO);
+	p2BackToMenuController->SetButtonPressType(dae::ButtonPress::PressedDown);
+	controllerKey.second = dae::ControllerButton::ButtonB;
+	dae::InputManager::GetInstance().AddCommand(controllerKey, std::move(p2BackToMenuController));
 }
 
 void CoopAllInput::Update(const float)

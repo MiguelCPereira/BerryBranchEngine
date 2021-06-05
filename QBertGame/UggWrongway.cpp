@@ -17,6 +17,9 @@ UggWrongway::UggWrongway(const std::shared_ptr<dae::GameObject>& gameObject, int
 	, m_CurrentCubeIdx(startingCube)
 	, m_CurrentRow(nrRows)
 
+	, m_JumpedToCubeIdx(startingCube)
+	, m_JumpedToRowIdx(nrRows)
+
 	, m_SpriteWidth(spriteWidth)
 	, m_SpriteHeight(spriteHeight)
 
@@ -38,6 +41,11 @@ UggWrongway::UggWrongway(const std::shared_ptr<dae::GameObject>& gameObject, int
 
 void UggWrongway::SetFrozen(bool frozen)
 {
+	if (frozen)
+		m_Subject->Notify(dae::Event::EntityFrozen);
+	else
+		m_Subject->Notify(dae::Event::EntityUnfrozen);
+	
 	m_Frozen = frozen;
 }
 
@@ -54,8 +62,8 @@ bool UggWrongway::MoveUpLeft()
 		// If Ugg/Wrongway isn't in the beginning of any of the pyramid rows, change the pos index
 		if (m_CurrentCubeIdx != m_CurrentRow * (m_CurrentRow + 1) / 2 - m_CurrentRow + 1 && m_CurrentCubeIdx != 1)
 		{
-			m_CurrentCubeIdx = m_CurrentCubeIdx - m_CurrentRow;
-			m_CurrentRow--;
+			m_JumpedToCubeIdx = m_CurrentCubeIdx - m_CurrentRow;
+			m_JumpedToRowIdx = m_CurrentRow - 1;
 		}
 		else // Else, make them jump out of the map
 		{
@@ -87,8 +95,8 @@ bool UggWrongway::MoveUpRight()
 		// If Ugg/Wrongway isn't in the end of any of the pyramid rows, change the pos index
 		if (m_CurrentCubeIdx != m_CurrentRow * (m_CurrentRow + 1) / 2)
 		{
-			m_CurrentCubeIdx = m_CurrentCubeIdx - m_CurrentRow + 1;
-			m_CurrentRow--;
+			m_JumpedToCubeIdx = m_CurrentCubeIdx - m_CurrentRow + 1;
+			m_JumpedToRowIdx = m_CurrentRow - 1;
 		}
 		else // Else, make them jump out of the map
 		{
@@ -119,7 +127,10 @@ bool UggWrongway::MoveLeft()
 	{
 		// If Ugg/Wrongway isn't in the beginning of any of the pyramid rows, change the pos idx
 		if (m_CurrentCubeIdx != m_CurrentRow * (m_CurrentRow + 1) / 2 - m_CurrentRow + 1 && m_CurrentCubeIdx != 1)
-			m_CurrentCubeIdx = m_CurrentCubeIdx - 1;
+		{
+			m_JumpedToCubeIdx = m_CurrentCubeIdx - 1;
+			m_JumpedToRowIdx = m_CurrentRow;
+		}
 		else // Else, make them jump out of the map
 			m_Alive = false;
 
@@ -147,7 +158,10 @@ bool UggWrongway::MoveRight()
 	{
 		// If Ugg/Wrongway isn't in the end of any of the pyramid rows, change the pos index
 		if (m_CurrentCubeIdx != m_CurrentRow * (m_CurrentRow + 1) / 2)
-			m_CurrentCubeIdx = m_CurrentCubeIdx + 1;
+		{
+			m_JumpedToCubeIdx = m_CurrentCubeIdx + 1;
+			m_JumpedToRowIdx = m_CurrentRow;
+		}
 		else // Else, make them jump out of the map
 			m_Alive = false;
 
@@ -175,6 +189,8 @@ void UggWrongway::JumpFinished()
 	
 	if (m_Alive)
 	{
+		m_CurrentCubeIdx = m_JumpedToCubeIdx;
+		m_CurrentRow = m_JumpedToRowIdx;
 		SoundServiceLocator::GetSoundSystem().Play("../Data/Sounds/Other Foes Jump.wav", 0.08f);
 		m_Subject->Notify(dae::Event::UggWrongwayLanded);
 	}
@@ -229,45 +245,47 @@ void UggWrongway::Initialize()
 
 void UggWrongway::Update(const float deltaTime)
 {
-	switch (m_CurrentState)
+	if (m_Frozen == false)
 	{
-	case UggWrongState::ST_FallingIntoSpawn:
-		if (FallIntoSpawnPos(deltaTime)) // This function will only return true if the fall animation is done
+		switch (m_CurrentState)
 		{
+		case UggWrongState::ST_FallingIntoSpawn:
+			if (FallIntoSpawnPos(deltaTime)) // This function will only return true if the fall animation is done
+			{
+				m_CurrentState = UggWrongState::ST_Waiting;
+				JumpFinished();
+			}
+			break;
+
+		case UggWrongState::ST_Waiting:
+			m_JumpTimer += deltaTime;
+
+			if (m_JumpTimer >= m_JumpInterval)
+			{
+				m_JumpTimer = 0;
+				m_CurrentState = UggWrongState::ST_Jumping;
+			}
+			break;
+
+		case UggWrongState::ST_Jumping:
+			// A random 50/50 chance of Ugg/Wrongway moving to the side or up
+			if ((rand() % 2) + 1 == 1)
+			{
+				if (m_StartingLeft)
+					MoveUpRight();
+				else
+					MoveUpLeft();
+			}
+			else
+			{
+				if (m_StartingLeft)
+					MoveRight();
+				else
+					MoveLeft();
+			}
+
 			m_CurrentState = UggWrongState::ST_Waiting;
-			JumpFinished();
+			break;
 		}
-		break;
-		
-	case UggWrongState::ST_Waiting:
-		m_JumpTimer += deltaTime;
-
-		if (m_JumpTimer >= m_JumpInterval)
-		{
-			m_JumpTimer = 0;
-			m_CurrentState = UggWrongState::ST_Jumping;
-		}
-		break;
-
-	case UggWrongState::ST_Jumping:
-		// A random 50/50 chance of Ugg/Wrongway moving to the side or up
-		if ((rand() % 2) + 1 == 1)
-		{
-			if (m_StartingLeft)
-				MoveUpRight();
-			else
-				MoveUpLeft();
-		}
-		else
-		{
-			if (m_StartingLeft)
-				MoveRight();
-			else
-				MoveLeft();
-		}
-
-		m_CurrentState = UggWrongState::ST_Waiting;
-
-		break;
 	}
 }

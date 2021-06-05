@@ -65,6 +65,18 @@ public:
 	void Execute() override { GetActor()->GetComponent<QBert>()->MoveDownRight(); }
 };
 
+class QBertPauseGameCommand final : public dae::Command
+{
+public:
+	void Execute() override { GetActor()->GetComponent<QBert>()->PauseGame(); }
+};
+
+class QBertBackToMenuCommand final : public dae::Command
+{
+public:
+	void Execute() override { GetActor()->GetComponent<QBert>()->BackToMenu(); }
+};
+
 
 
 
@@ -91,4 +103,16 @@ class CoilyMoveRightCommand final : public dae::Command
 {
 public:
 	void Execute() override { GetActor()->GetComponent<Coily>()->MoveDownRightPlayer(); }
+};
+
+class CoilyPauseGameCommand final : public dae::Command
+{
+public:
+	void Execute() override { GetActor()->GetComponent<Coily>()->PauseGame(); }
+};
+
+class CoilyBackToMenuCommand final : public dae::Command
+{
+public:
+	void Execute() override { GetActor()->GetComponent<Coily>()->BackToMenu(); }
 };

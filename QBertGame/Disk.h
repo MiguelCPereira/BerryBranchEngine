@@ -23,6 +23,7 @@ public:
 
 	void Activate(QBert* qBertComp, dae::GraphicsComponent* qBertGraphics, bool playerOne);
 	void SetHide(bool isHidden);
+	void SetFrozen(bool isFrozen);
 	void ResetDisk();
 
 	int GetRow() const { return m_RowIdx; }
@@ -40,6 +41,7 @@ private:
 	const bool m_IsLeft;
 	const int m_ColorIdx;
 	bool m_Activated;
+	bool m_Frozen;
 
 	const float m_FlightTime;
 	const float m_QBertFallSpeed;

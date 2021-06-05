@@ -64,6 +64,11 @@ void QBert::RevertToLastPosition()
 
 void QBert::SetFrozen(bool frozen)
 {
+	if(frozen)
+		m_Subject->Notify(dae::Event::EntityFrozen);
+	else
+		m_Subject->Notify(dae::Event::EntityUnfrozen);
+	
 	m_Frozen = frozen;
 }
 
@@ -105,6 +110,8 @@ void QBert::SetNewPositionIndexes(int cubeIdx, int rowNr)
 {
 	m_CurrentCubeIdx = cubeIdx;
 	m_CurrentRow = rowNr;
+	m_JumpedToCubeIdx = cubeIdx;
+	m_JumpedToRowIdx = rowNr;
 }
 
 void QBert::ScoreIncrease(int gainedPoints)
@@ -140,8 +147,8 @@ bool QBert::MoveUpRight()
 		
 		if (IsInRightBorder() == false)
 		{
-			m_CurrentCubeIdx = m_CurrentCubeIdx - m_CurrentRow + 1;
-			m_CurrentRow--;
+			m_JumpedToCubeIdx = m_CurrentCubeIdx - m_CurrentRow + 1;
+			m_JumpedToRowIdx = m_CurrentRow - 1;
 			m_JumpedOff = false;
 		}
 		else
@@ -173,8 +180,8 @@ bool QBert::MoveUpLeft()
 		
 		if (IsInLeftBorder() == false)
 		{
-			m_CurrentCubeIdx = m_CurrentCubeIdx - m_CurrentRow;
-			m_CurrentRow--;
+			m_JumpedToCubeIdx = m_CurrentCubeIdx - m_CurrentRow;
+			m_JumpedToRowIdx = m_CurrentRow - 1;
 			m_JumpedOff = false;
 		}
 		else
@@ -207,8 +214,8 @@ bool QBert::MoveDownLeft()
 		// If QBert isn't in the last pyramid row
 		if (m_CurrentRow != m_LastRow)
 		{
-			m_CurrentCubeIdx = m_CurrentCubeIdx + m_CurrentRow;
-			m_CurrentRow++;
+			m_JumpedToCubeIdx = m_CurrentCubeIdx + m_CurrentRow;
+			m_JumpedToRowIdx = m_CurrentRow + 1;
 			m_JumpedOff = false;
 		}
 		else
@@ -240,8 +247,8 @@ bool QBert::MoveDownRight()
 		// If QBert isn't in the last pyramid row
 		if (m_CurrentRow != m_LastRow)
 		{
-			m_CurrentCubeIdx = m_CurrentCubeIdx + m_CurrentRow + 1;
-			m_CurrentRow++;
+			m_JumpedToCubeIdx = m_CurrentCubeIdx + m_CurrentRow + 1;
+			m_JumpedToRowIdx = m_CurrentRow + 1;
 			m_JumpedOff = false;
 		}
 		else
@@ -275,6 +282,8 @@ void QBert::JumpFinished()
 	}
 	else
 	{
+		m_CurrentCubeIdx = m_JumpedToCubeIdx;
+		m_CurrentRow = m_JumpedToRowIdx;
 		SoundServiceLocator::GetSoundSystem().Play("../Data/Sounds/QBert Jump.wav", 0.1f);
 		m_Airborne = false;
 		if (m_IsPlayerOne)
@@ -282,6 +291,21 @@ void QBert::JumpFinished()
 		else
 			m_Subject->Notify(dae::Event::QBertLandedP2);
 	}
+}
+
+void QBert::PauseGame() const
+{
+	m_Subject->Notify(dae::Event::PausePressed);
+}
+
+void QBert::BackToMenu() const
+{
+	m_Subject->Notify(dae::Event::BackToMenu);
+}
+
+void QBert::AnimationStopped() const
+{
+	m_Subject->Notify(dae::Event::EntityAnimationStopped);
 }
 
 void QBert::Initialize()

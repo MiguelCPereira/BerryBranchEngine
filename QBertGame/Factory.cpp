@@ -1120,3 +1120,12 @@ std::shared_ptr<dae::GameObject> MakeTwoQbertsVictoryDeathScreenLogic(int startS
 
 	return victoryDeathScreenGO;
 }
+
+
+std::shared_ptr<dae::GameObject> MakePauseScreenVisuals()
+{
+	auto pauseScreenGO = std::make_shared<dae::GameObject>();
+	//pauseScreenGO->AddComponent(new dae::GraphicsComponent("Pause Screen.png", 0,0));
+	pauseScreenGO->AddComponent(new dae::GraphicsComponent("Pause Screen.png", -2000, -2000)); // Start Hidden
+	return pauseScreenGO;	
+}

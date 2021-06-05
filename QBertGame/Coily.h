@@ -34,7 +34,9 @@ public:
 	bool MoveUpRightPlayer();
 	void JumpFinished();
 
-	void QBertHit();
+	void QBertHit() const;
+	void PauseGame() const;
+	void BackToMenu() const;
 
 	bool CoilySeekBehaviour();
 	bool ChaseQBert(int qBertRow, int qBertNrInRow, int coilyNrInRow, bool isPlayerOne);
@@ -66,6 +68,9 @@ private:
 	int m_CurrentCubeIdx;
 	int m_CurrentRow;
 	int m_LastRow;
+
+	int m_JumpedToCubeIdx;
+	int m_JumpedToRowIdx;
 	
 	float m_SpriteWidth, m_SpriteHeight;
 	

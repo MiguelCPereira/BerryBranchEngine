@@ -54,6 +54,9 @@ private:
 	int m_CurrentCubeIdx;
 	int m_CurrentRow;
 
+	int m_JumpedToCubeIdx;
+	int m_JumpedToRowIdx;
+
 	float m_SpriteWidth, m_SpriteHeight;
 	
 	float m_JumpTimer;

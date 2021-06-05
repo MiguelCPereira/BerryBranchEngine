@@ -17,6 +17,10 @@ namespace dae
 
 
 		// These are the actual game events
+		EntityFrozen,
+		EntityUnfrozen,
+		EntityAnimationStopped,
+		
 		CoilyLanded,
 		CoilyFell,
 		
@@ -49,6 +53,9 @@ namespace dae
 		DiskFlightEndedP2,
 
 		CoilyHitQBert,
+
+		PausePressed,
+		BackToMenu
 	};
 
 	class Observer

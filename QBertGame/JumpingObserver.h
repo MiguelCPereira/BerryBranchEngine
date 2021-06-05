@@ -53,5 +53,7 @@ private:
 	const int m_FPS;
 	const float m_JumpTime;
 	float m_MidFlightTime, m_TimeSinceLastFrame;
+
+	bool m_Frozen;
 };
 

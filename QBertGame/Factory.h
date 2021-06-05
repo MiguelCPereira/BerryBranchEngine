@@ -96,3 +96,6 @@ std::shared_ptr<dae::GameObject> MakeDeathScreenVersusVisuals();
 std::shared_ptr<dae::GameObject> MakeOneQbertVictoryDeathScreenLogic(int startScreenSceneIdx, QBert* qBertComp);
 
 std::shared_ptr<dae::GameObject> MakeTwoQbertsVictoryDeathScreenLogic(int startScreenSceneIdx, std::vector<QBert*>* qBertCompVector);
+
+
+std::shared_ptr<dae::GameObject> MakePauseScreenVisuals();
