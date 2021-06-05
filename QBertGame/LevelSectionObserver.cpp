@@ -677,17 +677,20 @@ void LevelSectionObserver::OnNotify(const dae::Event& event)
 				}
 
 				// Check P2
-				if (CheckCollidingUggWrong(1))
+				if (m_GameMode == 2)
 				{
-					SoundServiceLocator::GetSoundSystem().Play("../Data/Sounds/QBert Hit.wav", 0.07f);
-					ChangeFreezeEverything(true);
-					m_DeadQbertP2 = true;
+					if (CheckCollidingUggWrong(1))
+					{
+						SoundServiceLocator::GetSoundSystem().Play("../Data/Sounds/QBert Hit.wav", 0.07f);
+						ChangeFreezeEverything(true);
+						m_DeadQbertP2 = true;
 
-					m_QBertCompVector->operator[](1)->Die();
+						m_QBertCompVector->operator[](1)->Die();
 
-					// Make QBert curse
-					SoundServiceLocator::GetSoundSystem().Play("../Data/Sounds/Swearing.wav", 0.1f);
-					m_QBertCompVector->operator[](1)->SetCursesHidden(false);
+						// Make QBert curse
+						SoundServiceLocator::GetSoundSystem().Play("../Data/Sounds/Swearing.wav", 0.1f);
+						m_QBertCompVector->operator[](1)->SetCursesHidden(false);
+					}
 				}
 			}
 			break;
@@ -717,17 +720,20 @@ void LevelSectionObserver::OnNotify(const dae::Event& event)
 				}
 
 				// Check For P2
-				if (CheckCollidingCoily(1))
+				if (m_GameMode == 2)
 				{
-					SoundServiceLocator::GetSoundSystem().Play("../Data/Sounds/QBert Hit.wav", 0.07f);
-					ChangeFreezeEverything(true);
-					m_DeadQbertP2 = true;
+					if (CheckCollidingCoily(1))
+					{
+						SoundServiceLocator::GetSoundSystem().Play("../Data/Sounds/QBert Hit.wav", 0.07f);
+						ChangeFreezeEverything(true);
+						m_DeadQbertP2 = true;
 
-					m_QBertCompVector->operator[](1)->Die();
+						m_QBertCompVector->operator[](1)->Die();
 
-					// Make QBert curse
-					SoundServiceLocator::GetSoundSystem().Play("../Data/Sounds/Swearing.wav", 0.1f);
-					m_QBertCompVector->operator[](1)->SetCursesHidden(false);
+						// Make QBert curse
+						SoundServiceLocator::GetSoundSystem().Play("../Data/Sounds/Swearing.wav", 0.1f);
+						m_QBertCompVector->operator[](1)->SetCursesHidden(false);
+					}
 				}
 			}
 			break;
@@ -811,14 +817,14 @@ void LevelSectionObserver::DestroyUsedDisk() const
 
 void LevelSectionObserver::KillCollidingSlickSam() const
 {
-	for (auto i = 0; i < int(m_QBertCompVector->size()); i++)
+	if (m_GameMode != 2)
 	{
-		if (m_QBertCompVector->operator[](i)->GetAirborne() == false)
+		if (m_QBertCompVector->operator[](0)->GetAirborne() == false)
 		{
 			auto nrSlickSams = m_SlickSamCompVector->size();
 			for (size_t j = 0; j < nrSlickSams; j++)
 			{
-				if (m_QBertCompVector->operator[](i)->GetPositionIndex() == m_SlickSamCompVector->operator[](j)->GetPositionIndex() &&
+				if (m_QBertCompVector->operator[](0)->GetPositionIndex() == m_SlickSamCompVector->operator[](j)->GetPositionIndex() &&
 					m_SlickSamCompVector->operator[](j)->GetAirborne() == false)
 				{
 					auto* deadSlickSam = m_SlickSamCompVector->operator[](j);
@@ -826,8 +832,32 @@ void LevelSectionObserver::KillCollidingSlickSam() const
 					deadSlickSam->Die();
 					j--;
 					nrSlickSams--;
-					m_QBertCompVector->operator[](i)->ScoreIncrease(300);
+					m_QBertCompVector->operator[](0)->ScoreIncrease(300);
 					SoundServiceLocator::GetSoundSystem().Play("../Data/Sounds/SlickSam Caught.wav", 0.3f);
+				}
+			}
+		}
+	}
+	else
+	{
+		for (auto i = 0; i < int(m_QBertCompVector->size()); i++)
+		{
+			if (m_QBertCompVector->operator[](i)->GetAirborne() == false)
+			{
+				auto nrSlickSams = m_SlickSamCompVector->size();
+				for (size_t j = 0; j < nrSlickSams; j++)
+				{
+					if (m_QBertCompVector->operator[](i)->GetPositionIndex() == m_SlickSamCompVector->operator[](j)->GetPositionIndex() &&
+						m_SlickSamCompVector->operator[](j)->GetAirborne() == false)
+					{
+						auto* deadSlickSam = m_SlickSamCompVector->operator[](j);
+						m_SlickSamCompVector->erase(std::find(m_SlickSamCompVector->begin(), m_SlickSamCompVector->end(), deadSlickSam));
+						deadSlickSam->Die();
+						j--;
+						nrSlickSams--;
+						m_QBertCompVector->operator[](i)->ScoreIncrease(300);
+						SoundServiceLocator::GetSoundSystem().Play("../Data/Sounds/SlickSam Caught.wav", 0.3f);
+					}
 				}
 			}
 		}

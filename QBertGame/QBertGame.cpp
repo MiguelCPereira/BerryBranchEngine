@@ -13,7 +13,6 @@
 #include "InputManager.h"
 #include "GameCommands.h"
 #include "LevelSectionObserver.h"
-#include "Disk.h"
 #include "StartScreenInput.h"
 #include "SoloVersusP1Input.h"
 #include "CoopAllInput.h"
@@ -29,7 +28,7 @@
 
 const int g_CubesSpriteHeight = 32;
 const int g_CubesSpriteWidth = 32;
-const float g_PyramidPosX = g_MapCenterX - g_CubesActualWidth / 2.f; // 300.f;
+const float g_PyramidPosX = g_MapCenterX - g_CubesActualWidth / 2.f;
 const float g_PyramidPosY = 80.f;
 
 const float g_CoopP1SpawnPosX = g_MapCenterX - g_CubesActualWidth * 3.f - g_QBertActualWidth / 2.f;

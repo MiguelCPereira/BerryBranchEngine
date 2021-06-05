@@ -739,7 +739,7 @@ std::shared_ptr<dae::GameObject> MakeInstructionsSoloVisuals()
 	const auto descriptionLineSpacing = 30.f;
 	
 	const auto controlsPosX = 40.f;
-	const auto controlsPosY = 250.f;
+	const auto controlsPosY = 240.f;
 	const auto controlsImgWidth = 200.f;
 	const auto controlsImgHeight = 132.f;
 
@@ -777,6 +777,10 @@ std::shared_ptr<dae::GameObject> MakeInstructionsSoloVisuals()
 
 	// Add the Controls Extra Text
 	font = dae::ResourceManager::GetInstance().LoadFont("Minecraft.ttf", 16);
+	textComp = new dae::TextComponent("And pause with the P key", font);
+	textComp->SetPosition(controlsPosX + 5.f, controlsPosY + controlsImgHeight + 10.f);
+	newGO->AddComponent(textComp);
+	
 	textComp = new dae::TextComponent("OR", font);
 	textComp->SetPosition(controlsOrX, controlsOrY);
 	newGO->AddComponent(textComp);
@@ -792,6 +796,9 @@ std::shared_ptr<dae::GameObject> MakeInstructionsSoloVisuals()
 	newGO->AddComponent(textComp);
 	textComp = new dae::TextComponent("Move down/right -> DPAD RIGHT", font);
 	textComp->SetPosition(controlsTextX + 2.f, controlsPosY + controlsLineSpacing * 5.f);
+	newGO->AddComponent(textComp);
+	textComp = new dae::TextComponent("Pause game -> START", font);
+	textComp->SetPosition(controlsTextX + 40.f, controlsPosY + controlsLineSpacing * 6.f);
 	newGO->AddComponent(textComp);
 
 
@@ -814,7 +821,7 @@ std::shared_ptr<dae::GameObject>  MakeInstructionsCoopVisuals()
 	const auto descriptionLineSpacing = 30.f;
 
 	const auto controlsPosX = 40.f;
-	const auto controlsPosY = 250.f;
+	const auto controlsPosY = 240.f;
 	const auto controlsImgWidth = 200.f;
 	const auto controlsImgHeight = 132.f;
 
@@ -852,6 +859,10 @@ std::shared_ptr<dae::GameObject>  MakeInstructionsCoopVisuals()
 
 	// Add the Controls Extra Text
 	font = dae::ResourceManager::GetInstance().LoadFont("Minecraft.ttf", 16);
+	textComp = new dae::TextComponent("And pause with the P key", font);
+	textComp->SetPosition(controlsPosX + 5.f, controlsPosY + controlsImgHeight + 10.f);
+	newGO->AddComponent(textComp);
+	
 	textComp = new dae::TextComponent("OR", font);
 	textComp->SetPosition(controlsOrX, controlsOrY);
 	newGO->AddComponent(textComp);
@@ -867,6 +878,9 @@ std::shared_ptr<dae::GameObject>  MakeInstructionsCoopVisuals()
 	newGO->AddComponent(textComp);
 	textComp = new dae::TextComponent("Move down/right -> DPAD RIGHT", font);
 	textComp->SetPosition(controlsTextX + 2.f, controlsPosY + controlsLineSpacing * 5.f);
+	newGO->AddComponent(textComp);
+	textComp = new dae::TextComponent("Pause game -> START", font);
+	textComp->SetPosition(controlsTextX + 40.f, controlsPosY + controlsLineSpacing * 6.f);
 	newGO->AddComponent(textComp);
 
 
@@ -889,7 +903,7 @@ std::shared_ptr<dae::GameObject>  MakeInstructionsVersusVisuals()
 	const auto descriptionLineSpacing = 30.f;
 
 	const auto controlsPosX = 40.f;
-	const auto controlsPosY = 250.f;
+	const auto controlsPosY = 240.f;
 	const auto controlsImgWidth = 200.f;
 	const auto controlsImgHeight = 132.f;
 
@@ -927,6 +941,10 @@ std::shared_ptr<dae::GameObject>  MakeInstructionsVersusVisuals()
 
 	// Add the Controls Extra Text
 	font = dae::ResourceManager::GetInstance().LoadFont("Minecraft.ttf", 16);
+	textComp = new dae::TextComponent("And pause with the P key", font);
+	textComp->SetPosition(controlsPosX + 5.f, controlsPosY + controlsImgHeight + 10.f);
+	newGO->AddComponent(textComp);
+	
 	textComp = new dae::TextComponent("OR", font);
 	textComp->SetPosition(controlsOrX, controlsOrY);
 	newGO->AddComponent(textComp);
@@ -942,6 +960,9 @@ std::shared_ptr<dae::GameObject>  MakeInstructionsVersusVisuals()
 	newGO->AddComponent(textComp);
 	textComp = new dae::TextComponent("Move down/right -> DPAD RIGHT", font);
 	textComp->SetPosition(controlsTextX + 2.f, controlsPosY + controlsLineSpacing * 5.f);
+	newGO->AddComponent(textComp);
+	textComp = new dae::TextComponent("Pause game -> START", font);
+	textComp->SetPosition(controlsTextX + 40.f, controlsPosY + controlsLineSpacing * 6.f);
 	newGO->AddComponent(textComp);
 
 
