@@ -1,5 +1,7 @@
 #include "JumpingObserver.h"
 
+
+#include "audio.h"
 #include "Coily.h"
 #include "GraphicsComponent.h"
 #include "QBert.h"
@@ -270,8 +272,14 @@ void JumpingObserver::Update(const float deltaTime)
 {
 	if(m_Jumping == true && m_Frozen == false)
 	{
-		const auto toTravelInSecX = (m_LandingPosX - m_LiftoffPosX) / m_JumpTime;
-		const auto toTravelInSecY = (m_LandingPosY - m_LiftoffPosY) / m_JumpTime;
+		const auto distanceX = m_LandingPosX - m_LiftoffPosX;
+		const auto distanceY = m_LandingPosY - m_LiftoffPosY;
+		const auto jumpCenterX = double(m_LiftoffPosX + distanceX / 2.f);
+		const auto jumpCenterY = double(m_LiftoffPosY + distanceY / 2.f);
+		const auto diameterAdjustment = 20;
+
+		const auto jumpDistance = sqrt(double(distanceX * distanceX + distanceY * distanceY)) - diameterAdjustment;
+		const auto jumpRadius = jumpDistance / 2;
 
 		m_TimeSinceLastFrame += deltaTime;
 		m_MidFlightTime += deltaTime;
@@ -279,8 +287,41 @@ void JumpingObserver::Update(const float deltaTime)
 		if (m_TimeSinceLastFrame >= 1.f / float(m_FPS) && m_MidFlightTime < m_JumpTime)
 		{
 			m_TimeSinceLastFrame -= 1.f / float(m_FPS);
-			m_MidFlightPosX += toTravelInSecX / float(m_FPS);
-			m_MidFlightPosY += toTravelInSecY / float(m_FPS);
+			const auto angleDegrees = m_MidFlightTime * 180.f / m_JumpTime;
+			const auto angleRadians = 2 * M_PI * (angleDegrees / 360.f);
+			
+			const auto offsetY = (distanceY / 2.f) * -1.f + (distanceY / 2.f) * m_MidFlightTime * 2.f / m_JumpTime;
+
+			if(m_UggWrongComp == nullptr)
+			{
+				m_MidFlightPosY = float(jumpCenterY - sin(angleRadians) * jumpRadius + offsetY);
+
+				if (distanceX > 0.f)
+					m_MidFlightPosX = float(jumpCenterX - cos(angleRadians) * jumpRadius);
+				else
+					m_MidFlightPosX = float(jumpCenterX + cos(angleRadians) * jumpRadius);
+			}
+			else
+			{
+				m_MidFlightPosY = float(jumpCenterY + sin(angleRadians) * jumpRadius + offsetY);
+
+				if(distanceY < 0.f) // Moving Up
+				{
+					const auto offsetX = (distanceX/2.f) * -1.f + (distanceX / 2.f) * m_MidFlightTime * 2.f / m_JumpTime;
+					
+					if (distanceX > 0.f)
+						m_MidFlightPosX = float(jumpCenterX - sin(angleRadians) * jumpRadius + offsetX);
+					else
+						m_MidFlightPosX = float(jumpCenterX + sin(angleRadians) * jumpRadius + offsetX);
+				}
+				else
+				{
+					if (distanceX > 0.f)
+						m_MidFlightPosX = float(jumpCenterX - cos(angleRadians) * jumpRadius);
+					else
+						m_MidFlightPosX = float(jumpCenterX + cos(angleRadians) * jumpRadius);
+				}
+			}
 		}
 
 		
