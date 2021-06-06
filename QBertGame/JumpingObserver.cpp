@@ -1,7 +1,5 @@
 #include "JumpingObserver.h"
-
-
-#include "audio.h"
+#include "audio.h" // I only include audio to use the M_PI macro
 #include "Coily.h"
 #include "GraphicsComponent.h"
 #include "QBert.h"
@@ -270,28 +268,33 @@ void JumpingObserver::OnNotify(const dae::Event& event)
 
 void JumpingObserver::Update(const float deltaTime)
 {
+	// If the jumping animation has started and the character isn't frozen
 	if(m_Jumping == true && m_Frozen == false)
 	{
-		const auto distanceX = m_LandingPosX - m_LiftoffPosX;
-		const auto distanceY = m_LandingPosY - m_LiftoffPosY;
-		const auto jumpCenterX = double(m_LiftoffPosX + distanceX / 2.f);
-		const auto jumpCenterY = double(m_LiftoffPosY + distanceY / 2.f);
-		const auto diameterAdjustment = 20;
-
-		const auto jumpDistance = sqrt(double(distanceX * distanceX + distanceY * distanceY)) - diameterAdjustment;
-		const auto jumpRadius = jumpDistance / 2;
-
+		// Increase the time counters
 		m_TimeSinceLastFrame += deltaTime;
 		m_MidFlightTime += deltaTime;
 
+		// And if it's time to draw a new frame
 		if (m_TimeSinceLastFrame >= 1.f / float(m_FPS) && m_MidFlightTime < m_JumpTime)
 		{
+			// Reset the frame time counter
 			m_TimeSinceLastFrame -= 1.f / float(m_FPS);
+
+			// Calculate all the needed values for the arc
+			const auto distanceX = m_LandingPosX - m_LiftoffPosX;
+			const auto distanceY = m_LandingPosY - m_LiftoffPosY;
+			const auto jumpCenterX = double(m_LiftoffPosX + distanceX / 2.f);
+			const auto jumpCenterY = double(m_LiftoffPosY + distanceY / 2.f);
+			const auto diameterAdjustment = 20;
+			const auto jumpDistance = sqrt(double(distanceX * distanceX + distanceY * distanceY)) - diameterAdjustment;
+			const auto jumpRadius = jumpDistance / 2;
 			const auto angleDegrees = m_MidFlightTime * 180.f / m_JumpTime;
 			const auto angleRadians = 2 * M_PI * (angleDegrees / 360.f);
-			
 			const auto offsetY = (distanceY / 2.f) * -1.f + (distanceY / 2.f) * m_MidFlightTime * 2.f / m_JumpTime;
+			const auto offsetX = (distanceX / 2.f) * -1.f + (distanceX / 2.f) * m_MidFlightTime * 2.f / m_JumpTime;
 
+			// Update the m_MidFlightPosition accordingly (considering Ugg/Wrongway behave slightly different)
 			if(m_UggWrongComp == nullptr)
 			{
 				m_MidFlightPosY = float(jumpCenterY - sin(angleRadians) * jumpRadius + offsetY);
@@ -305,10 +308,8 @@ void JumpingObserver::Update(const float deltaTime)
 			{
 				m_MidFlightPosY = float(jumpCenterY + sin(angleRadians) * jumpRadius + offsetY);
 
-				if(distanceY < 0.f) // Moving Up
+				if(distanceY < 0.f)
 				{
-					const auto offsetX = (distanceX/2.f) * -1.f + (distanceX / 2.f) * m_MidFlightTime * 2.f / m_JumpTime;
-					
 					if (distanceX > 0.f)
 						m_MidFlightPosX = float(jumpCenterX - sin(angleRadians) * jumpRadius + offsetX);
 					else
@@ -322,12 +323,10 @@ void JumpingObserver::Update(const float deltaTime)
 						m_MidFlightPosX = float(jumpCenterX + cos(angleRadians) * jumpRadius);
 				}
 			}
+
+			// And, finally, actually move the graphics
+			m_GraphicsComp->SetPosition(m_MidFlightPosX, m_MidFlightPosY);
 		}
-
-		
-		// Actually move the graphics
-		m_GraphicsComp->SetPosition(m_MidFlightPosX, m_MidFlightPosY);
-
 
 
 		// Stop the animation if the movement is complete

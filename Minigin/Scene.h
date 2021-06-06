@@ -1,7 +1,7 @@
 #pragma once
 #include "SceneManager.h"
 #include "MiniginLibType.h"
-//#include <map>
+#include <string>
 
 namespace dae
 {
@@ -27,7 +27,6 @@ namespace dae
 		std::string m_Name;
 		std::vector <std::shared_ptr<GameObject>> m_Objects{};
 		std::vector <std::shared_ptr<GameObject>> m_ObjectsPriority{};
-		//std::map<std::shared_ptr<GameObject>, bool> m_Objects{};
 
 		static unsigned int m_IdCounter; 
 	};

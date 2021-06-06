@@ -2,7 +2,6 @@
 #include <iostream>
 #include "GraphicsComponent.h"
 #include "SceneManager.h"
-#include "Scene.h"
 #include "SoundServiceLocator.h"
 #include "SoundSystem.h"
 
@@ -19,6 +18,9 @@ StartScreen::StartScreen(int soloModeSceneIdx, int coopModeSceneIdx, int versusM
 
 void StartScreen::ChangeSelection(bool up)
 {
+	// Change both the position of the selection arrow
+	// And the actual selection int member variable
+	
 	if(up)
 	{
 		if (m_Selection - 1 < 0)

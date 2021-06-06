@@ -11,9 +11,16 @@ MenuScoreDisplay::MenuScoreDisplay(QBert* qBertComp, dae::TextComponent* textCom
 
 void MenuScoreDisplay::Initialize()
 {
+	// Normally, the QBert's score and lives would have been reset in the LevelSectionObserver,
+	// but if the player(s) loses or wins the game, the observer doesn't change said values
+	// so that MenuScoreDisplay can still access the player(s) scores
 	const auto score = m_QBertComp->GetScore();
+
+	// But that also means the MenuScoreDisplay must then reset the values once they've
+	// stored the needed information to create the visuals
 	m_QBertComp->ResetGameVariables();
 
+	// And afterwards, the actual visuals can get updated
 	int nrOfDigits = 0;
 	int temp = score;
 	while (temp != 0)

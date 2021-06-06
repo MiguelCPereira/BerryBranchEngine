@@ -2,7 +2,7 @@
 #include <memory>
 #include <vector>
 
-// The cube indexes are counted from top to bottom, left to right
+// The cube indexes are counted from top to bottom, left to right, starting at 1
 
 
 namespace dae

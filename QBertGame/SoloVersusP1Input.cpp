@@ -10,6 +10,8 @@ SoloVersusP1Input::SoloVersusP1Input(const std::shared_ptr<dae::GameObject>& qBe
 void SoloVersusP1Input::Initialize()
 {
 	dae::InputManager::GetInstance().ClearAllCommands();
+
+	// Keyboard
 	
 	auto moveUpKeyboard = std::make_unique<QBertMoveUpCommand>();
 	moveUpKeyboard->SetActor(m_QBertGO);
@@ -42,6 +44,8 @@ void SoloVersusP1Input::Initialize()
 	dae::InputManager::GetInstance().AddCommand(SDLK_ESCAPE, std::move(backToMenuKeyboard));
 
 
+
+	// Controller
 	
 	auto moveUpController = std::make_unique<QBertMoveUpCommand>();
 	moveUpController->SetActor(m_QBertGO);
@@ -76,7 +80,7 @@ void SoloVersusP1Input::Initialize()
 	auto backToMenuController = std::make_unique<QBertBackToMenuCommand>();
 	backToMenuController->SetActor(m_QBertGO);
 	backToMenuController->SetButtonPressType(dae::ButtonPress::PressedDown);
-	controllerKey.second = dae::ControllerButton::ButtonB;
+	controllerKey.second = dae::ControllerButton::ButtonY;
 	dae::InputManager::GetInstance().AddCommand(controllerKey, std::move(backToMenuController));
 }
 

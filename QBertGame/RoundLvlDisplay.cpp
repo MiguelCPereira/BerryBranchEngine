@@ -18,8 +18,11 @@ RoundLvlDisplay::~RoundLvlDisplay()
 
 void RoundLvlDisplay::Initialize()
 {
-	UpdateLevelText();
-	UpdateRoundText();
+	if(m_LevelTextComp != nullptr)
+		UpdateLevelText();
+	
+	if (m_RoundTextComp != nullptr)
+		UpdateRoundText();
 }
 
 void RoundLvlDisplay::Update(const float)

@@ -53,9 +53,7 @@ private:
 	float m_QBertGraphAdjustmentX, m_QBertGraphAdjustmentY;
 	bool m_FinalPositionReached;
 	bool m_HasBeenUsed;
-
 	bool m_Hidden;
-	float m_PosBeforeHiddenX, m_PosBeforeHiddenY;
 
 	const int m_FPSIdle, m_FPSFlight;
 	float m_MidFlightTime;

@@ -25,6 +25,7 @@ namespace dae
 		void MINIGIN_ENTRY SetSize(float width, float height);
 		void MINIGIN_ENTRY SetTexture(const std::string& imageFile);
 		void MINIGIN_ENTRY SetSrcRectangle(float x, float y, float width, float height);
+		void MINIGIN_ENTRY SetHidden(bool isHidden);
 
 		float GetPosX() { return m_PosX; }
 		float GetPosY() { return m_PosY; }
@@ -33,7 +34,8 @@ namespace dae
 
 	private:
 		std::shared_ptr<Texture2D> m_Texture;
-		float m_PosX{}, m_PosY{}, m_Width{}, m_Height{};
-		float m_SrcX{}, m_SrcY{}, m_SrcWidth{}, m_SrcHeight{};
+		float m_PosX, m_PosY, m_Width, m_Height;
+		float m_SrcX, m_SrcY, m_SrcWidth, m_SrcHeight;
+		bool m_Hidden;
 	};
 }

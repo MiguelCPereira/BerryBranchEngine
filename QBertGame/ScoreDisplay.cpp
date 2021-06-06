@@ -29,10 +29,8 @@ void ScoreDisplay::Initialize()
 	if (m_QBertComp != nullptr)
 	{
 		m_QBertComp->GetSubject()->AddObserver(this);
-		m_QBertComp->SetFrozen(false);
+		UpdateScoreText();
 	}
-
-	UpdateScoreText();
 }
 
 

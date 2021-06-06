@@ -1,5 +1,4 @@
 #include "Disk.h"
-#include <iostream>
 #include "GameObject.h"
 #include "GraphicsComponent.h"
 #include "QBert.h"
@@ -28,10 +27,7 @@ Disk::Disk(const std::shared_ptr<dae::GameObject>& gameObject, int rowIdx, bool 
 	, m_QBertGraphAdjustmentY()
 	, m_FinalPositionReached(false)
 	, m_HasBeenUsed(false)
-
 	, m_Hidden(false)
-	, m_PosBeforeHiddenX()
-	, m_PosBeforeHiddenY()
 
 	, m_FPSIdle(9)
 	, m_FPSFlight(50)
@@ -57,12 +53,15 @@ void Disk::Activate(QBert* qBertComp, dae::GraphicsComponent* qBertGraphics, boo
 {
 	SoundServiceLocator::GetSoundSystem().Play("../Data/Sounds/Disk Lift.wav", 0.1f);
 	m_CarryingPlayerOne = playerOne;
-	m_QBertComp = qBertComp;
-	m_QBertComp->SetIsInDisk(true);
-	m_QBertComp->SetFrozen(true);
-	auto* graphics = m_GameObject->GetComponent<dae::GraphicsComponent>();
+
+	// Register QBert's components in the member variables and freeze them
 	m_QBertComp = qBertComp;
 	m_QBertGraphics = qBertGraphics;
+	m_QBertComp->SetIsInDisk(true);
+	m_QBertComp->SetFrozen(true);
+
+	// Set required member variables
+	auto* graphics = m_GameObject->GetComponent<dae::GraphicsComponent>();
 	m_QBertGraphAdjustmentX = m_QBertGraphics->GetPosX() - graphics->GetPosX();
 	m_QBertGraphAdjustmentY = m_QBertGraphics->GetPosY() - graphics->GetPosY();
 	m_MidFlightPosX = m_InitialPosX;
@@ -75,15 +74,9 @@ void Disk::SetHide(bool isHidden)
 	auto* graphics = m_GameObject->GetComponent<dae::GraphicsComponent>();
 
 	if (isHidden)
-	{
-		m_PosBeforeHiddenX = graphics->GetPosX();
-		m_PosBeforeHiddenY = graphics->GetPosY();
-		graphics->SetPosition(-50, -50);
-	}
+		graphics->SetHidden(true);
 	else
-	{
-		graphics->SetPosition(m_PosBeforeHiddenX, m_PosBeforeHiddenY);
-	}
+		graphics->SetHidden(false);
 
 	m_Hidden = isHidden;
 }
@@ -95,9 +88,11 @@ void Disk::SetFrozen(bool isFrozen)
 
 void Disk::ResetDisk()
 {
+	// Return the disk's graphics to their original position
 	auto* graphics = m_GameObject->GetComponent<dae::GraphicsComponent>();
 	graphics->SetPosition(m_InitialPosX, m_InitialPosY);
 
+	// And reset all modified member variables
 	m_Activated = false;
 	m_MidFlightPosX = m_InitialPosX;
 	m_MidFlightPosY = m_InitialPosY;
@@ -137,8 +132,9 @@ void Disk::Update(const float deltaTime)
 		// Actual Functionality
 		if (m_Activated)
 		{
-			if (m_FinalPositionReached == false)
+			if (m_FinalPositionReached == false) // If the flight animation isn't done yet
 			{
+				// Calculate the m_MidFlightPositions
 				const auto toTravelInSecX = (m_FinalPosX - m_InitialPosX) / m_FlightTime;
 				const auto toTravelInSecY = (m_FinalPosY - m_InitialPosY) / m_FlightTime;
 
@@ -153,28 +149,33 @@ void Disk::Update(const float deltaTime)
 				}
 
 
-				// Actually move the graphics
+				// Actually move the disk and QBert
 				m_GameObject->GetComponent<dae::GraphicsComponent>()->SetPosition(m_MidFlightPosX, m_MidFlightPosY);
 				m_QBertGraphics->SetPosition(m_MidFlightPosX + m_QBertGraphAdjustmentX, m_MidFlightPosY + m_QBertGraphAdjustmentY);
 
 
 
-				// Stop the animation if the movement is complete
+				// Stop the flight animation if the movement is complete
 				if (m_MidFlightTime >= m_FlightTime)
 				{
-					m_GameObject->GetComponent<dae::GraphicsComponent>()->SetPosition(-50.f, -50.f);
+					// And hide the disk's graphics (without stopping the update, so
+					// SetHidden() is called directly instead of the Disk class function
+					SoundServiceLocator::GetSoundSystem().Play("../Data/Sounds/Disk Land.wav", 0.1f);
+					m_GameObject->GetComponent<dae::GraphicsComponent>()->SetHidden(true);
 					m_FinalPositionReached = true;
 				}
 			}
-			else // QBert already falling into position
+			else // Else, QBert must already be falling into the first cube
 			{
-				if (m_QBertGraphics->GetPosY() < m_FinalQBertPosY) // Falling
+				if (m_QBertGraphics->GetPosY() < m_FinalQBertPosY) // If QBert hasn't landed
 				{
+					// Make them fall
 					m_MidFlightPosY += m_QBertFallSpeed * deltaTime;
 					m_QBertGraphics->SetPosition(m_MidFlightPosX + m_QBertGraphAdjustmentX, m_MidFlightPosY + m_QBertGraphAdjustmentY);
 				}
-				else // Reached the 1st cube
+				else // Else, Qbert just landed
 				{
+					// Set QBert's position to the exact landing spot and deactivate the disk
 					m_QBertGraphics->SetPosition(m_MidFlightPosX + m_QBertGraphAdjustmentX, m_MidFlightPosY + m_QBertGraphAdjustmentY);
 					m_QBertGraphics->SetPosition(m_MidFlightPosX + m_QBertGraphAdjustmentX, m_FinalQBertPosY);
 					m_Activated = false;

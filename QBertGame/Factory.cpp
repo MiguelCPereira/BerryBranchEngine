@@ -345,7 +345,7 @@ std::shared_ptr<dae::GameObject> MakeLevelDisplayVisuals(bool coOpOn)
 
 	if (coOpOn)
 	{
-		posX = 230.f;
+		posX = 220.f;
 		posY = 445.f;
 	}
 	else
@@ -371,7 +371,7 @@ std::shared_ptr<dae::GameObject> MakeRoundDisplayVisuals(bool coOpOn)
 
 	if (coOpOn)
 	{
-		posX = 350.f;
+		posX = 340.f;
 		posY = 445.f;
 	}
 	else
@@ -450,7 +450,7 @@ std::vector<std::shared_ptr<dae::GameObject>> MakeUI(std::vector<QBert*>* qBertC
 	}
 	
 	auto livesGO1 = std::make_shared<dae::GameObject>();
-	livesGO1->AddComponent(new LivesDisplay(qBertCompVector->operator[](0), graphicsCompVector1, playerOneHeartsPosX));
+	livesGO1->AddComponent(new LivesDisplay(qBertCompVector->operator[](0), graphicsCompVector1));
 	returnVector.push_back(std::move(livesGO1));
 
 
@@ -475,7 +475,7 @@ std::vector<std::shared_ptr<dae::GameObject>> MakeUI(std::vector<QBert*>* qBertC
 		}
 		
 		auto livesGO2 = std::make_shared<dae::GameObject>();
-		livesGO2->AddComponent(new LivesDisplay(qBertCompVector->operator[](1), graphicsCompVector2, playerTwoHeartsPosX));
+		livesGO2->AddComponent(new LivesDisplay(qBertCompVector->operator[](1), graphicsCompVector2));
 		returnVector.push_back(std::move(livesGO2));
 
 		
@@ -626,7 +626,7 @@ std::shared_ptr<dae::GameObject> MakeVictoryScreenSoloVisuals()
 	const auto titlePosY = 30.f;
 	const auto scoreTextPosX = 250.f;
 	const auto scoreTextPosY = 240.f;
-	const auto goBackPosX = 135.f;
+	const auto goBackPosX = 80.f;
 	const auto goBackPosY = 400.f;
 
 	auto newGO = std::make_shared<dae::GameObject>();
@@ -642,7 +642,7 @@ std::shared_ptr<dae::GameObject> MakeVictoryScreenSoloVisuals()
 
 	// And add the bottom text explaining how to return to the start menu
 	font = dae::ResourceManager::GetInstance().LoadFont("Minecraft.ttf", 16);
-	auto* goBackComp = new dae::TextComponent("Press ESC or START to go back to the main menu", font);
+	auto* goBackComp = new dae::TextComponent("Press ESC or Y (in a controller) to go back to the main menu", font);
 	goBackComp->SetPosition(goBackPosX, goBackPosY);
 	newGO->AddComponent(goBackComp);
 
@@ -659,7 +659,7 @@ std::shared_ptr<dae::GameObject> MakeVictoryScreenCoopVisuals()
 	const auto score1TextPosX = 90.f;
 	const auto score2TextPosX = 350.f;
 	const auto scoresTextsPosY = 240.f;
-	const auto goBackPosX = 135.f;
+	const auto goBackPosX = 80.f;
 	const auto goBackPosY = 400.f;
 
 	auto newGO = std::make_shared<dae::GameObject>();
@@ -680,7 +680,7 @@ std::shared_ptr<dae::GameObject> MakeVictoryScreenCoopVisuals()
 
 	// And add the bottom text explaining how to return to the start menu
 	font = dae::ResourceManager::GetInstance().LoadFont("Minecraft.ttf", 16);
-	auto* goBackComp = new dae::TextComponent("Press ESC or START to go back to the main menu", font);
+	auto* goBackComp = new dae::TextComponent("Press ESC or Y (in a controller) to go back to the main menu", font);
 	goBackComp->SetPosition(goBackPosX, goBackPosY);
 	newGO->AddComponent(goBackComp);
 
@@ -696,7 +696,7 @@ std::shared_ptr<dae::GameObject> MakeVictoryScreenVersusVisuals()
 	const auto titleBPosY = 135.f;
 	const auto scoreTextPosX = 250.f;
 	const auto scoreTextPosY = 240.f;
-	const auto goBackPosX = 126.f;
+	const auto goBackPosX = 80.f;
 	const auto goBackPosY = 400.f;
 
 	auto newGO = std::make_shared<dae::GameObject>();
@@ -718,7 +718,7 @@ std::shared_ptr<dae::GameObject> MakeVictoryScreenVersusVisuals()
 
 	// And add the bottom text explaining how to return to the start menu
 	font = dae::ResourceManager::GetInstance().LoadFont("Minecraft.ttf", 16);
-	auto* goBackComp = new dae::TextComponent("Press ESC or START to go back to the main menu", font);
+	auto* goBackComp = new dae::TextComponent("Press ESC or Y (in a controller) to go back to the main menu", font);
 	goBackComp->SetPosition(goBackPosX, goBackPosY);
 	newGO->AddComponent(goBackComp);
 
@@ -995,7 +995,7 @@ std::shared_ptr<dae::GameObject> MakeDeathScreenSoloVisuals()
 	const auto titlePosY = 40.f;
 	const auto scoreTextPosX = 250.f;
 	const auto scoreTextPosY = 240.f;
-	const auto goBackPosX = 126.f;
+	const auto goBackPosX = 80.f;
 	const auto goBackPosY = 400.f;
 
 	auto newGO = std::make_shared<dae::GameObject>();
@@ -1011,7 +1011,7 @@ std::shared_ptr<dae::GameObject> MakeDeathScreenSoloVisuals()
 
 	// And add the bottom text explaining how to return to the start menu
 	font = dae::ResourceManager::GetInstance().LoadFont("Minecraft.ttf", 16);
-	auto* goBackComp = new dae::TextComponent("Press ESC or START to go back to the main menu", font);
+	auto* goBackComp = new dae::TextComponent("Press ESC or Y (in a controller) to go back to the main menu", font);
 	goBackComp->SetPosition(goBackPosX, goBackPosY);
 	newGO->AddComponent(goBackComp);
 
@@ -1028,7 +1028,7 @@ std::shared_ptr<dae::GameObject> MakeDeathScreenCoopVisuals()
 	const auto score1TextPosX = 90.f;
 	const auto score2TextPosX = 350.f;
 	const auto scoresTextsPosY = 240.f;
-	const auto goBackPosX = 126.f;
+	const auto goBackPosX = 80.f;
 	const auto goBackPosY = 400.f;
 
 	auto newGO = std::make_shared<dae::GameObject>();
@@ -1049,7 +1049,7 @@ std::shared_ptr<dae::GameObject> MakeDeathScreenCoopVisuals()
 
 	// And add the bottom text explaining how to return to the start menu
 	font = dae::ResourceManager::GetInstance().LoadFont("Minecraft.ttf", 16);
-	auto* goBackComp = new dae::TextComponent("Press ESC or START to go back to the main menu", font);
+	auto* goBackComp = new dae::TextComponent("Press ESC or Y (in a controller) to go back to the main menu", font);
 	goBackComp->SetPosition(goBackPosX, goBackPosY);
 	newGO->AddComponent(goBackComp);
 
@@ -1065,7 +1065,7 @@ std::shared_ptr<dae::GameObject> MakeDeathScreenVersusVisuals()
 	const auto titleBPosY = 135.f;
 	const auto scoreTextPosX = 150.f;
 	const auto scoreTextPosY = 240.f;
-	const auto goBackPosX = 126.f;
+	const auto goBackPosX = 80.f;
 	const auto goBackPosY = 400.f;
 
 	auto newGO = std::make_shared<dae::GameObject>();
@@ -1087,7 +1087,7 @@ std::shared_ptr<dae::GameObject> MakeDeathScreenVersusVisuals()
 
 	// And add the bottom text explaining how to return to the start menu
 	font = dae::ResourceManager::GetInstance().LoadFont("Minecraft.ttf", 16);
-	auto* goBackComp = new dae::TextComponent("Press ESC or START to go back to the main menu", font);
+	auto* goBackComp = new dae::TextComponent("Press ESC or Y (in a controller) to go back to the main menu", font);
 	goBackComp->SetPosition(goBackPosX, goBackPosY);
 	newGO->AddComponent(goBackComp);
 
@@ -1146,6 +1146,7 @@ std::shared_ptr<dae::GameObject> MakeTwoQbertsVictoryDeathScreenLogic(int startS
 std::shared_ptr<dae::GameObject> MakePauseScreenVisuals()
 {
 	auto pauseScreenGO = std::make_shared<dae::GameObject>();
-	pauseScreenGO->AddComponent(new dae::GraphicsComponent("Pause Screen.png", -2000, -2000)); // Start Hidden
+	pauseScreenGO->AddComponent(new dae::GraphicsComponent("Pause Screen.png", 0, 0));
+	pauseScreenGO->GetComponent<dae::GraphicsComponent>()->SetHidden(true); // Start Hidden
 	return pauseScreenGO;	
 }

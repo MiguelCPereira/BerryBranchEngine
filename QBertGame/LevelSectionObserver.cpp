@@ -407,13 +407,13 @@ void LevelSectionObserver::OnNotify(const dae::Event& event)
 			{
 				m_StateBeforePause = m_CurrentState;
 				m_CurrentState = LevelSectionState::ST_GamePaused;
-				m_PauseScreenGraphics->SetPosition(0, 0);
+				m_PauseScreenGraphics->SetHidden(false);
 				ChangeFreezeEverything(true);
 			}
 			else
 			{
 				m_CurrentState = m_StateBeforePause;
-				m_PauseScreenGraphics->SetPosition(-2000, -2000);
+				m_PauseScreenGraphics->SetHidden(true);
 				ChangeFreezeEverything(false);
 			}
 			break;
@@ -422,7 +422,7 @@ void LevelSectionObserver::OnNotify(const dae::Event& event)
 			if (m_CurrentState == LevelSectionState::ST_GamePaused)
 			{
 				m_CurrentState = LevelSectionState::ST_NormalSpawning;
-				m_PauseScreenGraphics->SetPosition(-2000, -2000);
+				m_PauseScreenGraphics->SetHidden(true);
 				ChangeFreezeEverything(false);
 				ClearAllEnemies();
 				ChangeSection(0);
@@ -431,7 +431,9 @@ void LevelSectionObserver::OnNotify(const dae::Event& event)
 
 
 		case dae::Event::QBertLandedP1:
-			// If P2 died before P1 lands, the landing should have no consequences, as well as if the round was won before
+			// If P2 died before P1 lands, the landing should have no consequences, as well as if the round was won before.
+			// This will never happen, because everything gets frozen after a victory or a QBert death, but it's still here
+			// preventively, in case I ever want to let animations finish before freezing
 			if (m_DeadQbertP2 == false && m_CurrentState == LevelSectionState::ST_NormalSpawning)
 			{
 				// 1 is subtracted from the idx, because the cubes are numbered from 1 to 28
@@ -446,7 +448,9 @@ void LevelSectionObserver::OnNotify(const dae::Event& event)
 
 				KillCollidingSlickSam();
 
-				if (m_DeadQbertP1 == false && m_DeadQbertP2 == false) // So once one dies, the other can't die until the map has been clean
+				// If one QBert dies, the other can't die until the map has been clean
+				// Once again, both QBerts will never be dead at the same time, this is merely preventive
+				if (m_DeadQbertP1 == false && m_DeadQbertP2 == false)
 				{
 					if (CheckCollidingUggWrong(0) || CheckCollidingCoily(0))
 					{
@@ -466,7 +470,8 @@ void LevelSectionObserver::OnNotify(const dae::Event& event)
 
 
 		case dae::Event::QBertLandedP2:
-			// If P1 died before P2 lands, the landing should have no consequences, as well as if the round was won before
+			// If P1 died before P2 lands, the landing should have no consequences, as well as if the round was won before.
+			// This will never happen, as I stated before, this is merely preventive
 			if (m_DeadQbertP1 == false && m_CurrentState == LevelSectionState::ST_NormalSpawning)
 			{
 				// 1 is subtracted from the idx, because the cubes are numbered from 1 to 28
@@ -481,7 +486,10 @@ void LevelSectionObserver::OnNotify(const dae::Event& event)
 
 				KillCollidingSlickSam();
 
-				if (m_DeadQbertP1 == false && m_DeadQbertP2 == false) // So once one dies, the other can't die until the map has been clean
+
+				// If one QBert dies, the other can't die until the map has been clean
+				// Once again, both QBerts will never be dead at the same time, this is merely preventive
+				if (m_DeadQbertP1 == false && m_DeadQbertP2 == false)
 				{
 					if (CheckCollidingUggWrong(1) || CheckCollidingCoily(1))
 					{
@@ -506,7 +514,8 @@ void LevelSectionObserver::OnNotify(const dae::Event& event)
 			m_QBertCompVector->operator[](0)->SetNewPositionIndexes(1, 1);
 			m_QBertCompVector->operator[](0)->SetFrozen(false);
 
-			// If P2 died before P1 lands, the landing should have no consequences, as well as if the round was won before
+			// If P2 died before P1 lands, the landing should have no consequences, as well as if the round was won before.
+			// This will never happen, as I stated before, this is merely preventive
 			if (m_DeadQbertP2 == false && m_CurrentState == LevelSectionState::ST_NormalSpawning)
 			{
 				cubeTurned = m_Pyramid->m_CubeGOVector[m_QBertCompVector->operator[](0)->GetPositionIndex() - 1]->GetComponent<Cube>()->TurnCube();
@@ -527,7 +536,8 @@ void LevelSectionObserver::OnNotify(const dae::Event& event)
 			m_QBertCompVector->operator[](1)->SetNewPositionIndexes(1, 1);
 			m_QBertCompVector->operator[](1)->SetFrozen(false);
 
-			// If P1 died before P2 lands, the landing should have no consequences, as well as if the round was won before
+			// If P1 died before P2 lands, the landing should have no consequences, as well as if the round was won before.
+			// This will never happen, as I stated before, this is merely preventive
 			if (m_DeadQbertP1 == false && m_CurrentState == LevelSectionState::ST_NormalSpawning)
 			{
 				cubeTurned = m_Pyramid->m_CubeGOVector[m_QBertCompVector->operator[](1)->GetPositionIndex() - 1]->GetComponent<Cube>()->TurnCube();
@@ -543,7 +553,8 @@ void LevelSectionObserver::OnNotify(const dae::Event& event)
 
 
 		case dae::Event::QBertFellP1:
-			// If P2 died before P1 falls, the fall should have no consequences, as well as if the round was won before
+			// If P2 died before P1 falls, the fall should have no consequences, as well as if the round was won before.
+			// This will never happen, as I stated before, this is merely preventive
 			if (m_DeadQbertP1 == false && m_DeadQbertP2 == false && m_CurrentState == LevelSectionState::ST_NormalSpawning)
 			{
 				m_QBertP1JustTookDisk = false;
@@ -588,6 +599,7 @@ void LevelSectionObserver::OnNotify(const dae::Event& event)
 				// P1 fell, but after P2 already died (so P1 jumped a tiny bit before P2 got hit / fell too)
 				// In this case, P1 should receive no punishment, but they still need to re-spawn in their last position
 				// So the "justfell" bool must still be changed
+				// (And again, this will never happen in the current state of the game, this is just preventive)
 				m_QBertP1JustFell = true;
 			}
 			break;
@@ -639,6 +651,7 @@ void LevelSectionObserver::OnNotify(const dae::Event& event)
 				// P2 fell, but after P1 already died (so P2 jumped a tiny bit before P1 got hit / fell too)
 				// In this case, P2 should receive no punishment, but they still need to re-spawn in their last position
 				// So the "justfell" bool must still be changed
+				// (And again, this will never happen in the current state of the game, this is just preventive)
 				m_QBertP2JustFell = true;
 			}
 			break;
@@ -701,7 +714,9 @@ void LevelSectionObserver::OnNotify(const dae::Event& event)
 			break;
 
 		case dae::Event::CoilyLanded:
-			if (m_DeadQbertP1 == false && m_DeadQbertP2 == false) // So once one dies, the other can't die until the map has been clean
+			// If one QBert dies, the other can't die until the map has been clean
+			// Once again, both QBerts will never be dead at the same time, this is merely preventive
+			if (m_DeadQbertP1 == false && m_DeadQbertP2 == false)
 			{
 				// Check For P1
 				if (CheckCollidingCoily(0))
@@ -958,16 +973,6 @@ void LevelSectionObserver::ClearRemainingDisks(bool addPoints) const
 		disk->Die();
 		nrActiveDisks++;
 	}
-	
-	/*for (size_t i = 0; i < m_DisksVector->size(); i++)
-	{
-		auto* disk = m_DisksVector->operator[](i);
-		if (disk->GetHasBeenUsed() == false)
-		{
-			disk->SetHide(true);
-			nrActiveDisks++;
-		}
-	}*/
 
 	if (addPoints)
 	{

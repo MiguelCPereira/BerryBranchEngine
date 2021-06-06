@@ -59,10 +59,8 @@ void SDLSoundSystem::LoadSound(std::string filename)
 	{
 		auto newWrappedAudio = new WrappedAudio(createAudio(filename.c_str(), false, 1));
 		m_LoadedSounds.emplace(filename, newWrappedAudio);
-		std::cout << "Sound file \"" << filename << "\" loaded\n";
+		//std::cout << "Sound file \"" << filename << "\" loaded\n";
 	}
-	else
-	{
-		std::cout << "The sound file \"" << filename << "\" has already been loaded\n";
-	}
+	//else
+		//std::cout << "The sound file \"" << filename << "\" has already been loaded\n";
 }

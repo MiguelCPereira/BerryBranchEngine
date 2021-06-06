@@ -1,7 +1,6 @@
 #include "UggWrongway.h"
 #include "GameObject.h"
 #include "GraphicsComponent.h"
-#include <iostream>
 #include "SoundServiceLocator.h"
 #include "SoundSystem.h"
 
@@ -207,7 +206,7 @@ bool UggWrongway::FallIntoSpawnPos(float deltaTime)
 	m_TimeSinceLastFrame += deltaTime;
 	m_FallTimer += deltaTime;
 
-	// Change the position every 50 times per frame (or whoever much m_FPS is set as)
+	// Change the position 50 times per frame (or whoever much m_FPS is set as)
 	if (m_TimeSinceLastFrame >= 1.f / float(m_FPS) && m_FallTimer < m_FallTime)
 	{
 		m_TimeSinceLastFrame -= 1.f / float(m_FPS);
@@ -233,6 +232,7 @@ bool UggWrongway::FallIntoSpawnPos(float deltaTime)
 
 void UggWrongway::Initialize()
 {
+	// Store all the needed info in the member variables
 	auto* graphics = m_GameObject->GetComponent<dae::GraphicsComponent>();
 	m_FinalLandingPosX = graphics->GetPosX();
 	m_FinalLandingPosY = graphics->GetPosY();

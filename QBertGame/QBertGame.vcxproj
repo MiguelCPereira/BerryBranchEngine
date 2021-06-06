@@ -126,15 +126,23 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugDLL|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDLL|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -170,7 +178,15 @@
 xcopy "$(SolutionDir)3rdParty\SDL2_image\lib\$(PlatformTarget)\*.dll" "$(OutputPath)" /R /Y
 
 
-xcopy "$(SolutionDir)3rdParty\SDL2_ttf\lib\$(PlatformTarget)\*.dll" "$(OutputPath)" /R /Y</Command>
+xcopy "$(SolutionDir)3rdParty\SDL2_ttf\lib\$(PlatformTarget)\*.dll" "$(OutputPath)" /R /Y
+
+
+xcopy "$(SolutionDir)QBertGame\*.bin" "$(OutputPath)" /R /Y
+
+if not exist "$(SolutionDir)$(Platform)\Data" mkdir "$(SolutionDir)$(Platform)\Data"
+if not exist "$(SolutionDir)$(Platform)\Data\Sounds" mkdir "$(SolutionDir)$(Platform)\Data\Sounds"
+xcopy "$(SolutionDir)Data" "$(SolutionDir)$(Platform)\Data" /R /Y
+xcopy "$(SolutionDir)Data\Sounds" "$(SolutionDir)$(Platform)\Data\Sounds" /R /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DebugDLL|Win32'">
@@ -198,7 +214,12 @@ xcopy "$(SolutionDir)3rdParty\SDL2_image\lib\$(PlatformTarget)\*.dll" "$(OutputP
 xcopy "$(SolutionDir)3rdParty\SDL2_ttf\lib\$(PlatformTarget)\*.dll" "$(OutputPath)" /R /Y
 
 
-xcopy "$(SolutionDir)$(Platform)\$(Configuration)\*.dll" "$(OutputPath)" /R /Y</Command>
+xcopy "$(SolutionDir)QBertGame\*.bin" "$(OutputPath)" /R /Y
+
+if not exist "$(SolutionDir)$(Platform)\Data" mkdir "$(SolutionDir)$(Platform)\Data"
+if not exist "$(SolutionDir)$(Platform)\Data\Sounds" mkdir "$(SolutionDir)$(Platform)\Data\Sounds"
+xcopy "$(SolutionDir)Data" "$(SolutionDir)$(Platform)\Data" /R /Y
+xcopy "$(SolutionDir)Data\Sounds" "$(SolutionDir)$(Platform)\Data\Sounds" /R /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -227,7 +248,15 @@ xcopy "$(SolutionDir)$(Platform)\$(Configuration)\*.dll" "$(OutputPath)" /R /Y</
 xcopy "$(SolutionDir)3rdParty\SDL2_image\lib\$(PlatformTarget)\*.dll" "$(OutputPath)" /R /Y
 
 
-xcopy "$(SolutionDir)3rdParty\SDL2_ttf\lib\$(PlatformTarget)\*.dll" "$(OutputPath)" /R /Y</Command>
+xcopy "$(SolutionDir)3rdParty\SDL2_ttf\lib\$(PlatformTarget)\*.dll" "$(OutputPath)" /R /Y
+
+
+xcopy "$(SolutionDir)QBertGame\*.bin" "$(OutputPath)" /R /Y
+
+if not exist "$(SolutionDir)$(Platform)\Data" mkdir "$(SolutionDir)$(Platform)\Data"
+if not exist "$(SolutionDir)$(Platform)\Data\Sounds" mkdir "$(SolutionDir)$(Platform)\Data\Sounds"
+xcopy "$(SolutionDir)Data" "$(SolutionDir)$(Platform)\Data" /R /Y
+xcopy "$(SolutionDir)Data\Sounds" "$(SolutionDir)$(Platform)\Data\Sounds" /R /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDLL|Win32'">
@@ -259,7 +288,12 @@ xcopy "$(SolutionDir)3rdParty\SDL2_image\lib\$(PlatformTarget)\*.dll" "$(OutputP
 xcopy "$(SolutionDir)3rdParty\SDL2_ttf\lib\$(PlatformTarget)\*.dll" "$(OutputPath)" /R /Y
 
 
-xcopy "$(SolutionDir)$(Platform)\$(Configuration)\*.dll" "$(OutputPath)" /R /Y</Command>
+xcopy "$(SolutionDir)QBertGame\*.bin" "$(OutputPath)" /R /Y
+
+if not exist "$(SolutionDir)$(Platform)\Data" mkdir "$(SolutionDir)$(Platform)\Data"
+if not exist "$(SolutionDir)$(Platform)\Data\Sounds" mkdir "$(SolutionDir)$(Platform)\Data\Sounds"
+xcopy "$(SolutionDir)Data" "$(SolutionDir)$(Platform)\Data" /R /Y
+xcopy "$(SolutionDir)Data\Sounds" "$(SolutionDir)$(Platform)\Data\Sounds" /R /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -284,7 +318,15 @@ xcopy "$(SolutionDir)$(Platform)\$(Configuration)\*.dll" "$(OutputPath)" /R /Y</
 xcopy "$(SolutionDir)3rdParty\SDL2_image\lib\$(PlatformTarget)\*.dll" "$(OutputPath)" /R /Y
 
 
-xcopy "$(SolutionDir)3rdParty\SDL2_ttf\lib\$(PlatformTarget)\*.dll" "$(OutputPath)" /R /Y</Command>
+xcopy "$(SolutionDir)3rdParty\SDL2_ttf\lib\$(PlatformTarget)\*.dll" "$(OutputPath)" /R /Y
+
+
+xcopy "$(SolutionDir)QBertGame\*.bin" "$(OutputPath)" /R /Y
+
+if not exist "$(SolutionDir)$(Platform)\Data" mkdir "$(SolutionDir)$(Platform)\Data"
+if not exist "$(SolutionDir)$(Platform)\Data\Sounds" mkdir "$(SolutionDir)$(Platform)\Data\Sounds"
+xcopy "$(SolutionDir)Data" "$(SolutionDir)$(Platform)\Data" /R /Y
+xcopy "$(SolutionDir)Data\Sounds" "$(SolutionDir)$(Platform)\Data\Sounds" /R /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DebugDLL|x64'">
@@ -311,7 +353,13 @@ xcopy "$(SolutionDir)3rdParty\SDL2_image\lib\$(PlatformTarget)\*.dll" "$(OutputP
 
 xcopy "$(SolutionDir)3rdParty\SDL2_ttf\lib\$(PlatformTarget)\*.dll" "$(OutputPath)" /R /Y
 
-</Command>
+
+xcopy "$(SolutionDir)QBertGame\*.bin" "$(OutputPath)" /R /Y
+
+if not exist "$(SolutionDir)$(Platform)\Data" mkdir "$(SolutionDir)$(Platform)\Data"
+if not exist "$(SolutionDir)$(Platform)\Data\Sounds" mkdir "$(SolutionDir)$(Platform)\Data\Sounds"
+xcopy "$(SolutionDir)Data" "$(SolutionDir)$(Platform)\Data" /R /Y
+xcopy "$(SolutionDir)Data\Sounds" "$(SolutionDir)$(Platform)\Data\Sounds" /R /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -340,7 +388,15 @@ xcopy "$(SolutionDir)3rdParty\SDL2_ttf\lib\$(PlatformTarget)\*.dll" "$(OutputPat
 xcopy "$(SolutionDir)3rdParty\SDL2_image\lib\$(PlatformTarget)\*.dll" "$(OutputPath)" /R /Y
 
 
-xcopy "$(SolutionDir)3rdParty\SDL2_ttf\lib\$(PlatformTarget)\*.dll" "$(OutputPath)" /R /Y</Command>
+xcopy "$(SolutionDir)3rdParty\SDL2_ttf\lib\$(PlatformTarget)\*.dll" "$(OutputPath)" /R /Y
+
+
+xcopy "$(SolutionDir)QBertGame\*.bin" "$(OutputPath)" /R /Y
+
+if not exist "$(SolutionDir)$(Platform)\Data" mkdir "$(SolutionDir)$(Platform)\Data"
+if not exist "$(SolutionDir)$(Platform)\Data\Sounds" mkdir "$(SolutionDir)$(Platform)\Data\Sounds"
+xcopy "$(SolutionDir)Data" "$(SolutionDir)$(Platform)\Data" /R /Y
+xcopy "$(SolutionDir)Data\Sounds" "$(SolutionDir)$(Platform)\Data\Sounds" /R /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDLL|x64'">
@@ -369,7 +425,15 @@ xcopy "$(SolutionDir)3rdParty\SDL2_ttf\lib\$(PlatformTarget)\*.dll" "$(OutputPat
 xcopy "$(SolutionDir)3rdParty\SDL2_image\lib\$(PlatformTarget)\*.dll" "$(OutputPath)" /R /Y
 
 
-xcopy "$(SolutionDir)3rdParty\SDL2_ttf\lib\$(PlatformTarget)\*.dll" "$(OutputPath)" /R /Y</Command>
+xcopy "$(SolutionDir)3rdParty\SDL2_ttf\lib\$(PlatformTarget)\*.dll" "$(OutputPath)" /R /Y
+
+
+xcopy "$(SolutionDir)QBertGame\*.bin" "$(OutputPath)" /R /Y
+
+if not exist "$(SolutionDir)$(Platform)\Data" mkdir "$(SolutionDir)$(Platform)\Data"
+if not exist "$(SolutionDir)$(Platform)\Data\Sounds" mkdir "$(SolutionDir)$(Platform)\Data\Sounds"
+xcopy "$(SolutionDir)Data" "$(SolutionDir)$(Platform)\Data" /R /Y
+xcopy "$(SolutionDir)Data\Sounds" "$(SolutionDir)$(Platform)\Data\Sounds" /R /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

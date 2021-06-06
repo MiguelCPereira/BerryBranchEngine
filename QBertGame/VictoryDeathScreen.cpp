@@ -1,7 +1,5 @@
 #include "VictoryDeathScreen.h"
-#include "GameCommands.h"
 #include "SceneManager.h"
-#include "Scene.h"
 
 VictoryDeathScreen::VictoryDeathScreen(int startMenuSceneIdx)
 	: m_StartMenuSceneIdx(startMenuSceneIdx)

@@ -12,7 +12,6 @@ Scene::~Scene() = default;
 
 void Scene::Add(const std::shared_ptr<GameObject>& object, bool renderPriority)
 {
-	//m_Objects.insert({ object, renderPriority });
 	if(renderPriority == false)
 		m_Objects.push_back(object);
 	else
@@ -38,12 +37,6 @@ void Scene::Initialize()
 				m_ObjectsPriority[i]->Initialize();
 		}
 	}
-
-	/*for (const auto& pair : m_Objects)
-	{
-		if (pair.first != nullptr)
-			pair.first->Initialize();
-	}*/
 }
 
 void Scene::Update(const float deltaTime)
@@ -65,12 +58,6 @@ void Scene::Update(const float deltaTime)
 				m_ObjectsPriority[i]->Update(deltaTime);
 		}
 	}
-
-	/*for (const auto& pair : m_Objects)
-	{
-		if(pair.first != nullptr)
-			pair.first->Update(deltaTime);
-	}*/
 }
 
 void Scene::Render() const
@@ -88,20 +75,5 @@ void Scene::Render() const
 		if (object != nullptr)
 			object->Render();
 	}
-
-	
-	//// Render objects without priority
-	//for (const auto& pair : m_Objects)
-	//{
-	//	if (pair.first != nullptr && pair.second == false)
-	//		pair.first->Render();
-	//}
-
-	//// Render objects with priority afterwards
-	//for (const auto& pair : m_Objects)
-	//{
-	//	if (pair.first != nullptr && pair.second == true)
-	//		pair.first->Render();
-	//}
 }
 

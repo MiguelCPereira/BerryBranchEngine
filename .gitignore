@@ -17,8 +17,5 @@
 /Minigin/Win32/
 /Minigin/x64/
 !/QBertGame/
-/QBertGame/Debug/
-/QBertGame/DebugDLL/
-/QBertGame/Release/
-/QBertGame/ReleaseDLL/
+/QBertGame/Win32
 /QBertGame/x64/

@@ -292,6 +292,7 @@ void Coily::BackToMenu() const
 
 void Coily::Initialize()
 {
+	// Store all the needed info in the member variables
 	auto* graphics = m_GameObject->GetComponent<dae::GraphicsComponent>();
 	m_FinalLandingPosY = graphics->GetPosY();
 	graphics->SetPosition(graphics->GetPosX(), graphics->GetPosY() - m_FallHeight);
@@ -371,8 +372,9 @@ void Coily::Update(const float deltaTime)
 		case CoilyState::ST_SnakeJumping:
 			// This variable prevents the timer from being reset before the movement is actually complete.
 			// It will only become false if Coily's in snake mode and a QBert evades them at the last second,
-			// making both Coily and the Qbert's cube index the same, although they're not colliding (has QBert's mid-air)
-			// This is rare, but if it happens, the calculation will wait as many frames as it needs until QBert lands
+			// making both Coily and the Qbert's cube index the same, although they're not colliding (because QBert's mid-air).
+			// This is rare, considering both have the same jumping speed, but if it happens (for example, if someone decided
+			// to make one of them jump slower), Coily will wait as many frames as it needs until QBert lands to move again
 			const bool movementSucceeded = CoilySeekBehaviour();
 
 			if (movementSucceeded)
@@ -394,7 +396,7 @@ bool Coily::FallIntoSpawnPos(float deltaTime)
 	m_TimeSinceLastFrame += deltaTime;
 	m_FallTimer += deltaTime;
 
-	// Change the position every 50 times per frame (or whoever much m_FPS is set as)
+	// Change the position 50 times per frame (or whoever much m_FPS is set as)
 	if (m_TimeSinceLastFrame >= 1.f / float(m_FPS) && m_FallTimer < m_FallTime)
 	{
 		m_TimeSinceLastFrame -= 1.f / float(m_FPS);

@@ -89,15 +89,15 @@ int main(int, char* [])
 {
 	srand((unsigned)time(nullptr));
 
-	CreateBinaryLevel01Solo();
-	CreateBinaryLevel02Solo();
-	CreateBinaryLevel03Solo();
-	CreateBinaryLevel01Coop();
-	CreateBinaryLevel02Coop();
-	CreateBinaryLevel03Coop();
-	CreateBinaryLevel01Versus();
-	CreateBinaryLevel02Versus();
-	CreateBinaryLevel03Versus();
+	//CreateBinaryLevel01Solo();
+	//CreateBinaryLevel02Solo();
+	//CreateBinaryLevel03Solo();
+	//CreateBinaryLevel01Coop();
+	//CreateBinaryLevel02Coop();
+	//CreateBinaryLevel03Coop();
+	//CreateBinaryLevel01Versus();
+	//CreateBinaryLevel02Versus();
+	//CreateBinaryLevel03Versus();
 
 	dae::Minigin engine;
 	engine.Initialize();

@@ -18,7 +18,7 @@ P2CoilyInput::~P2CoilyInput()
 
 void P2CoilyInput::Initialize()
 {
-	// Start Observing
+	//// Start Observing
 	if (m_Deactivated == false && m_CoilyGO != nullptr)
 	{
 		m_CoilyComp = m_CoilyGO->GetComponent<Coily>();
@@ -26,8 +26,10 @@ void P2CoilyInput::Initialize()
 			m_CoilyComp->GetSubject()->AddObserver(this);
 
 	
-
-		// Register Input
+		//// Register Input
+		
+		// Keyboard
+		
 		auto moveUpKeyboard = std::make_unique<CoilyMoveUpCommand>();
 		moveUpKeyboard->SetActor(m_CoilyGO);
 		moveUpKeyboard->SetButtonPressType(dae::ButtonPress::PressedDown);
@@ -48,12 +50,8 @@ void P2CoilyInput::Initialize()
 		moveRightKeyboard->SetButtonPressType(dae::ButtonPress::PressedDown);
 		dae::InputManager::GetInstance().AddCommand(SDLK_RIGHT, std::move(moveRightKeyboard));
 
-		auto backToMenuKeyboard = std::make_unique<CoilyBackToMenuCommand>();
-		backToMenuKeyboard->SetActor(m_CoilyGO);
-		backToMenuKeyboard->SetButtonPressType(dae::ButtonPress::PressedDown);
-		dae::InputManager::GetInstance().AddCommand(SDLK_ESCAPE, std::move(backToMenuKeyboard));
-
-
+		
+		// Controller
 
 		auto moveUpController = std::make_unique<CoilyMoveUpCommand>();
 		moveUpController->SetActor(m_CoilyGO);
@@ -82,13 +80,13 @@ void P2CoilyInput::Initialize()
 		auto pauseController = std::make_unique<CoilyPauseGameCommand>();
 		pauseController->SetActor(m_CoilyGO);
 		pauseController->SetButtonPressType(dae::ButtonPress::PressedDown);
-		controllerKey.second = dae::ControllerButton::ButtonB;
+		controllerKey.second = dae::ControllerButton::Start;
 		dae::InputManager::GetInstance().AddCommand(controllerKey, std::move(pauseController));
 
 		auto backToMenuController = std::make_unique<CoilyBackToMenuCommand>();
 		backToMenuController->SetActor(m_CoilyGO);
 		backToMenuController->SetButtonPressType(dae::ButtonPress::PressedDown);
-		controllerKey.second = dae::ControllerButton::ButtonB;
+		controllerKey.second = dae::ControllerButton::ButtonY;
 		dae::InputManager::GetInstance().AddCommand(controllerKey, std::move(backToMenuController));
 	}
 }
@@ -114,7 +112,7 @@ void P2CoilyInput::OnNotify(const dae::Event& event)
 		{
 			m_CoilyComp->GetSubject()->RemoveObserver(this);
 			m_Deactivated = true;
-			// We don't kill Coily already, because they still need to be frozen and alive for a while,
+			// We don't kill Coily yet, because they still need to be frozen and alive for a while
 			// as the damaged QBert curses (and after that, LevelSectionObserver will kill it along with
 			// every other foe in the map)
 		}
@@ -141,6 +139,10 @@ void P2CoilyInput::ClearInput() const
 	controllerKey.second = dae::ControllerButton::DPadLeft;
 	dae::InputManager::GetInstance().RemoveCommand(controllerKey);
 	controllerKey.second = dae::ControllerButton::DPadRight;
+	dae::InputManager::GetInstance().RemoveCommand(controllerKey);
+	controllerKey.second = dae::ControllerButton::Start;
+	dae::InputManager::GetInstance().RemoveCommand(controllerKey);
+	controllerKey.second = dae::ControllerButton::ButtonB;
 	dae::InputManager::GetInstance().RemoveCommand(controllerKey);
 }
 

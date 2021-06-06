@@ -2,6 +2,8 @@
 #include "Singleton.h"
 #include "MiniginLibType.h"
 #include <vector>
+#include <memory>
+#include <string>
 
 namespace dae
 {

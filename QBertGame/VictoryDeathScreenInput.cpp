@@ -20,7 +20,7 @@ void VictoryDeathScreenInput::Initialize()
 	auto goBackController1 = std::make_unique<GoBackMenuCommand>();
 	goBackController1->SetActor(m_MenuComponentGO);
 	goBackController1->SetButtonPressType(dae::ButtonPress::PressedDown);
-	std::pair<unsigned, dae::ControllerButton> controllerKey(0, dae::ControllerButton::Start);
+	std::pair<unsigned, dae::ControllerButton> controllerKey(0, dae::ControllerButton::ButtonY);
 	dae::InputManager::GetInstance().AddCommand(controllerKey, std::move(goBackController1));
 
 
