@@ -1017,6 +1017,7 @@ void LevelSectionObserver::ChangeSection(int newSectionIdx) const
 	{
 		for (auto i = 0; i < int(m_QBertCompVector->size()); i++)
 		{
+			m_QBertCompVector->operator[](i)->AnimationStopped();
 			m_QBertCompVector->operator[](i)->ResetPosition();
 			m_QBertCompVector->operator[](i)->SetFrozen(true);
 
@@ -1071,7 +1072,6 @@ void LevelSectionObserver::ChangeSection(int newSectionIdx) const
 		{
 			auto qBert = m_QBertCompVector->operator[](i);
 			qBert->ResetGameVariables();
-			qBert->AnimationStopped();
 			qBert->ResetPosition();
 			qBert->BackToGround();
 			if(qBert->AreGraphicsHidden())

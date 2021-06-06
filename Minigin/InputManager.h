@@ -28,7 +28,8 @@ namespace dae
 		RightShoulder = 0x0200
 	};
 
-	static const ControllerButton AllButtons[] = {
+	static const ControllerButton AllButtons[] =
+	{
 		ControllerButton::ButtonA,
 		ControllerButton::ButtonB,
 		ControllerButton::ButtonX,
