@@ -4,18 +4,16 @@
 # Files to not ignore
 !/.gitignore
 !/.gitattributes
-!/Minigin.sln
-!/Minigin.sln.DotSettings
-!/vld.props
 
 # Folder to not ignore
-!/3rdParty/
-!/Data/
+!/Build/
+!/Screenshots/
 
 # Folders to ignore only partially
-!/Minigin/
-/Minigin/Win32/
-/Minigin/x64/
-!/QBertGame/
-/QBertGame/Win32
-/QBertGame/x64/
+!/Source/
+/Source/Win32/
+/Source/x64/
+/Source/Minigin/Win32/
+/Source/Minigin/x64/
+/Source/QBertGame/Win32
+/Source/QBertGame/x64/
