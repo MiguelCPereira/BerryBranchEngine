@@ -11,4 +11,4 @@ Four functional versions of the game are available under the "Build" folder - tw
 <br />
 <br />
 
-[![Showcase](https://github.com/MiguelCPereira/BerryBranchEngine/blob/main/Screenshots/Showcase%20Thumbnail.png)](https://www.youtube.com/watch?v=yw2tpa5d9wE "Amiibo API Extension Showcase")
+[![Q-Bert Gameplay](https://github.com/MiguelCPereira/BerryBranchEngine/blob/main/Screenshots/Showcase%20Thumbnail.png)](https://www.youtube.com/watch?v=krqMElyBhaQ "Q-Bert Remake Gameplay")
